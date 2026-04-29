@@ -1,51 +1,78 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { Toaster } from "sonner";
+import { api } from "./lib/api";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import Home from "./pages/public/Home";
+import ImoveisList from "./pages/public/ImoveisList";
+import ImovelDetail from "./pages/public/ImovelDetail";
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+import Login from "./pages/admin/Login";
+import Dashboard from "./pages/admin/Dashboard";
+import LeadsPage from "./pages/admin/Leads";
+import FunilPage from "./pages/admin/Funil";
+import ImoveisAdmin from "./pages/admin/Imoveis";
+import Relatorios from "./pages/admin/Relatorios";
+import OrigemLeads from "./pages/admin/OrigemLeads";
+import Configuracoes from "./pages/admin/Configuracoes";
 
+import ProtectedRoute from "./components/ProtectedRoute";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import WhatsappFab from "./components/WhatsappFab";
+
+function ScrollToHash() {
+  const { hash, pathname } = useLocation();
   useEffect(() => {
-    helloWorldApi();
-  }, []);
+    if (hash) {
+      const el = document.getElementById(hash.slice(1));
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 0 });
+    }
+  }, [pathname, hash]);
+  return null;
+}
 
+function PublicShell({ children }) {
+  const [settings, setSettings] = useState({});
+  useEffect(() => {
+    api.get("/public/settings").then((r) => setSettings(r.data)).catch(() => {});
+  }, []);
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
+    <div className="bg-[#F4F1EB] min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-1">{React.cloneElement(children, { settings })}</main>
+      <Footer settings={settings} />
+      <WhatsappFab phone={settings.whatsapp} />
     </div>
   );
-};
+}
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
+        <AuthProvider>
+          <ScrollToHash />
+          <Toaster position="top-right" richColors />
+          <Routes>
+            <Route path="/" element={<PublicShell><Home /></PublicShell>} />
+            <Route path="/imoveis" element={<PublicShell><ImoveisList /></PublicShell>} />
+            <Route path="/imoveis/:id" element={<PublicShell><ImovelDetail /></PublicShell>} />
+
+            <Route path="/admin/login" element={<Login />} />
+            <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/admin/leads" element={<ProtectedRoute><LeadsPage /></ProtectedRoute>} />
+            <Route path="/admin/funil" element={<ProtectedRoute><FunilPage /></ProtectedRoute>} />
+            <Route path="/admin/imoveis" element={<ProtectedRoute><ImoveisAdmin /></ProtectedRoute>} />
+            <Route path="/admin/relatorios" element={<ProtectedRoute><Relatorios /></ProtectedRoute>} />
+            <Route path="/admin/origem" element={<ProtectedRoute><OrigemLeads /></ProtectedRoute>} />
+            <Route path="/admin/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );

@@ -2,114 +2,208 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    margin: 0;
-    font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-        sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --lm-olive: #2B3A2F;
+  --lm-olive-dark: #1F2A22;
+  --lm-olive-light: #3D5142;
+  --lm-gold: #C5A059;
+  --lm-gold-light: #D4B574;
+  --lm-nude: #F4F1EB;
+  --lm-nude-dark: #E8E2D6;
+  --lm-graphite: #2C2C2C;
+  --lm-gray: #5C5C5C;
+  --lm-border: #E5E0D8;
+  --lm-white: #FFFFFF;
 }
 
-code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+html, body, #root {
+  background: var(--lm-nude);
+  color: var(--lm-graphite);
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+.font-serif { font-family: 'Cormorant Garamond', serif; }
+.font-sans { font-family: 'Outfit', sans-serif; }
+
+/* shadcn tokens */
+@layer base {
+  :root {
+    --background: 40 25% 94%;
+    --foreground: 0 0% 17%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 17%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 17%;
+    --primary: 135 15% 20%;
+    --primary-foreground: 40 25% 94%;
+    --secondary: 38 46% 85%;
+    --secondary-foreground: 135 15% 20%;
+    --muted: 40 20% 92%;
+    --muted-foreground: 0 0% 36%;
+    --accent: 40 43% 56%;
+    --accent-foreground: 135 15% 20%;
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 40 25% 94%;
+    --border: 36 27% 87%;
+    --input: 36 27% 87%;
+    --ring: 135 15% 20%;
+    --radius: 0.5rem;
+    --chart-1: 135 15% 20%;
+    --chart-2: 40 43% 56%;
+    --chart-3: 22 40% 45%;
+    --chart-4: 170 30% 40%;
+    --chart-5: 340 35% 50%;
+  }
 }
 
 @layer base {
-    :root {
-        --background: 0 0% 100%;
-        --foreground: 0 0% 3.9%;
-        --card: 0 0% 100%;
-        --card-foreground: 0 0% 3.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 0 0% 3.9%;
-        --primary: 0 0% 9%;
-        --primary-foreground: 0 0% 98%;
-        --secondary: 0 0% 96.1%;
-        --secondary-foreground: 0 0% 9%;
-        --muted: 0 0% 96.1%;
-        --muted-foreground: 0 0% 45.1%;
-        --accent: 0 0% 96.1%;
-        --accent-foreground: 0 0% 9%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 89.8%;
-        --input: 0 0% 89.8%;
-        --ring: 0 0% 3.9%;
-        --chart-1: 12 76% 61%;
-        --chart-2: 173 58% 39%;
-        --chart-3: 197 37% 24%;
-        --chart-4: 43 74% 66%;
-        --chart-5: 27 87% 67%;
-        --radius: 0.5rem;
-    }
-    .dark {
-        --background: 0 0% 3.9%;
-        --foreground: 0 0% 98%;
-        --card: 0 0% 3.9%;
-        --card-foreground: 0 0% 98%;
-        --popover: 0 0% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 0 0% 98%;
-        --primary-foreground: 0 0% 9%;
-        --secondary: 0 0% 14.9%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 0 0% 14.9%;
-        --muted-foreground: 0 0% 63.9%;
-        --accent: 0 0% 14.9%;
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 14.9%;
-        --input: 0 0% 14.9%;
-        --ring: 0 0% 83.1%;
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
-    }
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
 }
 
-@layer base {
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply bg-background text-foreground;
-    }
+/* Premium utilities */
+.lm-overline {
+  font-family: 'Outfit', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--lm-gold);
 }
 
-@layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
-    }
+.lm-divider {
+  width: 48px;
+  height: 1px;
+  background: var(--lm-gold);
+}
 
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit;
-        margin-right: inherit;
-        margin-top: inherit;
-        margin-bottom: inherit;
-        padding-left: inherit;
-        padding-right: inherit;
-        padding-top: inherit;
-        padding-bottom: inherit;
-        column-gap: inherit;
-        row-gap: inherit;
-        gap: inherit;
-        border-left-width: inherit;
-        border-right-width: inherit;
-        border-top-width: inherit;
-        border-bottom-width: inherit;
-        border-left-style: inherit;
-        border-right-style: inherit;
-        border-top-style: inherit;
-        border-bottom-style: inherit;
-        border-left-color: inherit;
-        border-right-color: inherit;
-        border-top-color: inherit;
-        border-bottom-color: inherit;
-    }
+.lm-btn-primary {
+  background: var(--lm-olive);
+  color: var(--lm-nude);
+  padding: 0.85rem 1.6rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  transition: background 0.3s ease, transform 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.lm-btn-primary:hover { background: var(--lm-olive-dark); transform: translateY(-1px); }
+
+.lm-btn-outline {
+  border: 1px solid var(--lm-olive);
+  color: var(--lm-olive);
+  padding: 0.85rem 1.6rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  transition: background 0.3s ease, color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+}
+.lm-btn-outline:hover { background: var(--lm-olive); color: var(--lm-nude); }
+
+.lm-btn-gold {
+  background: var(--lm-gold);
+  color: var(--lm-olive);
+  padding: 0.85rem 1.6rem;
+  font-weight: 500;
+  border-radius: 999px;
+  transition: background 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.lm-btn-gold:hover { background: var(--lm-gold-light); }
+
+.lm-card {
+  background: #fff;
+  border: 1px solid var(--lm-border);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.lm-card:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -20px rgba(43,58,47,0.18); }
+
+.lm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  border: 1px solid var(--lm-gold);
+  color: var(--lm-gold);
+  background: transparent;
+}
+
+.lm-pill-filled {
+  background: var(--lm-olive);
+  color: var(--lm-nude);
+  border-color: var(--lm-olive);
+}
+
+/* Scrollbars */
+.lm-scroll::-webkit-scrollbar { height: 10px; width: 10px; }
+.lm-scroll::-webkit-scrollbar-thumb { background: var(--lm-border); border-radius: 10px; }
+.lm-scroll::-webkit-scrollbar-thumb:hover { background: var(--lm-gold); }
+
+/* Kanban */
+.kanban-card { cursor: grab; transition: box-shadow 0.2s; }
+.kanban-card:active { cursor: grabbing; }
+.kanban-card.dragging { opacity: 0.5; }
+.kanban-col.dragover { background: #F4F1EB; }
+
+/* hero gradient overlay (used intentionally only on hero image) */
+.hero-overlay {
+  background: linear-gradient(90deg, rgba(43,58,47,0.55) 0%, rgba(43,58,47,0.18) 55%, rgba(43,58,47,0) 100%);
+}
+
+/* Fade in */
+@keyframes lm-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.lm-fade-up { animation: lm-fade-up 0.8s ease both; }
+.lm-fade-delay-1 { animation-delay: 0.12s; }
+.lm-fade-delay-2 { animation-delay: 0.24s; }
+.lm-fade-delay-3 { animation-delay: 0.36s; }
+
+/* Inputs */
+.lm-input {
+  background: #fff;
+  border: 1px solid var(--lm-border);
+  border-radius: 4px;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.92rem;
+  color: var(--lm-graphite);
+  width: 100%;
+  transition: border 0.2s;
+}
+.lm-input:focus { outline: none; border-color: var(--lm-olive); }
+.lm-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lm-gray);
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+.lm-section-title {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--lm-olive);
+  font-weight: 500;
+  line-height: 1.05;
 }
