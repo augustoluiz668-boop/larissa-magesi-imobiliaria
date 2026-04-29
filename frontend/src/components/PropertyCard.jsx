@@ -8,7 +8,7 @@ export default function PropertyCard({ prop }) {
     <article data-testid={`property-card-${prop.id}`} className="lm-card flex flex-col">
       <Link to={`/imoveis/${prop.id}`} className="block relative">
         <img
-          src={prop.fotos?.[0]}
+          src={prop.fotos?.[prop.featured_photo || 0] || prop.fotos?.[0]}
           alt={prop.titulo}
           className="w-full h-64 object-cover"
           loading="lazy"

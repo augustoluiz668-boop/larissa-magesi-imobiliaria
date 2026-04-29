@@ -1,42 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { api, formatMoney, waLink, TYPE_LABELS, PURPOSE_LABELS } from "../../lib/api";
-import { Bed, Bath, Car, Ruler, MapPin, MessageCircle, ArrowLeft, Check } from "lucide-react";
-import { toast } from "sonner";
+import { Bed, Bath, Car, Ruler, MapPin, MessageCircle, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import PropertyCard from "../../components/PropertyCard";
+
+const oliveIcon = L.divIcon({
+  className: "lm-marker",
+  html: `<div style="width:34px;height:34px;border-radius:50% 50% 50% 0;background:#2B3A2F;border:3px solid #C5A059;transform:rotate(-45deg);box-shadow:0 4px 10px rgba(0,0,0,.25)"></div>`,
+  iconSize: [34, 34],
+  iconAnchor: [17, 34],
+});
 
 export default function ImovelDetail({ settings = {} }) {
   const { id } = useParams();
   const [prop, setProp] = useState(null);
   const [photo, setPhoto] = useState(0);
-  const [form, setForm] = useState({ nome: "", whatsapp: "", mensagem: "" });
-  const [sending, setSending] = useState(false);
+  const [similar, setSimilar] = useState([]);
 
   useEffect(() => {
-    api.get(`/public/properties/${id}`).then((r) => setProp(r.data)).catch(() => setProp(null));
+    let cancelled = false;
+    api.get(`/public/properties/${id}`).then((r) => {
+      if (cancelled) return;
+      setProp(r.data);
+      const featured = r.data.featured_photo || 0;
+      setPhoto(Math.min(featured, (r.data.fotos || []).length - 1));
+    }).catch(() => setProp(null));
+    api.get(`/public/properties/${id}/similar?limit=4`).then((r) => !cancelled && setSimilar(r.data)).catch(() => {});
+    return () => { cancelled = true; };
   }, [id]);
 
   if (!prop) {
     return <div className="max-w-7xl mx-auto px-6 py-24 text-center text-[#5C5C5C]">Carregando imóvel…</div>;
   }
 
-  const submit = async (e) => {
-    e.preventDefault();
-    if (!form.nome || !form.whatsapp) return toast.error("Preencha nome e WhatsApp");
-    setSending(true);
-    try {
-      await api.post("/public/leads", {
-        ...form, cidade_interesse: prop.cidade, bairro_interesse: prop.bairro,
-        tipo_imovel: prop.tipo, finalidade: "comprar", origem: "site",
-        mensagem: `[${prop.codigo}] ${prop.titulo} — ${form.mensagem}`,
-      });
-      toast.success("Interesse enviado! Larissa entrará em contato.");
-      setForm({ nome: "", whatsapp: "", mensagem: "" });
-    } catch {
-      toast.error("Falha ao enviar.");
-    } finally {
-      setSending(false);
-    }
-  };
+  const fotos = prop.fotos || [];
+  const prev = () => setPhoto((photo - 1 + fotos.length) % fotos.length);
+  const next = () => setPhoto((photo + 1) % fotos.length);
 
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-10 py-10">
@@ -45,15 +47,27 @@ export default function ImovelDetail({ settings = {} }) {
       </Link>
 
       <div className="grid md:grid-cols-3 gap-8">
+        {/* Carousel + details */}
         <div className="md:col-span-2">
-          <img src={prop.fotos?.[photo]} alt={prop.titulo} className="w-full h-[440px] object-cover rounded-sm" />
-          <div className="flex gap-2 mt-3 overflow-x-auto lm-scroll">
-            {(prop.fotos || []).map((f, i) => (
-              <button key={i} onClick={() => setPhoto(i)} className={`flex-shrink-0 w-24 h-20 rounded-sm overflow-hidden border-2 ${photo === i ? "border-[#C5A059]" : "border-transparent"}`}>
-                <img src={f} alt="" className="w-full h-full object-cover" />
-              </button>
-            ))}
+          <div className="relative bg-black" data-testid="detail-carousel">
+            <img src={fotos[photo]} alt={prop.titulo} className="w-full h-[480px] object-cover" />
+            {fotos.length > 1 && (
+              <>
+                <button onClick={prev} data-testid="carousel-prev" aria-label="Anterior" className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-[#2B3A2F] flex items-center justify-center shadow"><ChevronLeft className="w-5 h-5" /></button>
+                <button onClick={next} data-testid="carousel-next" aria-label="Próximo" className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-[#2B3A2F] flex items-center justify-center shadow"><ChevronRight className="w-5 h-5" /></button>
+                <div className="absolute bottom-3 right-3 bg-[#2B3A2F]/80 text-[#F4F1EB] text-xs px-3 py-1 rounded-full">{photo + 1} / {fotos.length}</div>
+              </>
+            )}
           </div>
+          {fotos.length > 1 && (
+            <div className="flex gap-2 mt-3 overflow-x-auto lm-scroll">
+              {fotos.map((f, i) => (
+                <button key={i} onClick={() => setPhoto(i)} className={`flex-shrink-0 w-24 h-20 rounded-sm overflow-hidden border-2 transition-all ${photo === i ? "border-[#C5A059]" : "border-transparent opacity-70 hover:opacity-100"}`}>
+                  <img src={f} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="mt-8">
             <div className="flex items-center gap-2 text-xs text-[#5C5C5C]"><MapPin className="w-3 h-3" /> {prop.bairro}, {prop.cidade}</div>
@@ -68,59 +82,88 @@ export default function ImovelDetail({ settings = {} }) {
             {prop.condominio > 0 && <div className="text-sm text-[#5C5C5C]">Condomínio: {formatMoney(prop.condominio)}/mês</div>}
             {prop.iptu > 0 && <div className="text-sm text-[#5C5C5C]">IPTU: {formatMoney(prop.iptu)}/ano</div>}
 
-            <div className="grid grid-cols-4 gap-3 mt-8 max-w-lg">
-              <div className="text-center bg-white border border-[#E5E0D8] p-4 rounded-sm">
-                <Ruler className="w-5 h-5 mx-auto text-[#2B3A2F]" />
-                <div className="text-sm mt-1 font-medium">{prop.metragem}m²</div>
-              </div>
-              {prop.quartos > 0 && <div className="text-center bg-white border border-[#E5E0D8] p-4 rounded-sm">
-                <Bed className="w-5 h-5 mx-auto text-[#2B3A2F]" />
-                <div className="text-sm mt-1 font-medium">{prop.quartos} quartos</div>
-              </div>}
-              {prop.banheiros > 0 && <div className="text-center bg-white border border-[#E5E0D8] p-4 rounded-sm">
-                <Bath className="w-5 h-5 mx-auto text-[#2B3A2F]" />
-                <div className="text-sm mt-1 font-medium">{prop.banheiros} banh.</div>
-              </div>}
-              {prop.vagas > 0 && <div className="text-center bg-white border border-[#E5E0D8] p-4 rounded-sm">
-                <Car className="w-5 h-5 mx-auto text-[#2B3A2F]" />
-                <div className="text-sm mt-1 font-medium">{prop.vagas} vagas</div>
-              </div>}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8 max-w-lg">
+              <Spec icon={Ruler} label={`${prop.metragem}m²`} />
+              {prop.quartos > 0 && <Spec icon={Bed} label={`${prop.quartos} quartos`} />}
+              {prop.banheiros > 0 && <Spec icon={Bath} label={`${prop.banheiros} banh.`} />}
+              {prop.vagas > 0 && <Spec icon={Car} label={`${prop.vagas} vagas`} />}
             </div>
 
             <div className="mt-8">
               <div className="lm-overline mb-2">Descrição</div>
               <p className="text-[#5C5C5C] leading-relaxed">{prop.descricao}</p>
-              {prop.endereco && <p className="text-sm text-[#5C5C5C] mt-3"><MapPin className="inline w-3 h-3 mr-1" />{prop.endereco}</p>}
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-2">
+            <div className="mt-6 flex flex-wrap gap-2">
               {prop.aceita_financiamento && <span className="lm-pill">Aceita financiamento</span>}
               {prop.aceita_consorcio && <span className="lm-pill">Aceita consórcio</span>}
               {prop.aceita_permuta && <span className="lm-pill">Aceita permuta</span>}
             </div>
+
+            {/* Mapa */}
+            {prop.lat && prop.lng && (
+              <div className="mt-10">
+                <div className="lm-overline mb-3">Localização aproximada</div>
+                <p className="text-xs text-[#5C5C5C] mb-3">Por privacidade do imóvel, exibimos apenas a região. O endereço completo é compartilhado após o primeiro contato.</p>
+                <div className="rounded-sm overflow-hidden border border-[#E5E0D8]" style={{ height: 320 }}>
+                  <MapContainer center={[prop.lat, prop.lng]} zoom={15} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap' />
+                    <Marker position={[prop.lat, prop.lng]} icon={oliveIcon}>
+                      <Popup>{prop.bairro}, {prop.cidade}</Popup>
+                    </Marker>
+                  </MapContainer>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
         <aside className="md:col-span-1">
           <div className="sticky top-28 space-y-4">
-            <a href={waLink(settings.whatsapp, `Olá Larissa! Tenho interesse no imóvel ${prop.codigo} — ${prop.titulo}.`)}
-              target="_blank" rel="noreferrer" data-testid="detail-wa-btn"
-              className="lm-btn-primary w-full justify-center">
-              <MessageCircle className="w-4 h-4" /> Chamar no WhatsApp
-            </a>
-            <form onSubmit={submit} className="bg-white border border-[#E5E0D8] p-6 rounded-sm space-y-3">
-              <div className="font-serif text-xl text-[#2B3A2F]">Tenho interesse</div>
-              <input data-testid="detail-form-nome" placeholder="Seu nome" className="lm-input" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
-              <input data-testid="detail-form-whatsapp" placeholder="WhatsApp" className="lm-input" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
-              <textarea data-testid="detail-form-msg" rows={3} placeholder="Mensagem" className="lm-input" value={form.mensagem} onChange={(e) => setForm({ ...form, mensagem: e.target.value })} />
-              <button disabled={sending} data-testid="detail-form-submit" className="lm-btn-primary w-full justify-center disabled:opacity-60">
-                {sending ? "Enviando…" : "Enviar interesse"}
-              </button>
-              <div className="text-[11px] text-[#5C5C5C] flex items-center gap-1"><Check className="w-3 h-3 text-[#C5A059]" /> Resposta em até 24h</div>
-            </form>
+            <div className="bg-white border border-[#E5E0D8] p-6 rounded-sm">
+              <div className="lm-overline mb-2">Quer visitar ou tirar dúvidas?</div>
+              <div className="font-serif text-xl text-[#2B3A2F] leading-tight mb-4">Chame Larissa no WhatsApp</div>
+              <a href={waLink(settings.whatsapp, `Olá Larissa! Tenho interesse no imóvel ${prop.codigo} — ${prop.titulo}.`)}
+                target="_blank" rel="noreferrer" data-testid="detail-wa-btn"
+                className="lm-btn-primary w-full justify-center">
+                <MessageCircle className="w-4 h-4" /> Falar agora
+              </a>
+              <div className="mt-4 pt-4 border-t border-[#E5E0D8] text-sm text-[#5C5C5C]">
+                <div>Ou ligue para:</div>
+                <a href={`tel:${(settings.telefone || "").replace(/\D/g, "")}`} className="font-medium text-[#2B3A2F] text-lg hover:text-[#C5A059]">{settings.telefone}</a>
+              </div>
+              <div className="mt-4 pt-4 border-t border-[#E5E0D8] text-xs text-[#5C5C5C]">
+                <div>Larissa Magesi · {settings.creci}</div>
+              </div>
+            </div>
           </div>
         </aside>
       </div>
+
+      {/* SIMILARES */}
+      {similar.length > 0 && (
+        <section className="mt-20 border-t border-[#E5E0D8] pt-16">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <div className="lm-overline mb-2">Você também pode gostar</div>
+              <h2 className="font-serif text-3xl text-[#2B3A2F]">Imóveis semelhantes</h2>
+            </div>
+            <Link to="/imoveis" className="text-sm text-[#2B3A2F] hover:text-[#C5A059]">Ver todos</Link>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5" data-testid="similar-properties">
+            {similar.map((p) => <PropertyCard key={p.id} prop={p} />)}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
+
+function Spec({ icon: Icon, label }) {
+  return (
+    <div className="text-center bg-white border border-[#E5E0D8] p-4 rounded-sm">
+      <Icon className="w-5 h-5 mx-auto text-[#2B3A2F]" />
+      <div className="text-sm mt-1 font-medium">{label}</div>
     </div>
   );
 }

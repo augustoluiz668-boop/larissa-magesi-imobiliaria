@@ -13,7 +13,8 @@ from typing import List, Optional, Literal
 
 import bcrypt
 import jwt
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Query
+import requests
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Query, UploadFile, File, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -112,6 +113,9 @@ class PropertyIn(BaseModel):
     status: PropertyStatus = "disponivel"
     proprietario: Optional[str] = ""
     destaque: bool = False
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+    featured_photo: int = 0
 
 
 class Property(PropertyIn):
@@ -207,9 +211,121 @@ class Settings(BaseModel):
     email: str
     instagram: str
     facebook: str
+    youtube: Optional[str] = ""
+    tiktok: Optional[str] = ""
+    linkedin: Optional[str] = ""
+    google_business: Optional[str] = ""
     cidade: str
     endereco: str
     bio: str
+    missao: Optional[str] = ""
+    visao: Optional[str] = ""
+    valores: Optional[str] = ""
+    finance_rate_annual: Optional[float] = 10.49
+    logo_url: Optional[str] = ""
+    photo_url: Optional[str] = ""
+
+
+class FinancingIn(BaseModel):
+    nome: str
+    telefone: str
+    email: Optional[str] = ""
+    renda_bruta: float
+    data_nascimento: str
+    tem_dependentes: bool = False
+    tem_fgts: bool = False
+    valor_fgts: float = 0
+    tem_entrada: bool = False
+    valor_entrada: float = 0
+    parcela_desejada: float
+    valor_imovel: float
+    observacoes: Optional[str] = ""
+
+
+# ---------- Object Storage ----------
+STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
+EMERGENT_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
+APP_NAME = os.environ.get("APP_NAME", "larissa-magesi")
+_storage_key: Optional[str] = None
+
+
+def init_storage() -> Optional[str]:
+    global _storage_key
+    if _storage_key:
+        return _storage_key
+    if not EMERGENT_KEY:
+        return None
+    try:
+        r = requests.post(f"{STORAGE_URL}/init", json={"emergent_key": EMERGENT_KEY}, timeout=30)
+        r.raise_for_status()
+        _storage_key = r.json().get("storage_key")
+        return _storage_key
+    except Exception as e:
+        logging.getLogger("larissa").error(f"Storage init failed: {e}")
+        return None
+
+
+def put_object(path: str, data: bytes, content_type: str) -> dict:
+    key = init_storage()
+    if not key:
+        raise HTTPException(500, "Storage indisponível")
+    r = requests.put(
+        f"{STORAGE_URL}/objects/{path}",
+        headers={"X-Storage-Key": key, "Content-Type": content_type},
+        data=data, timeout=120,
+    )
+    r.raise_for_status()
+    return r.json()
+
+
+def get_object(path: str) -> tuple[bytes, str]:
+    key = init_storage()
+    if not key:
+        raise HTTPException(500, "Storage indisponível")
+    r = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": key}, timeout=60)
+    r.raise_for_status()
+    return r.content, r.headers.get("Content-Type", "application/octet-stream")
+
+
+MIME_TYPES = {
+    "jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png",
+    "gif": "image/gif", "webp": "image/webp",
+}
+
+
+# ---------- Geocoding ----------
+BAIRRO_COORDS = {
+    ("bauru", "centro"): (-22.3148, -49.0620),
+    ("bauru", "vila aviação"): (-22.3517, -49.0283),
+    ("bauru", "jardim estoril"): (-22.3350, -49.0900),
+    ("bauru", "jardim infante dom henrique"): (-22.3270, -49.0470),
+    ("bauru", "vila cardia"): (-22.3250, -49.0770),
+    ("bauru", "altos da cidade"): (-22.3230, -49.0550),
+    ("bauru", "jardim nasralla"): (-22.3450, -49.0350),
+    ("bauru", "jardim paulistano"): (-22.3100, -49.0850),
+    ("bauru", "vila nova cidade universitária"): (-22.3350, -49.0280),
+    ("bauru", "spazio verde"): (-22.3600, -49.1000),
+    ("bauru", "jardim marambá"): (-22.3050, -49.0600),
+    ("bauru", "jardim europa"): (-22.3100, -49.0400),
+}
+CITY_COORDS = {
+    "bauru": (-22.3148, -49.0620),
+    "agudos": (-22.4713, -48.9867),
+    "piratininga": (-22.4097, -49.1318),
+    "pederneiras": (-22.3519, -48.7752),
+    "arealva": (-22.0320, -49.0471),
+    "lençóis paulista": (-22.5987, -48.8023),
+    "lencois paulista": (-22.5987, -48.8023),
+}
+
+
+def approx_coords(cidade: str, bairro: str, seed: str = "") -> tuple[float, float]:
+    c = (cidade or "").strip().lower()
+    b = (bairro or "").strip().lower()
+    base = BAIRRO_COORDS.get((c, b)) or CITY_COORDS.get(c) or (-22.3148, -49.0620)
+    # Deterministic jitter (~200-400m) for privacy
+    rng = random.Random(seed or f"{c}-{b}")
+    return (base[0] + rng.uniform(-0.003, 0.003), base[1] + rng.uniform(-0.003, 0.003))
 
 
 # ---------- App ----------
@@ -334,7 +450,11 @@ async def admin_list_properties(user=Depends(get_current_user)):
 async def admin_create_property(data: PropertyIn, user=Depends(get_current_user)):
     now = datetime.now(timezone.utc).isoformat()
     codigo = data.codigo or f"LM{random.randint(1000, 9999)}"
-    doc = {"id": str(uuid.uuid4()), **data.model_dump(), "codigo": codigo, "created_at": now}
+    body = data.model_dump()
+    if body.get("lat") is None or body.get("lng") is None:
+        lat, lng = approx_coords(body["cidade"], body["bairro"], seed=codigo)
+        body["lat"], body["lng"] = lat, lng
+    doc = {"id": str(uuid.uuid4()), **body, "codigo": codigo, "created_at": now}
     await db.properties.insert_one(doc)
     doc.pop("_id", None)
     return doc
@@ -342,7 +462,11 @@ async def admin_create_property(data: PropertyIn, user=Depends(get_current_user)
 
 @api.put("/admin/properties/{pid}", response_model=Property)
 async def admin_update_property(pid: str, data: PropertyIn, user=Depends(get_current_user)):
-    await db.properties.update_one({"id": pid}, {"$set": data.model_dump()})
+    body = data.model_dump()
+    if body.get("lat") is None or body.get("lng") is None:
+        lat, lng = approx_coords(body["cidade"], body["bairro"], seed=pid)
+        body["lat"], body["lng"] = lat, lng
+    await db.properties.update_one({"id": pid}, {"$set": body})
     p = await db.properties.find_one({"id": pid}, {"_id": 0})
     if not p:
         raise HTTPException(404, "Imóvel não encontrado")
@@ -577,6 +701,143 @@ async def admin_update_settings(data: Settings, user=Depends(get_current_user)):
     return s
 
 
+# ---------- Uploads ----------
+@api.post("/upload")
+async def upload_file(file: UploadFile = File(...), user=Depends(get_current_user)):
+    ext = (file.filename.rsplit(".", 1)[-1] if "." in file.filename else "bin").lower()
+    if ext not in MIME_TYPES:
+        raise HTTPException(400, "Formato não suportado. Use JPG, PNG ou WEBP.")
+    data = await file.read()
+    if len(data) > 10 * 1024 * 1024:
+        raise HTTPException(400, "Arquivo maior que 10MB.")
+    path = f"{APP_NAME}/properties/{uuid.uuid4()}.{ext}"
+    content_type = MIME_TYPES[ext]
+    result = put_object(path, data, content_type)
+    await db.files.insert_one({
+        "id": str(uuid.uuid4()),
+        "storage_path": result["path"],
+        "original_filename": file.filename,
+        "content_type": content_type,
+        "size": result.get("size", len(data)),
+        "is_deleted": False,
+        "uploaded_by": user["id"],
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    return {"path": result["path"], "url": f"/api/files/{result['path']}"}
+
+
+@api.get("/files/{path:path}")
+async def serve_file(path: str):
+    """Public serve — property photos are meant to be public."""
+    rec = await db.files.find_one({"storage_path": path, "is_deleted": False})
+    if not rec:
+        raise HTTPException(404, "Arquivo não encontrado")
+    data, ct = get_object(path)
+    return Response(content=data, media_type=rec.get("content_type", ct), headers={"Cache-Control": "public, max-age=86400"})
+
+
+# ---------- Public: similar + financing ----------
+@api.get("/public/properties/{pid}/similar", response_model=List[Property])
+async def public_similar(pid: str, limit: int = 6):
+    p = await db.properties.find_one({"id": pid}, {"_id": 0})
+    if not p:
+        raise HTTPException(404, "Imóvel não encontrado")
+    low, high = p["valor"] * 0.65, p["valor"] * 1.35
+    q = {
+        "id": {"$ne": pid},
+        "tipo": p["tipo"],
+        "finalidade": p["finalidade"],
+        "cidade": p["cidade"],
+        "valor": {"$gte": low, "$lte": high},
+        "status": {"$in": ["disponivel", "reservado"]},
+    }
+    items = await db.properties.find(q, {"_id": 0}).to_list(limit)
+    if len(items) < limit:
+        extras = await db.properties.find({
+            "id": {"$nin": [pid] + [x["id"] for x in items]},
+            "tipo": p["tipo"],
+            "cidade": p["cidade"],
+            "status": {"$in": ["disponivel", "reservado"]},
+        }, {"_id": 0}).to_list(limit - len(items))
+        items += extras
+    return items
+
+
+@api.post("/public/financing", status_code=201)
+async def create_financing(data: FinancingIn):
+    now = datetime.now(timezone.utc).isoformat()
+    doc = {
+        "id": str(uuid.uuid4()),
+        **data.model_dump(),
+        "created_at": now,
+    }
+    await db.financing_leads.insert_one(doc)
+    # Also create a lead in the funnel
+    lead = {
+        "id": str(uuid.uuid4()),
+        "nome": data.nome,
+        "whatsapp": data.telefone,
+        "email": data.email or "",
+        "cidade_interesse": "",
+        "bairro_interesse": "",
+        "tipo_imovel": "",
+        "finalidade": "financiar",
+        "orcamento": data.valor_imovel,
+        "forma_pagamento": "financiamento",
+        "urgencia": "",
+        "prazo_decisao": "",
+        "origem": "site",
+        "mensagem": f"[SIMULAÇÃO DE FINANCIAMENTO] Renda: R$ {data.renda_bruta:.0f} · Entrada: R$ {data.valor_entrada:.0f} · FGTS: R$ {data.valor_fgts:.0f} · Parcela desejada: R$ {data.parcela_desejada:.0f} · Imóvel: R$ {data.valor_imovel:.0f}. {data.observacoes}",
+        "stage": "novo",
+        "temperatura": "quente",
+        "observacoes": "",
+        "proximo_followup": "",
+        "historico": [{"data": now, "texto": "Simulação de financiamento recebida"}],
+        "imoveis_enviados": [],
+        "resultado": "",
+        "motivo_perda": "",
+        "created_at": now,
+        "updated_at": now,
+    }
+    await db.leads.insert_one(lead)
+    doc.pop("_id", None)
+    return {"ok": True, "id": doc["id"]}
+
+
+# ---------- Admin: testimonials ----------
+@api.post("/admin/testimonials", response_model=Testimonial, status_code=201)
+async def admin_create_testimonial(data: dict, user=Depends(get_current_user)):
+    t = {
+        "id": str(uuid.uuid4()),
+        "nome": data.get("nome", ""),
+        "cidade": data.get("cidade", ""),
+        "texto": data.get("texto", ""),
+        "rating": int(data.get("rating", 5)),
+        "avatar": data.get("avatar", ""),
+    }
+    await db.testimonials.insert_one(t)
+    t.pop("_id", None)
+    return t
+
+
+@api.put("/admin/testimonials/{tid}", response_model=Testimonial)
+async def admin_update_testimonial(tid: str, data: dict, user=Depends(get_current_user)):
+    updates = {k: v for k, v in data.items() if k in ("nome", "cidade", "texto", "rating", "avatar")}
+    if "rating" in updates:
+        updates["rating"] = int(updates["rating"])
+    await db.testimonials.update_one({"id": tid}, {"$set": updates})
+    t = await db.testimonials.find_one({"id": tid}, {"_id": 0})
+    if not t:
+        raise HTTPException(404, "Depoimento não encontrado")
+    return t
+
+
+@api.delete("/admin/testimonials/{tid}")
+async def admin_delete_testimonial(tid: str, user=Depends(get_current_user)):
+    r = await db.testimonials.delete_one({"id": tid})
+    return {"deleted": r.deleted_count}
+
+
 # ---------- Root ----------
 @api.get("/")
 async def root():
@@ -659,9 +920,11 @@ def sample_properties() -> list:
     now = datetime.now(timezone.utc)
     for i, b in enumerate(base):
         imgs = PROPERTY_IMAGES.get(b["tipo"], PROPERTY_IMAGES["casa"])
+        codigo = f"LM{1000 + i}"
+        lat, lng = approx_coords(b["cidade"], b["bairro"], seed=codigo)
         doc = {
             "id": str(uuid.uuid4()),
-            "codigo": f"LM{1000 + i}",
+            "codigo": codigo,
             "titulo": b["titulo"],
             "tipo": b["tipo"],
             "finalidade": b["finalidade"],
@@ -683,6 +946,9 @@ def sample_properties() -> list:
             "status": "disponivel",
             "proprietario": "",
             "destaque": b.get("destaque", False),
+            "lat": lat,
+            "lng": lng,
+            "featured_photo": 0,
             "created_at": (now - timedelta(days=random.randint(0, 90))).isoformat(),
         }
         out.append(doc)
@@ -771,6 +1037,13 @@ async def startup():
     await db.leads.create_index("stage")
     await db.leads.create_index("origem")
     await db.properties.create_index("cidade")
+    await db.files.create_index("storage_path")
+
+    # Storage (non-blocking)
+    try:
+        init_storage()
+    except Exception:
+        pass
 
     # Seed admin
     existing = await db.users.find_one({"email": ADMIN_EMAIL.lower()})
@@ -798,10 +1071,36 @@ async def startup():
             "email": "larissa.magesi@creci.org.br",
             "instagram": "@larissa.corretorabauru",
             "facebook": "@larissa.magesi",
+            "youtube": "",
+            "tiktok": "",
+            "linkedin": "",
+            "google_business": "",
             "cidade": "Bauru/SP e região",
             "endereco": "Bauru — São Paulo",
             "bio": "Corretora de imóveis em Bauru e região. Atendimento personalizado e consultivo para compra, venda, locação, permuta, financiamento e consórcio de imóveis, com segurança e acompanhamento em cada etapa.",
+            "missao": "Oferecer atendimento humano, consultivo e técnico, ajudando famílias e investidores a realizarem negócios imobiliários com segurança e clareza em cada etapa.",
+            "visao": "Ser referência em corretagem imobiliária em Bauru e região, reconhecida pela excelência no atendimento, ética nas negociações e proximidade com cada cliente.",
+            "valores": "Ética · Transparência · Compromisso · Atendimento humanizado · Conhecimento técnico · Respeito a cada cliente",
+            "finance_rate_annual": 10.49,
+            "logo_url": "https://customer-assets.emergentagent.com/job_larissa-imoveis/artifacts/l7j9a1db_lm.png",
+            "photo_url": "https://customer-assets.emergentagent.com/job_larissa-imoveis/artifacts/2mu2i97l_image1.jpg",
         })
+    else:
+        # Backfill new optional fields if missing
+        upd = {}
+        for k, v in [
+            ("youtube", ""), ("tiktok", ""), ("linkedin", ""), ("google_business", ""),
+            ("missao", "Oferecer atendimento humano, consultivo e técnico, ajudando famílias e investidores a realizarem negócios imobiliários com segurança e clareza em cada etapa."),
+            ("visao", "Ser referência em corretagem imobiliária em Bauru e região, reconhecida pela excelência no atendimento, ética nas negociações e proximidade com cada cliente."),
+            ("valores", "Ética · Transparência · Compromisso · Atendimento humanizado · Conhecimento técnico · Respeito a cada cliente"),
+            ("finance_rate_annual", 10.49),
+            ("logo_url", "https://customer-assets.emergentagent.com/job_larissa-imoveis/artifacts/l7j9a1db_lm.png"),
+            ("photo_url", "https://customer-assets.emergentagent.com/job_larissa-imoveis/artifacts/2mu2i97l_image1.jpg"),
+        ]:
+            if s.get(k) in (None, ""):
+                upd[k] = v
+        if upd:
+            await db.settings.update_one({}, {"$set": upd})
 
     # Seed properties
     if await db.properties.count_documents({}) == 0:

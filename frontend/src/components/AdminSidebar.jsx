@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard, Users, Kanban, Home, BarChart3, Radar, Settings, LogOut,
+  LayoutDashboard, Users, Kanban, Home, BarChart3, Radar, Settings, LogOut, Star,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -10,6 +10,7 @@ const items = [
   { to: "/admin/leads", label: "Leads", icon: Users },
   { to: "/admin/funil", label: "Funil", icon: Kanban },
   { to: "/admin/imoveis", label: "Imóveis", icon: Home },
+  { to: "/admin/depoimentos", label: "Depoimentos", icon: Star },
   { to: "/admin/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/admin/origem", label: "Origem dos Leads", icon: Radar },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings },

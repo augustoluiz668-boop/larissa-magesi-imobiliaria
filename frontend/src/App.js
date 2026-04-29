@@ -8,6 +8,8 @@ import { api } from "./lib/api";
 import Home from "./pages/public/Home";
 import ImoveisList from "./pages/public/ImoveisList";
 import ImovelDetail from "./pages/public/ImovelDetail";
+import About from "./pages/public/About";
+import Financing from "./pages/public/Financing";
 
 import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
@@ -17,6 +19,7 @@ import ImoveisAdmin from "./pages/admin/Imoveis";
 import Relatorios from "./pages/admin/Relatorios";
 import OrigemLeads from "./pages/admin/OrigemLeads";
 import Configuracoes from "./pages/admin/Configuracoes";
+import Depoimentos from "./pages/admin/Depoimentos";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
@@ -27,8 +30,10 @@ function ScrollToHash() {
   const { hash, pathname } = useLocation();
   useEffect(() => {
     if (hash) {
-      const el = document.getElementById(hash.slice(1));
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => {
+        const el = document.getElementById(hash.slice(1));
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
     } else {
       window.scrollTo({ top: 0 });
     }
@@ -43,7 +48,7 @@ function PublicShell({ children }) {
   }, []);
   return (
     <div className="bg-[#F4F1EB] min-h-screen flex flex-col">
-      <Navbar />
+      <Navbar settings={settings} />
       <main className="flex-1">{React.cloneElement(children, { settings })}</main>
       <Footer settings={settings} />
       <WhatsappFab phone={settings.whatsapp} />
@@ -62,12 +67,15 @@ function App() {
             <Route path="/" element={<PublicShell><Home /></PublicShell>} />
             <Route path="/imoveis" element={<PublicShell><ImoveisList /></PublicShell>} />
             <Route path="/imoveis/:id" element={<PublicShell><ImovelDetail /></PublicShell>} />
+            <Route path="/sobre" element={<PublicShell><About /></PublicShell>} />
+            <Route path="/financiamento" element={<PublicShell><Financing /></PublicShell>} />
 
             <Route path="/admin/login" element={<Login />} />
             <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/admin/leads" element={<ProtectedRoute><LeadsPage /></ProtectedRoute>} />
             <Route path="/admin/funil" element={<ProtectedRoute><FunilPage /></ProtectedRoute>} />
             <Route path="/admin/imoveis" element={<ProtectedRoute><ImoveisAdmin /></ProtectedRoute>} />
+            <Route path="/admin/depoimentos" element={<ProtectedRoute><Depoimentos /></ProtectedRoute>} />
             <Route path="/admin/relatorios" element={<ProtectedRoute><Relatorios /></ProtectedRoute>} />
             <Route path="/admin/origem" element={<ProtectedRoute><OrigemLeads /></ProtectedRoute>} />
             <Route path="/admin/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />

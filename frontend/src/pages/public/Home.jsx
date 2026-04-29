@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Home, Building2, Building, Store, DoorOpen, TreePine,
-  Handshake, KeyRound, Landmark, PiggyBank, HandCoins, Search, Star,
-  ArrowRight, MapPin, Check,
+  Handshake, KeyRound, Landmark, PiggyBank, HandCoins, Search,
+  ArrowRight, MapPin, Check, Calculator,
 } from "lucide-react";
 import { api, waLink } from "../../lib/api";
 import PropertyCard from "../../components/PropertyCard";
@@ -34,7 +34,6 @@ const cidades = [
 
 export default function HomePage({ settings = {} }) {
   const [destaques, setDestaques] = useState([]);
-  const [depo, setDepo] = useState([]);
   const [form, setForm] = useState({
     nome: "", whatsapp: "", email: "", cidade_interesse: "Bauru",
     bairro_interesse: "", tipo_imovel: "casa", finalidade: "comprar",
@@ -45,25 +44,17 @@ export default function HomePage({ settings = {} }) {
 
   useEffect(() => {
     api.get("/public/properties?destaque=true").then((r) => setDestaques(r.data.slice(0, 6))).catch(() => {});
-    api.get("/public/testimonials").then((r) => setDepo(r.data)).catch(() => {});
   }, []);
 
   const submitLead = async (e) => {
     e.preventDefault();
-    if (!form.nome || !form.whatsapp) {
-      toast.error("Preencha nome e WhatsApp");
-      return;
-    }
+    if (!form.nome || !form.whatsapp) return toast.error("Preencha nome e WhatsApp");
     setSending(true);
     try {
       await api.post("/public/leads", { ...form, orcamento: Number(form.orcamento) || 0 });
       toast.success("Recebemos seu contato! Larissa entrará em contato em breve.");
       setForm({ ...form, nome: "", whatsapp: "", email: "", mensagem: "", bairro_interesse: "", orcamento: "" });
-    } catch (e) {
-      toast.error("Não foi possível enviar. Tente novamente.");
-    } finally {
-      setSending(false);
-    }
+    } catch { toast.error("Não foi possível enviar."); } finally { setSending(false); }
   };
 
   const submitProp = async (e) => {
@@ -71,16 +62,10 @@ export default function HomePage({ settings = {} }) {
     if (!propForm.nome || !propForm.whatsapp) return toast.error("Preencha nome e WhatsApp");
     setSending(true);
     try {
-      await api.post("/public/leads", {
-        ...propForm, origem: "site", finalidade: "vender", tipo_imovel: "casa",
-      });
-      toast.success("Perfeito! Larissa entrará em contato para avaliar seu imóvel.");
+      await api.post("/public/leads", { ...propForm, origem: "site", finalidade: "vender", tipo_imovel: "casa" });
+      toast.success("Perfeito! Larissa entrará em contato.");
       setPropForm({ nome: "", whatsapp: "", cidade_interesse: "", mensagem: "" });
-    } catch {
-      toast.error("Falha ao enviar. Tente novamente.");
-    } finally {
-      setSending(false);
-    }
+    } catch { toast.error("Falha ao enviar."); } finally { setSending(false); }
   };
 
   return (
@@ -97,7 +82,7 @@ export default function HomePage({ settings = {} }) {
               Atendimento personalizado para compra, venda, locação, permuta, financiamento e consórcio de imóveis,
               com segurança, clareza e acompanhamento em cada etapa.
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-3">
+            <div className="mt-10 flex flex-col sm:flex-row gap-3 flex-wrap">
               <a href={waLink(settings.whatsapp)} target="_blank" rel="noreferrer" data-testid="hero-whatsapp-btn" className="lm-btn-primary">
                 Falar com Larissa no WhatsApp <ArrowRight className="w-4 h-4" />
               </a>
@@ -107,11 +92,7 @@ export default function HomePage({ settings = {} }) {
             </div>
 
             <div className="mt-14 grid grid-cols-3 gap-6 max-w-lg">
-              {[
-                { n: "150+", l: "Negociações" },
-                { n: "98%", l: "Clientes satisfeitos" },
-                { n: "10+", l: "Cidades atendidas" },
-              ].map((s, i) => (
+              {[{ n: "150+", l: "Negociações" }, { n: "98%", l: "Clientes satisfeitos" }, { n: "10+", l: "Cidades atendidas" }].map((s, i) => (
                 <div key={i}>
                   <div className="font-serif text-3xl text-[#2B3A2F]">{s.n}</div>
                   <div className="text-xs tracking-wider uppercase text-[#5C5C5C] mt-1">{s.l}</div>
@@ -129,48 +110,6 @@ export default function HomePage({ settings = {} }) {
             <div className="absolute -bottom-6 -left-6 bg-[#2B3A2F] text-[#F4F1EB] p-5 hidden md:block">
               <div className="text-[10px] tracking-[0.25em] uppercase text-[#C5A059] mb-1">CRECI</div>
               <div className="font-serif text-xl">{settings.creci || "290524-F"}</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SOBRE */}
-      <section id="sobre" className="bg-white border-y border-[#E5E0D8]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 py-24 grid md:grid-cols-12 gap-12 items-start">
-          <div className="md:col-span-5">
-            <img
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=900&q=85"
-              alt="Larissa Magesi — Corretora"
-              className="w-full h-[540px] object-cover rounded-sm"
-            />
-          </div>
-          <div className="md:col-span-7 md:pl-6">
-            <div className="lm-overline mb-4">Sobre Larissa Magesi</div>
-            <h2 className="font-serif text-4xl md:text-5xl text-[#2B3A2F] leading-[1.05]">
-              Uma corretora preparada para orientar decisões importantes.
-            </h2>
-            <div className="lm-divider mt-6 mb-8"></div>
-            <p className="text-[#5C5C5C] leading-relaxed mb-5">
-              Com atuação em Bauru e região, ofereço atendimento próximo, consultivo e humanizado. Meu papel é acompanhar você
-              desde a primeira conversa até o momento da assinatura das chaves — com informação clara, segurança jurídica e visão de mercado.
-            </p>
-            <p className="text-[#5C5C5C] leading-relaxed mb-8">
-              Atuo com compra, venda, locação, permuta, financiamento bancário e consórcio imobiliário, ajudando famílias,
-              investidores e empreendedores a encontrar o imóvel ideal para cada momento da vida.
-            </p>
-
-            <ul className="grid sm:grid-cols-2 gap-3 text-sm text-[#2C2C2C]">
-              {["Atendimento próximo e consultivo", "Conhecimento do mercado de Bauru", "Segurança em cada negociação",
-                "Apoio em financiamento e consórcio", "Acompanhamento completo", "Suporte em permutas e avaliações"].map((x) => (
-                <li key={x} className="flex items-start gap-2"><Check className="w-4 h-4 text-[#C5A059] mt-0.5" /> {x}</li>
-              ))}
-            </ul>
-
-            <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-5 border-t border-[#E5E0D8] pt-8 text-sm">
-              <div><div className="lm-overline mb-1">CRECI</div><div>{settings.creci || "—"}</div></div>
-              <div><div className="lm-overline mb-1">Cidade</div><div>{settings.cidade || "—"}</div></div>
-              <div><div className="lm-overline mb-1">Instagram</div><div>{settings.instagram || "—"}</div></div>
-              <div><div className="lm-overline mb-1">WhatsApp</div><div>{settings.telefone || "—"}</div></div>
             </div>
           </div>
         </div>
@@ -209,8 +148,7 @@ export default function HomePage({ settings = {} }) {
               </h2>
             </div>
             <p className="text-[#5C5C5C] max-w-md">
-              Atuo em Bauru e região, com foco em bairros estratégicos, condomínios valorizados e cidades
-              próximas com forte demanda imobiliária.
+              Atuo em Bauru e região, com foco em bairros estratégicos, condomínios valorizados e cidades próximas com forte demanda imobiliária.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -243,25 +181,24 @@ export default function HomePage({ settings = {} }) {
         </div>
       </section>
 
-      {/* BUSCA CTA */}
-      <section id="busca" className="bg-[#2B3A2F] text-[#F4F1EB]">
+      {/* FINANCIAMENTO CTA */}
+      <section className="bg-[#2B3A2F] text-[#F4F1EB]">
         <div className="max-w-7xl mx-auto px-6 md:px-10 py-20 grid md:grid-cols-2 gap-10 items-center">
           <div>
-            <div className="text-xs tracking-[0.25em] uppercase text-[#C5A059] mb-4">Busca de imóveis</div>
-            <h2 className="font-serif text-4xl md:text-5xl leading-tight text-[#F4F1EB]">
-              Filtre pelo que você realmente quer
+            <div className="text-xs tracking-[0.25em] uppercase text-[#C5A059] mb-4">Simulação gratuita</div>
+            <h2 className="font-serif text-4xl md:text-5xl leading-tight">
+              Descubra em 1 minuto o financiamento ideal para o seu perfil
             </h2>
             <p className="text-[#C9C3B4] mt-5 max-w-md">
-              Cidade, bairro, faixa de preço, quartos, vagas e negociações aceitas — encontre em segundos o imóvel que encaixa no seu perfil.
+              Simulação orientativa com cálculo SAC, considerando FGTS, entrada e parcela desejada. Depois disso, Larissa entra em contato e te acompanha em cada etapa.
             </p>
+            <Link to="/financiamento" data-testid="home-financing-cta" className="lm-btn-gold mt-8">
+              <Calculator className="w-4 h-4" /> Fazer minha simulação
+            </Link>
           </div>
           <div className="bg-white text-[#2C2C2C] p-8 rounded-sm">
-            <Link to="/imoveis" data-testid="search-cta" className="flex items-center gap-3 text-[#2B3A2F] font-serif text-lg border-b border-[#E5E0D8] pb-4">
-              <Search className="w-5 h-5" /> Buscar imóveis com filtros avançados
-              <ArrowRight className="w-4 h-4 ml-auto" />
-            </Link>
-            <div className="mt-5 grid grid-cols-2 gap-2 text-sm">
-              {["Cidade", "Bairro", "Tipo de imóvel", "Finalidade", "Faixa de preço", "Quartos", "Vagas", "Financiamento", "Consórcio", "Permuta"].map((f) => (
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              {["Renda bruta familiar", "Idade", "FGTS disponível", "Entrada", "Parcela desejada", "Valor do imóvel", "Dependentes", "Prazo ideal"].map((f) => (
                 <div key={f} className="flex items-center gap-2 text-[#5C5C5C]"><Check className="w-3.5 h-3.5 text-[#C5A059]" /> {f}</div>
               ))}
             </div>
@@ -293,7 +230,7 @@ export default function HomePage({ settings = {} }) {
             ["orcamento", "Faixa de orçamento (R$)", "number"],
             ["prazo_decisao", "Prazo para decisão", "text"],
           ].map(([k, label, type]) => (
-            <div key={k} className={k === "mensagem" ? "sm:col-span-2" : ""}>
+            <div key={k}>
               <label className="lm-label">{label}</label>
               <input data-testid={`lead-field-${k}`} type={type} className="lm-input" value={form[k]} onChange={(e) => setForm({ ...form, [k]: e.target.value })} />
             </div>
@@ -334,8 +271,7 @@ export default function HomePage({ settings = {} }) {
               Quer vender ou alugar seu imóvel com mais segurança e visibilidade?
             </h2>
             <p className="text-[#5C5C5C] mt-5 leading-relaxed max-w-xl">
-              Posso ajudar você a divulgar o imóvel, atrair interessados qualificados, organizar visitas e conduzir a
-              negociação com profissionalismo — do anúncio à assinatura da escritura.
+              Posso ajudar você a divulgar o imóvel, atrair interessados qualificados, organizar visitas e conduzir a negociação com profissionalismo — do anúncio à assinatura da escritura.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href={waLink(settings.whatsapp, "Olá Larissa! Quero cadastrar meu imóvel.")} target="_blank" rel="noreferrer" className="lm-btn-primary">Falar com Larissa</a>
@@ -343,44 +279,12 @@ export default function HomePage({ settings = {} }) {
           </div>
           <form onSubmit={submitProp} data-testid="owner-form" className="bg-white rounded-sm p-8 border border-[#E5E0D8] space-y-4">
             <div className="font-serif text-2xl text-[#2B3A2F]">Cadastrar meu imóvel</div>
-            <div><label className="lm-label">Seu nome *</label>
-              <input className="lm-input" value={propForm.nome} onChange={(e) => setPropForm({ ...propForm, nome: e.target.value })} data-testid="owner-nome" />
-            </div>
-            <div><label className="lm-label">WhatsApp *</label>
-              <input className="lm-input" value={propForm.whatsapp} onChange={(e) => setPropForm({ ...propForm, whatsapp: e.target.value })} data-testid="owner-whatsapp" />
-            </div>
-            <div><label className="lm-label">Cidade do imóvel</label>
-              <input className="lm-input" value={propForm.cidade_interesse} onChange={(e) => setPropForm({ ...propForm, cidade_interesse: e.target.value })} data-testid="owner-cidade" />
-            </div>
-            <div><label className="lm-label">Sobre o imóvel</label>
-              <textarea rows={3} className="lm-input" value={propForm.mensagem} onChange={(e) => setPropForm({ ...propForm, mensagem: e.target.value })} data-testid="owner-mensagem" />
-            </div>
-            <button type="submit" disabled={sending} data-testid="owner-submit" className="lm-btn-primary w-full justify-center disabled:opacity-60">
-              Cadastrar meu imóvel
-            </button>
+            <div><label className="lm-label">Seu nome *</label><input className="lm-input" value={propForm.nome} onChange={(e) => setPropForm({ ...propForm, nome: e.target.value })} data-testid="owner-nome" /></div>
+            <div><label className="lm-label">WhatsApp *</label><input className="lm-input" value={propForm.whatsapp} onChange={(e) => setPropForm({ ...propForm, whatsapp: e.target.value })} data-testid="owner-whatsapp" /></div>
+            <div><label className="lm-label">Cidade do imóvel</label><input className="lm-input" value={propForm.cidade_interesse} onChange={(e) => setPropForm({ ...propForm, cidade_interesse: e.target.value })} data-testid="owner-cidade" /></div>
+            <div><label className="lm-label">Sobre o imóvel</label><textarea rows={3} className="lm-input" value={propForm.mensagem} onChange={(e) => setPropForm({ ...propForm, mensagem: e.target.value })} data-testid="owner-mensagem" /></div>
+            <button type="submit" disabled={sending} data-testid="owner-submit" className="lm-btn-primary w-full justify-center disabled:opacity-60">Cadastrar meu imóvel</button>
           </form>
-        </div>
-      </section>
-
-      {/* DEPOIMENTOS */}
-      <section className="max-w-7xl mx-auto px-6 md:px-10 py-24">
-        <div className="lm-overline mb-3">Depoimentos</div>
-        <h2 className="font-serif text-4xl md:text-5xl text-[#2B3A2F] mb-12 max-w-2xl">
-          Clientes que confiaram em cada etapa
-        </h2>
-        <div className="grid md:grid-cols-3 gap-5">
-          {depo.map((d) => (
-            <figure key={d.id} className="bg-white border border-[#E5E0D8] p-8 rounded-sm">
-              <div className="flex items-center gap-1 text-[#C5A059]">
-                {Array.from({ length: d.rating }).map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-              </div>
-              <blockquote className="font-serif text-xl text-[#2B3A2F] leading-snug mt-5">“{d.texto}”</blockquote>
-              <figcaption className="mt-6">
-                <div className="font-medium text-[#2C2C2C]">{d.nome}</div>
-                <div className="text-xs tracking-wider uppercase text-[#5C5C5C] mt-0.5">{d.cidade}</div>
-              </figcaption>
-            </figure>
-          ))}
         </div>
       </section>
     </>
