@@ -1,0 +1,92 @@
+{
+  "theme": "Light",
+  "archetype": "1 (Organic & Earthy, Premium Twist)",
+  "colors": {
+    "primary": "#2B3A2F",
+    "secondary": "#C5A059",
+    "background": {
+      "default": "#F4F1EB",
+      "paper": "#FFFFFF",
+      "admin": "#FAFAFA"
+    },
+    "text": {
+      "primary": "#2C2C2C",
+      "secondary": "#5C5C5C",
+      "inverse": "#F4F1EB"
+    },
+    "border": "#E5E0D8",
+    "kanban": {
+      "novo": "#E3F2FD",
+      "primeiro_contato": "#FFF3E0",
+      "qualificacao": "#F3E5F5",
+      "imoveis_enviados": "#E8F5E9",
+      "visita_agendada": "#FFF8E1",
+      "proposta": "#FFF3E0",
+      "negociacao": "#E0F7FA",
+      "fechado": "#C8E6C9",
+      "perdido": "#FFEBEE"
+    }
+  },
+  "typography": {
+    "heading_font": "Cormorant Garamond, serif",
+    "body_font": "Outfit, sans-serif",
+    "hierarchy": {
+      "h1": "text-5xl md:text-6xl font-serif tracking-tight text-[#2B3A2F]",
+      "h2": "text-3xl md:text-4xl font-serif tracking-tight text-[#2B3A2F]",
+      "h3": "text-xl md:text-2xl font-serif text-[#2C2C2C]",
+      "body": "text-base font-sans text-[#5C5C5C] leading-relaxed",
+      "overline": "text-xs font-sans tracking-[0.2em] uppercase text-[#C5A059] font-medium"
+    }
+  },
+  "layout_spacing": {
+    "section_padding": "py-24 px-6 md:px-12 lg:px-24",
+    "card_padding": "p-6",
+    "container_max": "max-w-7xl mx-auto"
+  },
+  "components_strategy": {
+    "public_site": {
+      "hero": "Asymmetric editorial layout. Overlapping image and text. Dark olive overlay on image if needed for text readability, but prefer placing text on the nude background alongside the image.",
+      "property_cards": "Flat, 1px border (#E5E0D8), no shadow. Image takes top 60%. Minimalist icons for beds/baths/m2. 'Destaque' or 'Financiamento' tags use small pill shapes with #C5A059 border and text.",
+      "about_section": "Photo of Larissa offset from text block. Large typographic quote. Generous negative space.",
+      "whatsapp_floating": "Fixed bottom-right. Instead of neon green, use a sophisticated interpretation or brand-aligned dark green button with a white WA icon to maintain elegance."
+    },
+    "admin_dashboard": {
+      "sidebar": "Dark Olive Green (#2B3A2F) background with gold/nude text for active states. Highly structured.",
+      "cards": "White background, subtle 1px border, shadow-sm on hover. Compact padding (p-4 to p-6).",
+      "kanban_board": "Horizontal scroll area. Columns have light gray/nude backgrounds. Cards are draggable white blocks with subtle borders. Lead status color-coded borders.",
+      "charts": "Recharts using #2B3A2F (primary) and #C5A059 (secondary) to stay on brand."
+    }
+  },
+  "media": {
+    "images": [
+      {
+        "category": "hero_exterior",
+        "url": "https://images.unsplash.com/photo-1776500588108-1e059459f14c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjByZWFsJTIwZXN0YXRlJTIwZXh0ZXJpb3IlMjBtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3Nzc0OTYwMTB8MA&ixlib=rb-4.1.0&q=85",
+        "description": "White luxury car parked in front of modern white house."
+      },
+      {
+        "category": "agent_portrait",
+        "url": "https://images.unsplash.com/photo-1685760259914-ee8d2c92d2e0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzd8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBlbGVnYW50JTIwcmVhbCUyMGVzdGF0ZSUyMGZlbWFsZSUyMGFnZW50JTIwcG9ydHJhaXR8ZW58MHx8fHwxNzc3NDk2MDEwfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Professional female agent standing in front of a building."
+      },
+      {
+        "category": "interior_living_room",
+        "url": "https://images.unsplash.com/photo-1758977404510-6ab7e07ff1fe?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjBlbGVnYW50JTIwbGl2aW5nJTIwcm9vbSUyMHJlYWwlMjBlc3RhdGV8ZW58MHx8fHwxNzc3NDk2MDEwfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Modern elegant dining and living room."
+      },
+      {
+        "category": "texture_beige",
+        "url": "https://images.unsplash.com/photo-1730402224803-7e17932be9d4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzF8MHwxfHNlYXJjaHwxfHxzdWJ0bGUlMjBudWRlJTIwYmVpZ2UlMjBhYnN0cmFjdCUyMHRleHR1cmV8ZW58MHx8fHwxNzc3NDk2MDE0fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Subtle beige background texture for organic feel."
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Build a dual-app architecture: A public marketing site (institutional) and an admin dashboard.",
+    "Do not use generic UI slop. Use 'Cormorant Garamond' for headings to enforce the elegant, feminine, premium feel.",
+    "Ensure all interactive elements have data-testid attributes (e.g., data-testid='contact-whatsapp-btn').",
+    "For the Kanban in the Admin dashboard, build 9 specific columns as requested, applying color-coded hints for each stage.",
+    "Do not use transparent headers over images without glassmorphism. Use #F4F1EB as the primary page background.",
+    "Public site uses raw HTML/Tailwind for artistic, asymmetric sections. Admin uses Shadcn components."
+  ]
+}
