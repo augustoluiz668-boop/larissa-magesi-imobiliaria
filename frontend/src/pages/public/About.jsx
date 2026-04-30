@@ -32,7 +32,7 @@ export default function About({ settings = {} }) {
             <img
               src={settings.photo_url || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=900&q=85"}
               alt="Larissa Magesi — Corretora de Imóveis"
-              className="w-full h-[620px] object-cover rounded-sm shadow-lg"
+              className="w-full h-[620px] object-cover object-top rounded-sm shadow-lg"
               data-testid="about-photo"
             />
           </div>
