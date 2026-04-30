@@ -112,6 +112,8 @@ class PropertyIn(BaseModel):
     fotos: List[str] = []
     status: PropertyStatus = "disponivel"
     proprietario: Optional[str] = ""
+    proprietario_contato: Optional[str] = ""
+    comissao: Optional[float] = 0
     destaque: bool = False
     lat: Optional[float] = None
     lng: Optional[float] = None

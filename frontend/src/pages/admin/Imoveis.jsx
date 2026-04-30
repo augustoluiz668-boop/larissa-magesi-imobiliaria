@@ -9,7 +9,7 @@ const empty = {
   titulo: "", tipo: "casa", finalidade: "venda", cidade: "Bauru", bairro: "", endereco: "",
   valor: 0, condominio: 0, iptu: 0, metragem: 0, quartos: 0, banheiros: 0, vagas: 0,
   aceita_financiamento: false, aceita_consorcio: false, aceita_permuta: false,
-  descricao: "", fotos: [], status: "disponivel", proprietario: "", destaque: false, featured_photo: 0,
+  descricao: "", fotos: [], status: "disponivel", proprietario: "", proprietario_contato: "", comissao: 0, destaque: false, featured_photo: 0,
 };
 
 export default function ImoveisAdmin() {
@@ -32,6 +32,7 @@ export default function ImoveisAdmin() {
       banheiros: Number(editing.banheiros) || 0,
       vagas: Number(editing.vagas) || 0,
       featured_photo: Number(editing.featured_photo) || 0,
+      comissao: Number(editing.comissao) || 0,
       fotos: (editing.fotos || []).filter(Boolean),
     };
     try {
@@ -285,6 +286,16 @@ function PropertyModal({ data, setData, onSave }) {
                   {l}
                 </label>
               ))}
+            </div>
+          </section>
+
+          {/* Informações internas */}
+          <section className="border-t border-[#E5E0D8] pt-5">
+            <div className="font-serif text-lg text-[#2B3A2F] mb-3">Informações internas <span className="text-xs font-sans text-[#5C5C5C] ml-1">(não aparecem no site)</span></div>
+            <div className="grid md:grid-cols-3 gap-4">
+              <div><label className="lm-label">Nome do proprietário</label><input className="lm-input" value={data.proprietario || ""} onChange={(e) => s("proprietario", e.target.value)} /></div>
+              <div><label className="lm-label">Contato do proprietário</label><input className="lm-input" placeholder="WhatsApp ou telefone" value={data.proprietario_contato || ""} onChange={(e) => s("proprietario_contato", e.target.value)} /></div>
+              <div><label className="lm-label">Comissão (%)</label><input type="number" step="0.1" className="lm-input" placeholder="Ex: 6" value={data.comissao || ""} onChange={(e) => s("comissao", e.target.value)} /></div>
             </div>
           </section>
 

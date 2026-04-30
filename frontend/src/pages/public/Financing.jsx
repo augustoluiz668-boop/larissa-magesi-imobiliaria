@@ -113,7 +113,7 @@ export default function Financing({ settings = {} }) {
         <div className="bg-[#C5A059]/10 border border-[#C5A059]/40 rounded-sm px-5 py-4 flex items-start gap-3 text-sm text-[#5C5C5C]">
           <Info className="w-4 h-4 text-[#C5A059] mt-0.5 flex-shrink-0" />
           <div>
-            <strong className="text-[#2B3A2F]">Importante:</strong> os valores exibidos são apenas simulações orientativas (Sistema SAC a {taxa.toFixed(2)}% a.a.). As condições reais dependem da análise do banco, comprovação de renda e avaliação do imóvel. <strong>A Larissa entrará em contato com as melhores alternativas reais para o seu caso.</strong>
+            <strong className="text-[#2B3A2F]">Importante:</strong> os valores exibidos são apenas simulações orientativas (Sistema SAC). As condições reais — incluindo taxa de juros — dependem do banco, comprovação de renda, faixa do imóvel e relacionamento bancário. <strong>A Larissa entrará em contato com as melhores alternativas reais para o seu caso.</strong>
           </div>
         </div>
       </section>
