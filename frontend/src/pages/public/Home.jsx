@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Home, Building2, Building, Store, DoorOpen, TreePine,
-  Handshake, KeyRound, Landmark, PiggyBank, HandCoins, Search,
+  Home, Building2, Building, Search,
   ArrowRight, MapPin, Check, Calculator,
 } from "lucide-react";
 import { api, waLink } from "../../lib/api";
@@ -13,23 +12,6 @@ const tipos = [
   { icon: Home, titulo: "Casas", descricao: "Lares para novas histórias de família." },
   { icon: Building2, titulo: "Apartamentos", descricao: "Modernos, práticos e em regiões valorizadas." },
   { icon: Building, titulo: "Condomínios", descricao: "Lazer completo e segurança elevada." },
-  { icon: Store, titulo: "Imóveis Comerciais", descricao: "Oportunidades para seu negócio crescer." },
-  { icon: DoorOpen, titulo: "Kitnets", descricao: "Compactas e funcionais, ideais para estudantes e solteiros." },
-  { icon: TreePine, titulo: "Terrenos", descricao: "Construa exatamente o que você sonha." },
-  { icon: KeyRound, titulo: "Para Locação", descricao: "Imóveis prontos para morar, já." },
-  { icon: Handshake, titulo: "Permuta", descricao: "Troque seu imóvel com segurança jurídica." },
-  { icon: Landmark, titulo: "Financiamento", descricao: "Aceitamos financiamento bancário e FGTS." },
-  { icon: PiggyBank, titulo: "Consórcio", descricao: "Use sua carta contemplada com orientação completa." },
-  { icon: HandCoins, titulo: "Para Venda", descricao: "As melhores oportunidades do mercado regional." },
-];
-
-const cidades = [
-  { nome: "Bauru", regiao: "Cidade principal de atuação", destaque: true },
-  { nome: "Agudos", regiao: "Região metropolitana" },
-  { nome: "Piratininga", regiao: "Cidades próximas" },
-  { nome: "Pederneiras", regiao: "Cidades próximas" },
-  { nome: "Arealva", regiao: "Cidades próximas" },
-  { nome: "Lençóis Paulista", regiao: "Região de negócios" },
 ];
 
 export default function HomePage({ settings = {} }) {
@@ -115,14 +97,14 @@ export default function HomePage({ settings = {} }) {
         </div>
       </section>
 
-      {/* TIPOS */}
+      {/* TIPOS + REGIÃO */}
       <section className="max-w-7xl mx-auto px-6 md:px-10 py-24">
         <div className="max-w-2xl">
-          <div className="lm-overline mb-4">O que atendemos</div>
-          <h2 className="font-serif text-4xl md:text-5xl text-[#2B3A2F] leading-tight">Tipos de imóveis e negociações</h2>
+          <div className="lm-overline mb-4">O que atendemos · Região de atuação</div>
+          <h2 className="font-serif text-4xl md:text-5xl text-[#2B3A2F] leading-tight">Imóveis em Bauru e Região</h2>
           <div className="lm-divider mt-6"></div>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-12">
+        <div className="grid sm:grid-cols-3 gap-5 mt-12">
           {tipos.map((t) => (
             <div key={t.titulo} data-testid={`tipo-${t.titulo}`} className="lm-card p-7 flex items-start gap-4">
               <div className="w-12 h-12 rounded-full bg-[#F4F1EB] border border-[#E5E0D8] flex items-center justify-center text-[#2B3A2F] flex-shrink-0">
@@ -135,33 +117,9 @@ export default function HomePage({ settings = {} }) {
             </div>
           ))}
         </div>
-      </section>
-
-      {/* CIDADES */}
-      <section className="bg-[#EEE8DB] border-y border-[#E5E0D8]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 py-24">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-            <div>
-              <div className="lm-overline mb-3">Região de atuação</div>
-              <h2 className="font-serif text-4xl md:text-5xl text-[#2B3A2F] leading-tight max-w-xl">
-                Bauru e cidades vizinhas com mercado valorizado
-              </h2>
-            </div>
-            <p className="text-[#5C5C5C] max-w-md">
-              Atuo em Bauru e região, com foco em bairros estratégicos, condomínios valorizados e cidades próximas com forte demanda imobiliária.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {cidades.map((c) => (
-              <div key={c.nome} className={`p-6 rounded-sm flex items-start gap-3 ${c.destaque ? "bg-[#2B3A2F] text-[#F4F1EB]" : "bg-white border border-[#E5E0D8]"}`}>
-                <MapPin className={`w-5 h-5 mt-0.5 ${c.destaque ? "text-[#C5A059]" : "text-[#2B3A2F]"}`} />
-                <div>
-                  <div className="font-serif text-xl">{c.nome}</div>
-                  <div className={`text-xs mt-1 ${c.destaque ? "text-[#C9C3B4]" : "text-[#5C5C5C]"}`}>{c.regiao}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="mt-10 flex items-center gap-3 text-[#5C5C5C]">
+          <MapPin className="w-5 h-5 text-[#C5A059] flex-shrink-0" />
+          <p>Atuo em <strong className="text-[#2B3A2F]">Bauru e Região</strong>, com foco em bairros estratégicos, condomínios valorizados e forte demanda imobiliária.</p>
         </div>
       </section>
 
