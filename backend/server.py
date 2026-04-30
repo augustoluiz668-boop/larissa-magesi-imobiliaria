@@ -394,6 +394,27 @@ async def public_property_detail(pid: str):
 @api.post("/public/leads", response_model=Lead, status_code=201)
 async def create_lead(data: LeadIn):
     now = datetime.now(timezone.utc).isoformat()
+
+    # Anti-duplicata: busca por whatsapp ou email
+    existing = None
+    if data.whatsapp:
+        existing = await db.leads.find_one({"whatsapp": data.whatsapp}, {"_id": 0})
+    if not existing and data.email:
+        existing = await db.leads.find_one({"email": data.email}, {"_id": 0})
+
+    if existing:
+        # Atualiza campos não-vazios e acrescenta entrada no histórico
+        update_fields = {k: v for k, v in data.model_dump().items() if v not in (None, "", 0)}
+        update_fields["updated_at"] = now
+        msg_extra = f" — {data.mensagem}" if data.mensagem else ""
+        history_entry = {"data": now, "texto": f"Novo contato via {data.origem}{msg_extra}"}
+        await db.leads.update_one(
+            {"id": existing["id"]},
+            {"$set": update_fields, "$push": {"historico": history_entry}},
+        )
+        updated = await db.leads.find_one({"id": existing["id"]}, {"_id": 0})
+        return updated
+
     lead = {
         "id": str(uuid.uuid4()),
         **data.model_dump(),

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import PropertyCard from "../../components/PropertyCard";
 import { api, formatMoney, TYPE_LABELS, PURPOSE_LABELS } from "../../lib/api";
 import { Search, X, Map as MapIcon } from "lucide-react";
@@ -28,7 +29,16 @@ const initial = {
 };
 
 export default function ImoveisList() {
-  const [filters, setFilters] = useState(initial);
+  const location = useLocation();
+  const [filters, setFilters] = useState(() => {
+    const p = new URLSearchParams(location.search);
+    return {
+      ...initial,
+      tipo: p.get("tipo") || "",
+      finalidade: p.get("finalidade") || "",
+      valor_max: p.get("valor_max") || "",
+    };
+  });
   const [props, setProps] = useState([]);
   const [loading, setLoading] = useState(true);
 

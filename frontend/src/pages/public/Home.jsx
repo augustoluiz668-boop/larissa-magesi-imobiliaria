@@ -1,32 +1,52 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  Home, Building2, Building, Search,
-  ArrowRight, MapPin, Check, Calculator,
+  Search, ArrowRight, Check, Calculator,
 } from "lucide-react";
 import { api, waLink } from "../../lib/api";
 import PropertyCard from "../../components/PropertyCard";
 import { toast } from "sonner";
 
-const tipos = [
-  { icon: Home, titulo: "Casas", descricao: "Lares para novas histórias de família." },
-  { icon: Building2, titulo: "Apartamentos", descricao: "Modernos, práticos e em regiões valorizadas." },
-  { icon: Building, titulo: "Condomínios", descricao: "Lazer completo e segurança elevada." },
-];
-
 export default function HomePage({ settings = {} }) {
+  const navigate = useNavigate();
   const [destaques, setDestaques] = useState([]);
+  const [search, setSearch] = useState({ tipo: "", finalidade: "", valor_max: "" });
   const [form, setForm] = useState({
     nome: "", whatsapp: "", email: "", cidade_interesse: "Bauru",
     bairro_interesse: "", tipo_imovel: "casa", finalidade: "comprar",
     orcamento: "", prazo_decisao: "", mensagem: "", origem: "site",
   });
+  const [simForm, setSimForm] = useState({ nome: "", whatsapp: "", renda: "", valor_imovel: "", fgts: "" });
   const [sending, setSending] = useState(false);
   const [propForm, setPropForm] = useState({ nome: "", whatsapp: "", cidade_interesse: "", mensagem: "" });
 
   useEffect(() => {
     api.get("/public/properties?destaque=true").then((r) => setDestaques(r.data.slice(0, 6))).catch(() => {});
   }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (search.tipo) params.set("tipo", search.tipo);
+    if (search.finalidade) params.set("finalidade", search.finalidade);
+    if (search.valor_max) params.set("valor_max", search.valor_max);
+    navigate(`/imoveis?${params.toString()}`);
+  };
+
+  const submitSim = async (e) => {
+    e.preventDefault();
+    if (!simForm.nome || !simForm.whatsapp) return toast.error("Preencha nome e WhatsApp");
+    setSending(true);
+    const mensagem = `Simulação de financiamento — Renda: R$${simForm.renda || "não informada"} | Valor do imóvel: R$${simForm.valor_imovel || "não informado"} | FGTS: R$${simForm.fgts || "não informado"}`;
+    try {
+      await api.post("/public/leads", {
+        nome: simForm.nome, whatsapp: simForm.whatsapp, finalidade: "financiar",
+        origem: "site", orcamento: Number(simForm.valor_imovel) || 0, mensagem,
+      });
+      toast.success("Recebemos seu pedido! Larissa entrará em contato com sua simulação.");
+      setSimForm({ nome: "", whatsapp: "", renda: "", valor_imovel: "", fgts: "" });
+    } catch { toast.error("Não foi possível enviar."); } finally { setSending(false); }
+  };
 
   const submitLead = async (e) => {
     e.preventDefault();
@@ -97,29 +117,39 @@ export default function HomePage({ settings = {} }) {
         </div>
       </section>
 
-      {/* TIPOS + REGIÃO */}
-      <section className="max-w-7xl mx-auto px-6 md:px-10 py-24">
-        <div className="max-w-2xl">
-          <div className="lm-overline mb-4">O que atendemos · Região de atuação</div>
-          <h2 className="font-serif text-4xl md:text-5xl text-[#2B3A2F] leading-tight">Imóveis em Bauru e Região</h2>
-          <div className="lm-divider mt-6"></div>
-        </div>
-        <div className="grid sm:grid-cols-3 gap-5 mt-12">
-          {tipos.map((t) => (
-            <div key={t.titulo} data-testid={`tipo-${t.titulo}`} className="lm-card p-7 flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-[#F4F1EB] border border-[#E5E0D8] flex items-center justify-center text-[#2B3A2F] flex-shrink-0">
-                <t.icon className="w-5 h-5" strokeWidth={1.5} />
-              </div>
-              <div>
-                <div className="font-serif text-xl text-[#2B3A2F]">{t.titulo}</div>
-                <p className="text-sm text-[#5C5C5C] mt-1 leading-relaxed">{t.descricao}</p>
-              </div>
+      {/* BUSCA */}
+      <section className="bg-[#F4F1EB] border-y border-[#E5E0D8]">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-14">
+          <div className="text-center mb-8">
+            <div className="lm-overline mb-3">Encontre seu imóvel</div>
+            <h2 className="font-serif text-4xl md:text-5xl text-[#2B3A2F]">Buscar imóveis em Bauru e Região</h2>
+          </div>
+          <form onSubmit={handleSearch} className="bg-white border border-[#E5E0D8] rounded-sm p-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div>
+              <label className="lm-label">Tipo de imóvel</label>
+              <select className="lm-input" value={search.tipo} onChange={(e) => setSearch({ ...search, tipo: e.target.value })}>
+                <option value="">Todos</option>
+                <option value="casa">Casa</option>
+                <option value="apartamento">Apartamento</option>
+                <option value="condominio">Condomínio</option>
+              </select>
             </div>
-          ))}
-        </div>
-        <div className="mt-10 flex items-center gap-3 text-[#5C5C5C]">
-          <MapPin className="w-5 h-5 text-[#C5A059] flex-shrink-0" />
-          <p>Atuo em <strong className="text-[#2B3A2F]">Bauru e Região</strong>, com foco em bairros estratégicos, condomínios valorizados e forte demanda imobiliária.</p>
+            <div>
+              <label className="lm-label">Finalidade</label>
+              <select className="lm-input" value={search.finalidade} onChange={(e) => setSearch({ ...search, finalidade: e.target.value })}>
+                <option value="">Comprar ou Alugar</option>
+                <option value="comprar">Comprar</option>
+                <option value="alugar">Alugar</option>
+              </select>
+            </div>
+            <div>
+              <label className="lm-label">Valor máximo (R$)</label>
+              <input type="number" className="lm-input" placeholder="Ex: 500000" value={search.valor_max} onChange={(e) => setSearch({ ...search, valor_max: e.target.value })} />
+            </div>
+            <button type="submit" className="lm-btn-primary w-full justify-center">
+              <Search className="w-4 h-4" /> Buscar imóveis
+            </button>
+          </form>
         </div>
       </section>
 
@@ -139,28 +169,52 @@ export default function HomePage({ settings = {} }) {
         </div>
       </section>
 
-      {/* FINANCIAMENTO CTA */}
+      {/* SIMULAÇÃO FINANCIAMENTO */}
       <section className="bg-[#2B3A2F] text-[#F4F1EB]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 py-20 grid md:grid-cols-2 gap-10 items-center">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-20 grid md:grid-cols-2 gap-10 items-start">
           <div>
             <div className="text-xs tracking-[0.25em] uppercase text-[#C5A059] mb-4">Simulação gratuita</div>
             <h2 className="font-serif text-4xl md:text-5xl leading-tight">
-              Descubra em 1 minuto o financiamento ideal para o seu perfil
+              Descubra o financiamento ideal para o seu perfil
             </h2>
             <p className="text-[#C9C3B4] mt-5 max-w-md">
-              Simulação orientativa com cálculo SAC, considerando FGTS, entrada e parcela desejada. Depois disso, Larissa entra em contato e te acompanha em cada etapa.
+              Preencha seus dados e Larissa entra em contato já com uma simulação personalizada para você — considerando FGTS, entrada e parcela ideal.
             </p>
-            <Link to="/financiamento" data-testid="home-financing-cta" className="lm-btn-gold mt-8">
-              <Calculator className="w-4 h-4" /> Fazer minha simulação
-            </Link>
-          </div>
-          <div className="bg-white text-[#2C2C2C] p-8 rounded-sm">
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              {["Renda bruta familiar", "Idade", "FGTS disponível", "Entrada", "Parcela desejada", "Valor do imóvel", "Dependentes", "Prazo ideal"].map((f) => (
-                <div key={f} className="flex items-center gap-2 text-[#5C5C5C]"><Check className="w-3.5 h-3.5 text-[#C5A059]" /> {f}</div>
+            <div className="mt-8 space-y-3 text-sm text-[#C9C3B4]">
+              {["Cálculo com FGTS e entrada", "Análise pelo seu perfil de renda", "Orientação em cada etapa do financiamento", "Parcela e prazo adequados ao seu momento"].map((f) => (
+                <div key={f} className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[#C5A059]" /> {f}</div>
               ))}
             </div>
           </div>
+          <form onSubmit={submitSim} className="bg-white text-[#2C2C2C] p-8 rounded-sm space-y-4">
+            <div className="font-serif text-2xl text-[#2B3A2F] mb-2">Quero minha simulação</div>
+            <div>
+              <label className="lm-label">Nome completo *</label>
+              <input className="lm-input" value={simForm.nome} onChange={(e) => setSimForm({ ...simForm, nome: e.target.value })} />
+            </div>
+            <div>
+              <label className="lm-label">WhatsApp *</label>
+              <input className="lm-input" value={simForm.whatsapp} onChange={(e) => setSimForm({ ...simForm, whatsapp: e.target.value })} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="lm-label">Renda familiar (R$)</label>
+                <input type="number" className="lm-input" placeholder="Ex: 5000" value={simForm.renda} onChange={(e) => setSimForm({ ...simForm, renda: e.target.value })} />
+              </div>
+              <div>
+                <label className="lm-label">Valor do imóvel (R$)</label>
+                <input type="number" className="lm-input" placeholder="Ex: 350000" value={simForm.valor_imovel} onChange={(e) => setSimForm({ ...simForm, valor_imovel: e.target.value })} />
+              </div>
+            </div>
+            <div>
+              <label className="lm-label">FGTS disponível (R$)</label>
+              <input type="number" className="lm-input" placeholder="Ex: 20000" value={simForm.fgts} onChange={(e) => setSimForm({ ...simForm, fgts: e.target.value })} />
+            </div>
+            <button type="submit" disabled={sending} className="lm-btn-gold w-full justify-center disabled:opacity-60">
+              <Calculator className="w-4 h-4" /> {sending ? "Enviando…" : "Quero minha simulação"}
+            </button>
+            <p className="text-xs text-[#5C5C5C] text-center">Seus dados estão protegidos. Larissa entrará em contato pelo WhatsApp.</p>
+          </form>
         </div>
       </section>
 
