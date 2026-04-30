@@ -242,50 +242,17 @@ class FinancingIn(BaseModel):
     observacoes: Optional[str] = ""
 
 
-# ---------- Object Storage ----------
-STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
-EMERGENT_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
+# ---------- Cloudinary Storage ----------
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
+    api_key=os.environ.get("CLOUDINARY_API_KEY", ""),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET", ""),
+    secure=True,
+)
 APP_NAME = os.environ.get("APP_NAME", "larissa-magesi")
-_storage_key: Optional[str] = None
-
-
-def init_storage() -> Optional[str]:
-    global _storage_key
-    if _storage_key:
-        return _storage_key
-    if not EMERGENT_KEY:
-        return None
-    try:
-        r = requests.post(f"{STORAGE_URL}/init", json={"emergent_key": EMERGENT_KEY}, timeout=30)
-        r.raise_for_status()
-        _storage_key = r.json().get("storage_key")
-        return _storage_key
-    except Exception as e:
-        logging.getLogger("larissa").error(f"Storage init failed: {e}")
-        return None
-
-
-def put_object(path: str, data: bytes, content_type: str) -> dict:
-    key = init_storage()
-    if not key:
-        raise HTTPException(500, "Storage indisponível")
-    r = requests.put(
-        f"{STORAGE_URL}/objects/{path}",
-        headers={"X-Storage-Key": key, "Content-Type": content_type},
-        data=data, timeout=120,
-    )
-    r.raise_for_status()
-    return r.json()
-
-
-def get_object(path: str) -> tuple[bytes, str]:
-    key = init_storage()
-    if not key:
-        raise HTTPException(500, "Storage indisponível")
-    r = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": key}, timeout=60)
-    r.raise_for_status()
-    return r.content, r.headers.get("Content-Type", "application/octet-stream")
-
 
 MIME_TYPES = {
     "jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png",
@@ -710,30 +677,42 @@ async def upload_file(file: UploadFile = File(...), user=Depends(get_current_use
     data = await file.read()
     if len(data) > 10 * 1024 * 1024:
         raise HTTPException(400, "Arquivo maior que 10MB.")
-    path = f"{APP_NAME}/properties/{uuid.uuid4()}.{ext}"
     content_type = MIME_TYPES[ext]
-    result = put_object(path, data, content_type)
+    public_id = f"{APP_NAME}/properties/{uuid.uuid4()}"
+    result = await asyncio.to_thread(
+        cloudinary.uploader.upload,
+        data,
+        public_id=public_id,
+        resource_type="image",
+        overwrite=True,
+    )
+    secure_url = result["secure_url"]
     await db.files.insert_one({
         "id": str(uuid.uuid4()),
-        "storage_path": result["path"],
+        "storage_path": secure_url,
         "original_filename": file.filename,
         "content_type": content_type,
-        "size": result.get("size", len(data)),
+        "size": len(data),
         "is_deleted": False,
         "uploaded_by": user["id"],
         "created_at": datetime.now(timezone.utc).isoformat(),
     })
-    return {"path": result["path"], "url": f"/api/files/{result['path']}"}
+    return {"path": secure_url, "url": secure_url}
 
 
 @api.get("/files/{path:path}")
 async def serve_file(path: str):
-    """Public serve — property photos are meant to be public."""
-    rec = await db.files.find_one({"storage_path": path, "is_deleted": False})
+    """Legacy endpoint — new uploads use Cloudinary URLs directly."""
+    from fastapi.responses import RedirectResponse
+    if path.startswith("http"):
+        return RedirectResponse(url=path)
+    rec = await db.files.find_one({"storage_path": {"$regex": path}, "is_deleted": False})
     if not rec:
         raise HTTPException(404, "Arquivo não encontrado")
-    data, ct = get_object(path)
-    return Response(content=data, media_type=rec.get("content_type", ct), headers={"Cache-Control": "public, max-age=86400"})
+    storage_path = rec.get("storage_path", "")
+    if storage_path.startswith("http"):
+        return RedirectResponse(url=storage_path)
+    raise HTTPException(404, "Arquivo não encontrado")
 
 
 # ---------- Public: similar + financing ----------
@@ -1039,11 +1018,7 @@ async def startup():
     await db.properties.create_index("cidade")
     await db.files.create_index("storage_path")
 
-    # Storage (non-blocking)
-    try:
-        init_storage()
-    except Exception:
-        pass
+    # Cloudinary config validated at import time via cloudinary.config()
 
     # Seed admin
     existing = await db.users.find_one({"email": ADMIN_EMAIL.lower()})
