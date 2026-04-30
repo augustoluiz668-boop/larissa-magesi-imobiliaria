@@ -300,6 +300,12 @@ app = FastAPI(title="Larissa Magesi API")
 api = APIRouter(prefix="/api")
 
 
+# ---------- Health ----------
+@api.get("/health")
+async def health():
+    return {"status": "ok"}
+
+
 # ---------- Auth routes ----------
 @api.post("/auth/login", response_model=LoginOut)
 async def login(data: LoginInput):
