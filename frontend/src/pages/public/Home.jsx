@@ -75,16 +75,16 @@ export default function HomePage({ settings = {} }) {
         <div className="max-w-7xl mx-auto grid md:grid-cols-[1fr_420px] lg:grid-cols-[1fr_480px] items-center min-h-[640px] px-6 md:px-10 py-16 md:py-20 gap-10 lg:gap-16">
           {/* COPY — esquerda */}
           <div className="flex flex-col justify-center">
-            {/* Logo em caixa com borda dourada — estilo protótipo */}
+            {/* Logo em caixa com borda dourada — sem padding, imagem preenche o frame */}
             <div className="mb-8">
               <div
-                className="inline-flex items-center justify-center px-4 py-3 rounded"
-                style={{ background: "rgba(4,15,29,0.6)", border: "1px solid rgba(201,166,107,0.55)", boxShadow: "0 0 0 1px rgba(201,166,107,0.15)" }}
+                className="inline-block overflow-hidden"
+                style={{ border: "1.5px solid rgba(201,166,107,0.7)", borderRadius: "6px", lineHeight: 0 }}
               >
                 <img
                   src="/lmm.png"
                   alt="Larissa Magesi"
-                  className="h-20 w-auto"
+                  style={{ width: "clamp(140px, 18vw, 200px)", height: "auto", display: "block" }}
                   fetchpriority="high"
                 />
               </div>
