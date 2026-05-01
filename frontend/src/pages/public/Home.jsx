@@ -93,7 +93,9 @@ export default function HomePage({ settings = {} }) {
                   <img
                     src={settings.photo_url}
                     alt="Larissa Magesi — Corretora de Imóveis"
-                    className="w-full h-full object-cover object-top"
+                    className="w-full h-full object-cover object-top transition-opacity duration-500"
+                    fetchpriority="high"
+                    loading="eager"
                   />
                 ) : (
                   <span className="font-serif text-6xl text-[#c9a66b] select-none">LM</span>

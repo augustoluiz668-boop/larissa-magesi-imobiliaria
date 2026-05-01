@@ -44,9 +44,14 @@ function ScrollToHash() {
 }
 
 function PublicShell({ children }) {
-  const [settings, setSettings] = useState({});
+  const [settings, setSettings] = useState(() => {
+    try { return JSON.parse(sessionStorage.getItem("lm_settings") || "{}"); } catch { return {}; }
+  });
   useEffect(() => {
-    api.get("/public/settings").then((r) => setSettings(r.data)).catch(() => {});
+    api.get("/public/settings").then((r) => {
+      setSettings(r.data);
+      try { sessionStorage.setItem("lm_settings", JSON.stringify(r.data)); } catch {}
+    }).catch(() => {});
   }, []);
   return (
     <div className="bg-[#f8fafc] min-h-screen flex flex-col">
