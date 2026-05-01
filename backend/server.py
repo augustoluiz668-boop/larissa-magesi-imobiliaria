@@ -129,6 +129,7 @@ class PropertyIn(BaseModel):
     elevador: bool = False
     varanda: bool = False
     observacao_interna: Optional[str] = ""
+    nome_condominio: Optional[str] = ""
 
 
 class Property(PropertyIn):
@@ -391,6 +392,8 @@ async def public_properties(
     varanda: Optional[bool] = None,
     quintal: Optional[bool] = None,
     destaque: Optional[bool] = None,
+    codigo: Optional[str] = None,
+    nome_condominio: Optional[str] = None,
     limit: int = 60,
 ):
     q: dict = {"status": {"$in": ["disponivel", "reservado"]}}
@@ -431,6 +434,10 @@ async def public_properties(
         q["quintal"] = True
     if destaque is True:
         q["destaque"] = True
+    if codigo:
+        q["codigo"] = {"$regex": codigo, "$options": "i"}
+    if nome_condominio:
+        q["nome_condominio"] = {"$regex": nome_condominio, "$options": "i"}
     return await db.properties.find(q, {"_id": 0}).to_list(limit)
 
 
@@ -487,8 +494,14 @@ async def create_lead(data: LeadIn):
 
 # ---------- Admin: properties ----------
 @api.get("/admin/properties", response_model=List[Property])
-async def admin_list_properties(user=Depends(get_current_user)):
-    return await db.properties.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+async def admin_list_properties(
+    codigo: Optional[str] = None,
+    user=Depends(get_current_user),
+):
+    q: dict = {}
+    if codigo:
+        q["codigo"] = {"$regex": codigo, "$options": "i"}
+    return await db.properties.find(q, {"_id": 0}).sort("created_at", -1).to_list(500)
 
 
 @api.post("/admin/properties", response_model=Property, status_code=201)
