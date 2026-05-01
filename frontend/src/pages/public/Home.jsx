@@ -77,16 +77,24 @@ export default function HomePage({ settings = {} }) {
           <div className="flex flex-col justify-center">
             {/* Logo + foto mobile — lado a lado apenas no mobile */}
             <div className="mb-8 flex items-start gap-3">
-              <div
-                className="inline-block overflow-hidden shrink-0"
-                style={{ border: "1.5px solid rgba(201,166,107,0.7)", borderRadius: "6px", lineHeight: 0 }}
-              >
-                <img
-                  src="/lmm.png"
-                  alt="Larissa Magesi"
-                  style={{ width: "clamp(140px, 18vw, 200px)", height: "auto", display: "block" }}
-                  fetchpriority="high"
-                />
+              <div className="shrink-0 flex flex-col items-center gap-2">
+                <div
+                  className="inline-block overflow-hidden"
+                  style={{ border: "1.5px solid rgba(201,166,107,0.7)", borderRadius: "6px", lineHeight: 0 }}
+                >
+                  <img
+                    src="/lmm.png"
+                    alt="Larissa Magesi"
+                    style={{ width: "clamp(140px, 18vw, 200px)", height: "auto", display: "block" }}
+                    fetchpriority="high"
+                  />
+                </div>
+                <div className="text-center">
+                  <div className="font-serif text-[#f8fafc] text-base leading-tight">Larissa Magesi</div>
+                  <div className="text-[10px] tracking-[0.18em] uppercase mt-0.5" style={{ color: "#c9a66b" }}>
+                    CRECI {settings.creci || "290.524-F"}
+                  </div>
+                </div>
               </div>
               {/* Foto da Larissa — só no mobile, some no md+ (onde aparece coluna direita) */}
               {settings.photo_url && (
