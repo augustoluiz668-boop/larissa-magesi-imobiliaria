@@ -76,29 +76,37 @@ export default function HomePage({ settings = {} }) {
           {/* COPY — esquerda */}
           <div className="flex flex-col justify-center">
             {/* Logo + foto mobile — lado a lado apenas no mobile */}
-            <div className="mb-8 flex items-start gap-3">
-              <div className="shrink-0 flex flex-col items-center gap-2">
+            <div className="mb-8 flex items-stretch gap-3">
+              {/* Coluna esquerda: logo + texto preenchendo a altura da foto */}
+              <div className="shrink-0 flex flex-col" style={{ width: "clamp(130px, 38vw, 175px)" }}>
                 <div
-                  className="inline-block overflow-hidden"
+                  className="overflow-hidden"
                   style={{ border: "1.5px solid rgba(201,166,107,0.7)", borderRadius: "6px", lineHeight: 0 }}
                 >
                   <img
                     src="/lmm.png"
                     alt="Larissa Magesi"
-                    style={{ width: "clamp(140px, 18vw, 200px)", height: "auto", display: "block" }}
+                    style={{ width: "100%", height: "auto", display: "block" }}
                     fetchpriority="high"
                   />
                 </div>
-                <div className="text-center">
-                  <div className="font-serif text-[#f8fafc] text-base leading-tight">Larissa Magesi</div>
-                  <div className="text-[10px] tracking-[0.18em] uppercase mt-0.5" style={{ color: "#c9a66b" }}>
+                {/* Texto cresce para preencher espaço restante */}
+                <div className="flex-1 flex flex-col justify-center pt-3 pl-1">
+                  <div className="font-serif text-[#f8fafc] leading-tight" style={{ fontSize: "clamp(1.1rem, 4vw, 1.35rem)" }}>
+                    Larissa Magesi
+                  </div>
+                  <div className="font-serif mt-1" style={{ fontSize: "clamp(0.8rem, 2.8vw, 1rem)", color: "#c9a66b" }}>
+                    Corretora de Imóveis
+                  </div>
+                  <div className="mt-2 text-[10px] tracking-[0.18em] uppercase" style={{ color: "#a8b8cc" }}>
                     CRECI {settings.creci || "290.524-F"}
                   </div>
                 </div>
               </div>
-              {/* Foto da Larissa — só no mobile, some no md+ (onde aparece coluna direita) */}
+
+              {/* Foto — só mobile */}
               {settings.photo_url && (
-                <div className="md:hidden flex-1 overflow-hidden" style={{ borderRadius: "6px", border: "1.5px solid rgba(201,166,107,0.55)" }}>
+                <div className="md:hidden flex-1 overflow-hidden" style={{ borderRadius: "6px", border: "1.5px solid rgba(201,166,107,0.55)", minHeight: "220px" }}>
                   <img
                     src={settings.photo_url}
                     alt="Larissa Magesi"
