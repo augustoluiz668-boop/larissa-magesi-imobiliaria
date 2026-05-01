@@ -76,7 +76,7 @@ export default function HomePage({ settings = {} }) {
           {/* COPY — esquerda */}
           <div className="flex flex-col justify-center">
             {/* Logo + foto mobile — lado a lado apenas no mobile */}
-            <div className="mb-8 flex items-stretch gap-3">
+            <div className="mb-8 flex items-start gap-3">
               <div
                 className="inline-block overflow-hidden shrink-0"
                 style={{ border: "1.5px solid rgba(201,166,107,0.7)", borderRadius: "6px", lineHeight: 0 }}
