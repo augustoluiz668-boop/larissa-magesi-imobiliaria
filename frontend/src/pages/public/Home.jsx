@@ -285,7 +285,7 @@ export default function HomePage({ settings = {} }) {
       <section className="bg-[#071d34] text-[#f8fafc]">
         <div className="max-w-7xl mx-auto px-6 md:px-10 py-20 grid md:grid-cols-2 gap-10 items-start">
           <div>
-            <div className="text-xs tracking-[0.25em] uppercase text-[#c9a66b] mb-4">Simulação gratuita</div>
+            <div className="text-xs tracking-[0.25em] uppercase text-[#c9a66b] mb-4">Simulação de financiamento</div>
             <h2 className="font-serif text-4xl md:text-5xl leading-tight">
               Descubra o financiamento ideal para o seu perfil
             </h2>
