@@ -82,7 +82,7 @@ export default function HomePage({ settings = {} }) {
                 style={{ background: "rgba(4,15,29,0.6)", border: "1px solid rgba(201,166,107,0.55)", boxShadow: "0 0 0 1px rgba(201,166,107,0.15)" }}
               >
                 <img
-                  src={settings.logo_url || "/lmm.png"}
+                  src="/lmm.png"
                   alt="Larissa Magesi"
                   className="h-20 w-auto"
                   fetchpriority="high"

@@ -45,12 +45,12 @@ function ScrollToHash() {
 
 function PublicShell({ children }) {
   const [settings, setSettings] = useState(() => {
-    try { return JSON.parse(sessionStorage.getItem("lm_settings") || "{}"); } catch { return {}; }
+    try { return JSON.parse(localStorage.getItem("lm_settings") || "{}"); } catch { return {}; }
   });
   useEffect(() => {
     api.get("/public/settings").then((r) => {
       setSettings(r.data);
-      try { sessionStorage.setItem("lm_settings", JSON.stringify(r.data)); } catch {}
+      try { localStorage.setItem("lm_settings", JSON.stringify(r.data)); } catch {}
     }).catch(() => {});
   }, []);
   return (
