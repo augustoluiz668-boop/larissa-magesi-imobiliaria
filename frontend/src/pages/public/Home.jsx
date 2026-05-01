@@ -73,20 +73,23 @@ export default function HomePage({ settings = {} }) {
         <div className="max-w-7xl mx-auto grid md:grid-cols-[1fr_420px] lg:grid-cols-[1fr_480px] items-center min-h-[640px] px-6 md:px-10 py-16 md:py-20 gap-10 lg:gap-16">
           {/* COPY — esquerda */}
           <div className="flex flex-col justify-center">
-            {/* Logo em caixa com borda — estilo protótipo */}
-            {settings.logo_url && (
-              <div className="mb-8">
-                <div
-                  className="inline-flex items-center justify-center px-4 py-3 rounded"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.13)" }}
-                >
-                  <img src={settings.logo_url} alt="Larissa Magesi" className="h-10 w-auto" fetchpriority="high" />
-                </div>
+            {/* Logo em caixa com borda dourada — estilo protótipo */}
+            <div className="mb-8">
+              <div
+                className="inline-flex items-center justify-center px-4 py-3 rounded"
+                style={{ background: "rgba(4,15,29,0.6)", border: "1px solid rgba(201,166,107,0.55)", boxShadow: "0 0 0 1px rgba(201,166,107,0.15)" }}
+              >
+                <img
+                  src={settings.logo_url || "/logo-lm.png"}
+                  alt="Larissa Magesi"
+                  className="h-14 w-auto"
+                  fetchpriority="high"
+                />
               </div>
-            )}
+            </div>
             <div className="lm-overline mb-4">Bauru e região</div>
             <h1
-              className="font-serif tracking-tight leading-[1.04]"
+              className="font-serif font-bold tracking-tight leading-[1.04]"
               style={{ fontSize: "clamp(2.4rem, 5.4vw, 4.8rem)" }}
             >
               Seu próximo{" "}
@@ -126,37 +129,50 @@ export default function HomePage({ settings = {} }) {
             </div>
           </div>
 
-          {/* RETRATO — direita, com border-radius e badge branco */}
+          {/* RETRATO — direita, com linha dourada atrás e badge branco */}
           <div className="hidden md:flex flex-col items-stretch">
-            <div className="relative w-full">
-              {settings.photo_url ? (
-                <img
-                  src={settings.photo_url}
-                  alt="Larissa Magesi — Corretora de Imóveis"
-                  className="w-full object-cover object-top"
-                  style={{ height: "580px", borderRadius: "14px" }}
-                  fetchpriority="high"
-                  loading="eager"
-                />
-              ) : (
-                <div
-                  className="w-full flex items-center justify-center"
-                  style={{ height: "580px", borderRadius: "14px", background: "#0d2d4c" }}
-                >
-                  <span className="font-serif text-[10rem] text-[#c9a66b]/20 select-none leading-none">LM</span>
-                </div>
-              )}
-              {/* Badge — cartão branco/creme no canto inferior direito */}
+            {/* wrapper com offset para linha decorativa */}
+            <div className="relative" style={{ paddingRight: "14px", paddingBottom: "14px" }}>
+              {/* Linha dourada decorativa — atrás da foto, offset inferior-direito */}
               <div
-                className="absolute bottom-5 right-5 px-5 py-3 shadow-2xl"
+                className="absolute"
                 style={{
-                  background: "linear-gradient(135deg, #ffffff 0%, #f2ece0 100%)",
-                  borderRadius: "10px",
+                  top: "14px", left: "14px", right: "0", bottom: "0",
+                  borderRadius: "14px",
+                  border: "2px solid rgba(201,166,107,0.55)",
                 }}
-              >
-                <div className="font-serif text-sm text-[#071d34] leading-tight font-medium">Larissa Magesi</div>
-                <div className="text-[10px] tracking-[0.2em] uppercase mt-0.5" style={{ color: "#c9a66b" }}>
-                  CRECI {settings.creci || "290524-F"}
+              />
+              {/* Foto */}
+              <div className="relative" style={{ zIndex: 1 }}>
+                {settings.photo_url ? (
+                  <img
+                    src={settings.photo_url}
+                    alt="Larissa Magesi — Corretora de Imóveis"
+                    className="w-full object-cover object-top"
+                    style={{ height: "580px", borderRadius: "14px" }}
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                ) : (
+                  <div
+                    className="w-full flex items-center justify-center"
+                    style={{ height: "580px", borderRadius: "14px", background: "#0d2d4c" }}
+                  >
+                    <span className="font-serif text-[10rem] text-[#c9a66b]/20 select-none leading-none">LM</span>
+                  </div>
+                )}
+                {/* Badge — cartão branco/creme, sem CRECI (logo já tem) */}
+                <div
+                  className="absolute bottom-5 right-5 px-5 py-3 shadow-2xl"
+                  style={{
+                    background: "linear-gradient(135deg, #ffffff 0%, #f2ece0 100%)",
+                    borderRadius: "10px",
+                  }}
+                >
+                  <div className="font-serif text-sm text-[#071d34] leading-tight font-semibold">Larissa Magesi</div>
+                  <div className="text-[10px] tracking-[0.2em] uppercase mt-0.5" style={{ color: "#c9a66b" }}>
+                    Corretora de Imóveis
+                  </div>
                 </div>
               </div>
             </div>
