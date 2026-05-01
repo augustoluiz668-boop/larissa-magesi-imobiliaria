@@ -98,8 +98,8 @@ export default function HomePage({ settings = {} }) {
                   <div className="font-serif mt-1" style={{ fontSize: "clamp(0.8rem, 2.8vw, 1rem)", color: "#c9a66b" }}>
                     Corretora de Imóveis
                   </div>
-                  <div className="mt-2 text-[10px] tracking-[0.18em] uppercase" style={{ color: "#a8b8cc" }}>
-                    CRECI {settings.creci || "290.524-F"}
+                  <div className="mt-1" style={{ fontSize: "clamp(0.8rem, 2.8vw, 1rem)", color: "#a8b8cc" }}>
+                    {settings.creci || "CRECI 290.524-F"}
                   </div>
                 </div>
               </div>
