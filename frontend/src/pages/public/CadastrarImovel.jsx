@@ -40,7 +40,7 @@ export default function CadastrarImovel({ settings = {} }) {
   };
 
   const beneficios = [
-    "Avaliação profissional e gratuita do seu imóvel",
+    "Avaliação profissional do seu imóvel",
     "Divulgação nos principais portais e redes sociais",
     "Atendimento de compradores/locatários qualificados",
     "Acompanhamento jurídico e documental completo",
@@ -85,7 +85,7 @@ export default function CadastrarImovel({ settings = {} }) {
               </div>
               <h2 className="font-serif text-3xl text-[#071d34] mb-3">Cadastro recebido!</h2>
               <p className="text-[#5C5C5C] mb-6">
-                Analisarei as informações do seu imóvel e entrarei em contato para agendar uma visita e avaliação gratuita.
+                Analisarei as informações do seu imóvel e entrarei em contato para agendar uma visita e avaliação.
               </p>
               <a
                 href={waLink(settings.whatsapp, "Olá Larissa! Acabei de cadastrar meu imóvel no seu site e gostaria de mais informações.")}
@@ -183,7 +183,7 @@ export default function CadastrarImovel({ settings = {} }) {
             <div className="lm-overline !text-[#c9a66b] mb-3">Como funciona</div>
             <ol className="space-y-4 text-sm leading-relaxed text-[#E8E2D6]">
               <li><span className="font-serif text-[#c9a66b] text-lg mr-2">1.</span> Você preenche o formulário com os dados do imóvel.</li>
-              <li><span className="font-serif text-[#c9a66b] text-lg mr-2">2.</span> Entro em contato para agendar uma visita e avaliação gratuita.</li>
+              <li><span className="font-serif text-[#c9a66b] text-lg mr-2">2.</span> Entro em contato para agendar uma visita e avaliação do imóvel.</li>
               <li><span className="font-serif text-[#c9a66b] text-lg mr-2">3.</span> Crio um anúncio profissional com fotos e divulgação.</li>
               <li><span className="font-serif text-[#c9a66b] text-lg mr-2">4.</span> Apresento compradores qualificados e conduzo a negociação.</li>
               <li><span className="font-serif text-[#c9a66b] text-lg mr-2">5.</span> Acompanho toda a documentação até a assinatura.</li>
