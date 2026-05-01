@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 const nav = [
   { to: "/", label: "Início" },
@@ -44,13 +44,7 @@ export default function Navbar({ settings = {} }) {
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
-          {settings.telefone && (
-            <a href={`tel:${(settings.telefone || "").replace(/\D/g, "")}`} className="flex items-center gap-2 text-sm text-[#071d34] hover:text-[#c9a66b]" data-testid="nav-phone">
-              <Phone className="w-4 h-4" strokeWidth={1.6} />
-              <span className="font-medium tracking-wide">{settings.telefone}</span>
-            </a>
-          )}
-          <Link to="/admin/login" data-testid="nav-admin" className="text-[10px] tracking-[0.22em] uppercase text-[#c9a66b] hover:text-[#071d34] border-l border-[#d1dde8] pl-4">
+          <Link to="/admin/login" data-testid="nav-admin" className="text-[10px] tracking-[0.22em] uppercase text-[#c9a66b] hover:text-[#071d34]">
             Área da Corretora
           </Link>
         </div>
@@ -78,11 +72,6 @@ export default function Navbar({ settings = {} }) {
               {n.label}
             </Link>
           ))}
-          {settings.telefone && (
-            <a href={`tel:${(settings.telefone || "").replace(/\D/g, "")}`} className="py-2 flex items-center gap-2 text-[#071d34]">
-              <Phone className="w-4 h-4" /> {settings.telefone}
-            </a>
-          )}
           <Link to="/admin/login" onClick={() => setOpen(false)} className="py-2 text-[#c9a66b] tracking-widest uppercase text-xs">
             Área da Corretora
           </Link>
