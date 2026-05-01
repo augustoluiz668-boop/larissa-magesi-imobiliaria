@@ -89,7 +89,10 @@ export default function HomePage({ settings = {} }) {
                 />
               </div>
             </div>
-            <div className="lm-overline mb-4">Bauru e região</div>
+            <div className="flex items-center gap-3 mb-4">
+              <div style={{ width: "32px", height: "1.5px", background: "#c9a66b", flexShrink: 0 }} />
+              <div className="lm-overline" style={{ marginBottom: 0 }}>Bauru e região</div>
+            </div>
             <h1
               className="font-serif font-bold tracking-tight leading-[1.04]"
               style={{ fontSize: "clamp(2.4rem, 5.4vw, 4.8rem)" }}

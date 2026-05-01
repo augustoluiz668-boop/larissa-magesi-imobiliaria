@@ -17,49 +17,49 @@ export default function Navbar({ settings = {} }) {
 
   return (
     <header className="sticky top-0 z-40 bg-[#f8fafc]/95 backdrop-blur-md border-b border-[#d1dde8]">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-5 md:px-10 h-24">
+      {/* Desktop */}
+      <div className="hidden lg:flex max-w-7xl mx-auto items-center justify-between px-5 md:px-10 h-24">
         <Link to="/" data-testid="navbar-logo" className="flex items-center gap-3">
           <img src="/lmmm.png" alt="Larissa Magesi" className="h-20 w-auto" />
         </Link>
-
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="flex items-center gap-8">
           {nav.map((n) => (
-            <Link
-              key={n.to}
-              to={n.to}
+            <Link key={n.to} to={n.to}
               data-testid={`nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
-              className={`text-sm tracking-wide transition-colors ${
-                pathname === n.to ? "text-[#071d34] font-medium" : "text-[#5C5C5C] hover:text-[#071d34]"
-              }`}
-            >
-              {n.label}
-            </Link>
+              className={`text-sm tracking-wide transition-colors ${pathname === n.to ? "text-[#071d34] font-medium" : "text-[#5C5C5C] hover:text-[#071d34]"}`}
+            >{n.label}</Link>
           ))}
         </nav>
+        <Link to="/admin/login" data-testid="nav-admin" className="text-[10px] tracking-[0.22em] uppercase text-[#c9a66b] hover:text-[#071d34]">
+          Área da Corretora
+        </Link>
+      </div>
 
-        <div className="hidden md:flex items-center gap-4">
-          <Link to="/admin/login" data-testid="nav-admin" className="text-[10px] tracking-[0.22em] uppercase text-[#c9a66b] hover:text-[#071d34]">
-            Área da Corretora
-          </Link>
-        </div>
+      {/* Mobile */}
+      <div className="lg:hidden flex items-center justify-between px-5 h-24">
+        <Link to="/" data-testid="navbar-logo" className="flex items-center gap-3 shrink-0">
+          <img src="/lmmm.png" alt="Larissa Magesi" className="h-16 w-auto" />
+        </Link>
 
-        <div className="lg:hidden flex items-center gap-2">
-          {settings.photo_url && (
+        {/* Foto retangular — preenche espaço central */}
+        {settings.photo_url && (
+          <div className="flex-1 flex justify-end pr-3">
             <img
               src={settings.photo_url}
               alt="Larissa Magesi"
-              className="w-10 h-10 rounded-full object-cover object-top border-2 border-[#c9a66b]"
+              style={{ height: "72px", width: "54px", objectFit: "contain", objectPosition: "top", borderRadius: "6px", border: "1.5px solid rgba(201,166,107,0.6)" }}
             />
-          )}
-          <button
-            data-testid="navbar-mobile-toggle"
-            className="p-2 text-[#071d34]"
-            onClick={() => setOpen(!open)}
-            aria-label="Menu"
-          >
-            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
+          </div>
+        )}
+
+        <button
+          data-testid="navbar-mobile-toggle"
+          className="p-2 text-[#071d34] shrink-0"
+          onClick={() => setOpen(!open)}
+          aria-label="Menu"
+        >
+          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </div>
 
       {open && (

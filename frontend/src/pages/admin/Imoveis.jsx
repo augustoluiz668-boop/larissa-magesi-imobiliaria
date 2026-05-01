@@ -67,7 +67,7 @@ export default function ImoveisAdmin() {
     <AdminLayout
       title="Imóveis"
       subtitle={`${items.length} imóveis cadastrados`}
-      actions={<button onClick={() => setEditing({ ...empty })} data-testid="add-property-btn" className="lm-btn-primary"><Plus className="w-4 h-4" /> Novo imóvel</button>}
+      actions={<button onClick={async () => { const { data } = await api.get("/admin/properties/next-code"); setEditing({ ...empty, codigo: data.next_code }); }} data-testid="add-property-btn" className="lm-btn-primary"><Plus className="w-4 h-4" /> Novo imóvel</button>}
     >
       <div className="flex flex-wrap gap-3 mb-5">
         <select className="lm-input max-w-xs" value={filter.tipo} onChange={(e) => setFilter({ ...filter, tipo: e.target.value })} data-testid="filter-prop-tipo">
@@ -194,7 +194,7 @@ function PropertyModal({ data, setData, onSave }) {
         </div>
         <form onSubmit={onSave} data-testid="property-form" className="p-6 space-y-6 overflow-y-auto flex-1">
           <section className="grid md:grid-cols-3 gap-4">
-            <div><label className="lm-label">Código (ID)</label><input className="lm-input" placeholder="Ex: RN-131" value={data.codigo || ""} onChange={(e) => s("codigo", e.target.value)} data-testid="pf-codigo" /></div>
+            <div><label className="lm-label">Código (ID)</label><input className="lm-input bg-[#f8fafc]" placeholder="Ex: RN-131" value={data.codigo || ""} onChange={(e) => s("codigo", e.target.value)} readOnly data-testid="pf-codigo" /></div>
             <div className="md:col-span-2"><label className="lm-label">Título *</label><input className="lm-input" required value={data.titulo} onChange={(e) => s("titulo", e.target.value)} data-testid="pf-titulo" /></div>
             <div><label className="lm-label">Tipo</label>
               <select className="lm-input" value={data.tipo} onChange={(e) => s("tipo", e.target.value)}>

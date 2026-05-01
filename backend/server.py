@@ -493,6 +493,21 @@ async def create_lead(data: LeadIn):
 
 
 # ---------- Admin: properties ----------
+@api.get("/admin/properties/next-code")
+async def get_next_property_code(user=Depends(get_current_user), db=Depends(get_db)):
+    """Returns next sequential 5-digit zero-padded property code."""
+    properties = await db.properties.find({}, {"codigo": 1}).to_list(None)
+    nums = []
+    for p in properties:
+        code = p.get("codigo", "")
+        try:
+            nums.append(int(str(code).replace("-", "").strip()))
+        except:
+            pass
+    next_num = (max(nums) if nums else 0) + 1
+    return {"next_code": f"{next_num:05d}"}
+
+
 @api.get("/admin/properties", response_model=List[Property])
 async def admin_list_properties(
     codigo: Optional[str] = None,
