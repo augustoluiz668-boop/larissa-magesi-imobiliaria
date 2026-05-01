@@ -39,16 +39,16 @@ export default function Depoimentos() {
     >
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         {items.map((t) => (
-          <article key={t.id} data-testid={`testimonial-${t.id}`} className="bg-white border border-[#E5E0D8] rounded-sm p-6">
-            <div className="flex items-center gap-1 text-[#C5A059] mb-3">
+          <article key={t.id} data-testid={`testimonial-${t.id}`} className="bg-white border border-[#d1dde8] rounded-sm p-6">
+            <div className="flex items-center gap-1 text-[#c9a66b] mb-3">
               {Array.from({ length: t.rating }).map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-current" />)}
             </div>
-            <blockquote className="font-serif text-lg text-[#2B3A2F] leading-snug">“{t.texto}”</blockquote>
+            <blockquote className="font-serif text-lg text-[#071d34] leading-snug">“{t.texto}”</blockquote>
             <div className="mt-4 text-sm text-[#2C2C2C] font-medium">{t.nome}</div>
             <div className="text-xs text-[#5C5C5C]">{t.cidade}</div>
-            <div className="flex gap-2 mt-4 pt-4 border-t border-[#E5E0D8]">
-              <button onClick={() => setEditing(t)} className="p-1.5 rounded-full border border-[#E5E0D8] text-[#2B3A2F] hover:bg-[#F4F1EB]" data-testid={`edit-test-${t.id}`}><Pencil className="w-3.5 h-3.5" /></button>
-              <button onClick={() => remove(t.id)} className="p-1.5 rounded-full border border-[#E5E0D8] text-red-700 hover:bg-red-50" data-testid={`delete-test-${t.id}`}><Trash2 className="w-3.5 h-3.5" /></button>
+            <div className="flex gap-2 mt-4 pt-4 border-t border-[#d1dde8]">
+              <button onClick={() => setEditing(t)} className="p-1.5 rounded-full border border-[#d1dde8] text-[#071d34] hover:bg-[#f8fafc]" data-testid={`edit-test-${t.id}`}><Pencil className="w-3.5 h-3.5" /></button>
+              <button onClick={() => remove(t.id)} className="p-1.5 rounded-full border border-[#d1dde8] text-red-700 hover:bg-red-50" data-testid={`delete-test-${t.id}`}><Trash2 className="w-3.5 h-3.5" /></button>
             </div>
           </article>
         ))}
@@ -59,8 +59,8 @@ export default function Depoimentos() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <form onSubmit={save} className="bg-white rounded-sm w-full max-w-xl p-6 space-y-4" data-testid="testimonial-form">
             <div className="flex items-center justify-between">
-              <div className="font-serif text-2xl text-[#2B3A2F]">{editing.id ? "Editar depoimento" : "Novo depoimento"}</div>
-              <button type="button" onClick={() => setEditing(null)} className="p-2 hover:bg-[#F4F1EB] rounded"><X className="w-5 h-5" /></button>
+              <div className="font-serif text-2xl text-[#071d34]">{editing.id ? "Editar depoimento" : "Novo depoimento"}</div>
+              <button type="button" onClick={() => setEditing(null)} className="p-2 hover:bg-[#f8fafc] rounded"><X className="w-5 h-5" /></button>
             </div>
             <div><label className="lm-label">Nome *</label><input required className="lm-input" value={editing.nome} onChange={(e) => setEditing({ ...editing, nome: e.target.value })} data-testid="test-nome" /></div>
             <div><label className="lm-label">Cidade</label><input className="lm-input" value={editing.cidade} onChange={(e) => setEditing({ ...editing, cidade: e.target.value })} data-testid="test-cidade" /></div>
@@ -70,7 +70,7 @@ export default function Depoimentos() {
                 {[5, 4, 3, 2, 1].map((r) => <option key={r} value={r}>{r} estrelas</option>)}
               </select>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-[#E5E0D8]">
+            <div className="flex justify-end gap-2 pt-2 border-t border-[#d1dde8]">
               <button type="button" onClick={() => setEditing(null)} className="lm-btn-outline">Cancelar</button>
               <button type="submit" className="lm-btn-primary" data-testid="test-save"><Save className="w-4 h-4" /> Salvar</button>
             </div>

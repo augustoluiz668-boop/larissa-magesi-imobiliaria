@@ -24,10 +24,10 @@ export default function OrigemLeads() {
         <Card icon={DollarSign} label="Receita total fechada" value={formatMoney(totals.valor)} hint={`${totals.fechados} negócios`} />
       </div>
 
-      <div className="bg-white border border-[#E5E0D8] rounded-sm overflow-hidden">
+      <div className="bg-white border border-[#d1dde8] rounded-sm overflow-hidden">
         <div className="overflow-x-auto lm-scroll">
           <table className="min-w-full text-sm">
-            <thead className="bg-[#F4F1EB] text-xs uppercase tracking-wider text-[#5C5C5C] text-left">
+            <thead className="bg-[#f8fafc] text-xs uppercase tracking-wider text-[#5C5C5C] text-left">
               <tr>
                 <th className="px-5 py-3">Origem</th>
                 <th className="px-5 py-3">Total</th>
@@ -44,17 +44,17 @@ export default function OrigemLeads() {
                 const max = Math.max(...rows.map((x) => x.total));
                 const pct = max ? Math.round((r.total / max) * 100) : 0;
                 return (
-                  <tr key={r.origem} className="border-t border-[#E5E0D8]" data-testid={`origin-row-${r.origem}`}>
+                  <tr key={r.origem} className="border-t border-[#d1dde8]" data-testid={`origin-row-${r.origem}`}>
                     <td className="px-5 py-3 font-medium text-[#2C2C2C]">{ORIGIN_LABELS[r.origem]}</td>
                     <td className="px-5 py-3">{r.total}</td>
                     <td className="px-5 py-3 text-green-700">{r.fechados}</td>
                     <td className="px-5 py-3 text-red-700">{r.perdidos}</td>
                     <td className="px-5 py-3">{r.abertos}</td>
                     <td className="px-5 py-3">{r.conversao}%</td>
-                    <td className="px-5 py-3 text-[#2B3A2F]">{formatMoney(r.valor)}</td>
+                    <td className="px-5 py-3 text-[#071d34]">{formatMoney(r.valor)}</td>
                     <td className="px-5 py-3">
-                      <div className="w-32 h-1.5 rounded-full bg-[#F4F1EB] overflow-hidden">
-                        <div className="h-full bg-[#C5A059]" style={{ width: `${pct}%` }} />
+                      <div className="w-32 h-1.5 rounded-full bg-[#f8fafc] overflow-hidden">
+                        <div className="h-full bg-[#c9a66b]" style={{ width: `${pct}%` }} />
                       </div>
                     </td>
                   </tr>
@@ -71,12 +71,12 @@ export default function OrigemLeads() {
 
 function Card({ icon: Icon, label, value, hint }) {
   return (
-    <div className="bg-white border border-[#E5E0D8] rounded-sm p-5">
+    <div className="bg-white border border-[#d1dde8] rounded-sm p-5">
       <div className="flex items-center justify-between">
         <div className="lm-overline">{label}</div>
         <Icon className="w-4 h-4 text-[#5C5C5C]" />
       </div>
-      <div className="font-serif text-2xl text-[#2B3A2F] mt-2">{value}</div>
+      <div className="font-serif text-2xl text-[#071d34] mt-2">{value}</div>
       {hint && <div className="text-xs text-[#5C5C5C] mt-1">{hint}</div>}
     </div>
   );

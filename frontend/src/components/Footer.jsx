@@ -19,25 +19,25 @@ export default function Footer({ settings = {} }) {
   ].filter((x) => x.url);
 
   return (
-    <footer className="bg-[#2B3A2F] text-[#E8E2D6] mt-20">
+    <footer className="bg-[#071d34] text-[#E8E2D6] mt-20">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 grid md:grid-cols-4 gap-10">
         <div className="md:col-span-2">
           {s.logo_url ? (
             <img src={s.logo_url} alt="Larissa Magesi" className="h-20 w-auto mb-4 brightness-0 invert opacity-90" />
           ) : (
             <>
-              <div className="font-serif text-3xl text-[#F4F1EB] mb-2">Larissa Magesi</div>
-              <div className="lm-overline !text-[#C5A059] mb-5">Corretora de Imóveis</div>
+              <div className="font-serif text-3xl text-[#f8fafc] mb-2">Larissa Magesi</div>
+              <div className="lm-overline !text-[#c9a66b] mb-5">Corretora de Imóveis</div>
             </>
           )}
-          <p className="text-sm leading-relaxed max-w-md text-[#C9C3B4]">{s.bio}</p>
-          <div className="mt-4 text-xs tracking-[0.2em] uppercase text-[#C5A059]">{s.creci}</div>
+          <p className="text-sm leading-relaxed max-w-md text-[#a8b8cc]">{s.bio}</p>
+          <div className="mt-4 text-xs tracking-[0.2em] uppercase text-[#c9a66b]">{s.creci}</div>
 
           {socials.length > 0 && (
             <div className="mt-6 flex flex-wrap gap-2">
               {socials.map(({ key, icon: Icon, url, label }) => (
                 <a key={key} href={url} target="_blank" rel="noreferrer" aria-label={label} data-testid={`footer-${key}`}
-                  className="w-10 h-10 rounded-full border border-[#3D5142] hover:border-[#C5A059] hover:bg-[#C5A059]/10 text-[#E8E2D6] hover:text-[#C5A059] flex items-center justify-center transition-all">
+                  className="w-10 h-10 rounded-full border border-[#0d2d4c] hover:border-[#c9a66b] hover:bg-[#c9a66b]/10 text-[#E8E2D6] hover:text-[#c9a66b] flex items-center justify-center transition-all">
                   <Icon className="w-4 h-4" />
                 </a>
               ))}
@@ -46,33 +46,34 @@ export default function Footer({ settings = {} }) {
         </div>
 
         <div>
-          <div className="lm-overline !text-[#C5A059] mb-4">Contato</div>
+          <div className="lm-overline !text-[#c9a66b] mb-4">Contato</div>
           <ul className="space-y-3 text-sm">
             <li className="flex items-start gap-2">
               <Phone className="w-4 h-4 mt-0.5 flex-shrink-0" />
-              <a href={`tel:${(s.telefone || "").replace(/\D/g, "")}`} className="hover:text-[#C5A059]" data-testid="footer-phone">{s.telefone}</a>
+              <a href={`tel:${(s.telefone || "").replace(/\D/g, "")}`} className="hover:text-[#c9a66b]" data-testid="footer-phone">{s.telefone}</a>
             </li>
-            <li className="flex items-start gap-2"><Mail className="w-4 h-4 mt-0.5 flex-shrink-0" /> <a href={`mailto:${s.email}`} className="hover:text-[#C5A059] break-all">{s.email}</a></li>
+            <li className="flex items-start gap-2"><Mail className="w-4 h-4 mt-0.5 flex-shrink-0" /> <a href={`mailto:${s.email}`} className="hover:text-[#c9a66b] break-all">{s.email}</a></li>
             <li className="flex items-start gap-2"><MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" /> {s.cidade}</li>
           </ul>
         </div>
 
         <div>
-          <div className="lm-overline !text-[#C5A059] mb-4">Navegação</div>
+          <div className="lm-overline !text-[#c9a66b] mb-4">Navegação</div>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/" className="hover:text-[#C5A059]">Início</Link></li>
-            <li><Link to="/imoveis" className="hover:text-[#C5A059]">Imóveis</Link></li>
-            <li><Link to="/financiamento" className="hover:text-[#C5A059]">Simulação de Financiamento</Link></li>
-            <li><Link to="/sobre" className="hover:text-[#C5A059]">Sobre Larissa</Link></li>
-            <li><Link to="/#contato" className="hover:text-[#C5A059]">Contato</Link></li>
+            <li><Link to="/" className="hover:text-[#c9a66b]">Início</Link></li>
+            <li><Link to="/imoveis" className="hover:text-[#c9a66b]">Imóveis</Link></li>
+            <li><Link to="/financiamento" className="hover:text-[#c9a66b]">Simulação de Financiamento</Link></li>
+            <li><Link to="/sobre" className="hover:text-[#c9a66b]">Sobre Mim</Link></li>
+            <li><Link to="/contato" className="hover:text-[#c9a66b]">Contato</Link></li>
+            <li><Link to="/cadastrar-imovel" className="hover:text-[#c9a66b]">Cadastrar Imóvel</Link></li>
           </ul>
         </div>
       </div>
 
-      <div className="border-t border-[#3D5142]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#C9C3B4]">
+      <div className="border-t border-[#0d2d4c]">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#a8b8cc]">
           <span>© {new Date().getFullYear()} Larissa Magesi Corretora de Imóveis. Todos os direitos reservados.</span>
-          <span className="tracking-[0.22em] uppercase text-[#C5A059]">Bauru / SP · Brasil</span>
+          <span className="tracking-[0.22em] uppercase text-[#c9a66b]">Bauru / SP · Brasil</span>
         </div>
       </div>
     </footer>

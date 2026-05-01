@@ -6,15 +6,36 @@ import {
   LineChart, Line, PieChart, Pie, Cell,
 } from "recharts";
 
-const COLORS = ["#2B3A2F", "#C5A059", "#7A9477", "#8B6D3F", "#4A5D4E", "#A88656", "#5C6E55", "#D4B574", "#3D5142"];
+const COLORS = ["#071d34", "#c9a66b", "#7A9477", "#8B6D3F", "#4A5D4E", "#A88656", "#5C6E55", "#dbbf8a", "#0d2d4c"];
+
+const FAIXAS = [
+  { label: "Até R$ 200k", min: 0, max: 200000 },
+  { label: "R$ 200k – 400k", min: 200000, max: 400000 },
+  { label: "R$ 400k – 600k", min: 400000, max: 600000 },
+  { label: "R$ 600k – 1M", min: 600000, max: 1000000 },
+  { label: "Acima de R$ 1M", min: 1000000, max: Infinity },
+];
+
+function buildBudgetTable(leads) {
+  const tipos = [...new Set(leads.map((l) => l.tipo_imovel).filter(Boolean))].sort();
+  const rows = FAIXAS.map((f) => {
+    const leadsInFaixa = leads.filter((l) => l.orcamento >= f.min && l.orcamento < f.max);
+    const byTipo = {};
+    tipos.forEach((t) => { byTipo[t] = leadsInFaixa.filter((l) => l.tipo_imovel === t).length; });
+    return { faixa: f.label, total: leadsInFaixa.length, byTipo };
+  });
+  return { rows, tipos };
+}
 
 export default function Relatorios() {
   const [s, setS] = useState(null);
   const [insights, setInsights] = useState([]);
+  const [leads, setLeads] = useState([]);
 
   useEffect(() => {
     api.get("/admin/dashboard/stats").then((r) => setS(r.data));
     api.get("/admin/reports/insights").then((r) => setInsights(r.data.insights || []));
+    api.get("/admin/leads").then((r) => setLeads(r.data)).catch(() => {});
   }, []);
 
   if (!s) return <AdminLayout title="Relatórios"><div className="py-24 text-center text-[#5C5C5C]">Carregando…</div></AdminLayout>;
@@ -32,10 +53,10 @@ export default function Relatorios() {
         <Card title="Evolução de leads (6 meses)">
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={s.evolucao_mensal}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E0D8" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#d1dde8" />
               <XAxis dataKey="mes" stroke="#5C5C5C" fontSize={12} />
               <YAxis stroke="#5C5C5C" fontSize={12} />
-              <Tooltip /> <Line type="monotone" dataKey="leads" stroke="#2B3A2F" strokeWidth={2.5} />
+              <Tooltip /> <Line type="monotone" dataKey="leads" stroke="#071d34" strokeWidth={2.5} />
             </LineChart>
           </ResponsiveContainer>
         </Card>
@@ -43,10 +64,10 @@ export default function Relatorios() {
         <Card title="Leads por cidade">
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={s.por_cidade}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E0D8" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#d1dde8" />
               <XAxis dataKey="name" stroke="#5C5C5C" fontSize={11} angle={-20} textAnchor="end" height={60} />
               <YAxis stroke="#5C5C5C" fontSize={12} />
-              <Tooltip /> <Bar dataKey="value" fill="#C5A059" radius={[4, 4, 0, 0]} />
+              <Tooltip /> <Bar dataKey="value" fill="#c9a66b" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
@@ -54,10 +75,10 @@ export default function Relatorios() {
         <Card title="Leads por tipo de imóvel">
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={s.por_tipo.map((x) => ({ ...x, name: TYPE_LABELS[x.name] || x.name }))}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E0D8" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#d1dde8" />
               <XAxis dataKey="name" stroke="#5C5C5C" fontSize={11} />
               <YAxis stroke="#5C5C5C" fontSize={12} />
-              <Tooltip /> <Bar dataKey="value" fill="#2B3A2F" radius={[4, 4, 0, 0]} />
+              <Tooltip /> <Bar dataKey="value" fill="#071d34" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
@@ -65,10 +86,10 @@ export default function Relatorios() {
         <Card title="Funil comercial completo">
           <ResponsiveContainer width="100%" height={320}>
             <BarChart data={s.funil.map((x) => ({ ...x, name: STAGE_LABELS[x.stage] }))} layout="vertical" margin={{ left: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E0D8" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#d1dde8" />
               <XAxis type="number" stroke="#5C5C5C" fontSize={12} />
               <YAxis dataKey="name" type="category" width={140} stroke="#5C5C5C" fontSize={12} />
-              <Tooltip /> <Bar dataKey="count" fill="#C5A059" radius={[0, 4, 4, 0]} />
+              <Tooltip /> <Bar dataKey="count" fill="#c9a66b" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
@@ -94,21 +115,59 @@ export default function Relatorios() {
         <Card title="Origem dos leads">
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={s.por_origem.map((x) => ({ ...x, name: ORIGIN_LABELS[x.name] || x.name }))}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E0D8" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#d1dde8" />
               <XAxis dataKey="name" stroke="#5C5C5C" fontSize={11} />
               <YAxis stroke="#5C5C5C" fontSize={12} />
-              <Tooltip /> <Bar dataKey="value" fill="#2B3A2F" radius={[4, 4, 0, 0]} />
+              <Tooltip /> <Bar dataKey="value" fill="#071d34" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
       </div>
 
-      <div className="mt-8 bg-[#2B3A2F] text-[#F4F1EB] rounded-sm p-8">
-        <div className="lm-overline !text-[#C5A059] mb-3">Insights automáticos</div>
+      {/* Faixa de valor mais buscada */}
+      {leads.length > 0 && (() => {
+        const { rows, tipos } = buildBudgetTable(leads.filter((l) => l.orcamento > 0));
+        return (
+          <div className="mt-5 bg-white border border-[#d1dde8] rounded-sm p-5">
+            <div className="font-serif text-xl text-[#071d34] mb-4">Faixa de valor mais buscada</div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="bg-[#f8fafc] text-xs uppercase tracking-wider text-[#5C5C5C]">
+                    <th className="px-4 py-2 text-left">Faixa</th>
+                    <th className="px-4 py-2 text-center">Total</th>
+                    {tipos.map((t) => <th key={t} className="px-4 py-2 text-center capitalize">{TYPE_LABELS[t] || t}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((r) => (
+                    <tr key={r.faixa} className="border-t border-[#d1dde8]">
+                      <td className="px-4 py-2 font-medium text-[#071d34]">{r.faixa}</td>
+                      <td className="px-4 py-2 text-center">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${r.total > 0 ? "bg-[#c9a66b]/20 text-[#071d34]" : "text-[#5C5C5C]"}`}>
+                          {r.total}
+                        </span>
+                      </td>
+                      {tipos.map((t) => (
+                        <td key={t} className="px-4 py-2 text-center text-[#5C5C5C]">
+                          {r.byTipo[t] || 0}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })()}
+
+      <div className="mt-5 bg-[#071d34] text-[#f8fafc] rounded-sm p-8">
+        <div className="lm-overline !text-[#c9a66b] mb-3">Insights automáticos</div>
         <div className="font-serif text-3xl mb-5">Inteligência comercial</div>
         <ul className="grid md:grid-cols-2 gap-3">
           {insights.map((t, i) => (
-            <li key={i} className="bg-[#3D5142]/60 border border-[#3D5142] rounded-sm px-5 py-4 text-sm leading-relaxed">{t}</li>
+            <li key={i} className="bg-[#0d2d4c]/60 border border-[#0d2d4c] rounded-sm px-5 py-4 text-sm leading-relaxed">{t}</li>
           ))}
         </ul>
       </div>
@@ -118,17 +177,17 @@ export default function Relatorios() {
 
 function KpiMini({ label, value }) {
   return (
-    <div className="bg-white border border-[#E5E0D8] rounded-sm p-5">
+    <div className="bg-white border border-[#d1dde8] rounded-sm p-5">
       <div className="lm-overline">{label}</div>
-      <div className="font-serif text-2xl text-[#2B3A2F] mt-2">{value}</div>
+      <div className="font-serif text-2xl text-[#071d34] mt-2">{value}</div>
     </div>
   );
 }
 
 function Card({ title, children }) {
   return (
-    <div className="bg-white border border-[#E5E0D8] rounded-sm p-5">
-      <div className="font-serif text-xl text-[#2B3A2F] mb-4">{title}</div>
+    <div className="bg-white border border-[#d1dde8] rounded-sm p-5">
+      <div className="font-serif text-xl text-[#071d34] mb-4">{title}</div>
       {children}
     </div>
   );

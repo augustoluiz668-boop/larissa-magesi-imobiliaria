@@ -13,10 +13,10 @@ export default function PropertyCard({ prop }) {
           className="w-full h-64 object-cover"
           loading="lazy"
         />
-        <span className="absolute top-3 left-3 lm-pill-filled lm-pill" style={{ borderColor: "#2B3A2F" }}>
+        <span className="absolute top-3 left-3 lm-pill-filled lm-pill" style={{ borderColor: "#071d34" }}>
           {PURPOSE_LABELS[prop.finalidade]}
         </span>
-        <span className="absolute top-3 right-3 bg-[#F4F1EB]/95 text-[#2B3A2F] text-xs px-3 py-1 rounded-full font-medium">
+        <span className="absolute top-3 right-3 bg-[#f8fafc]/95 text-[#071d34] text-xs px-3 py-1 rounded-full font-medium">
           {TYPE_LABELS[prop.tipo]}
         </span>
       </Link>
@@ -25,11 +25,11 @@ export default function PropertyCard({ prop }) {
         <div className="flex items-center gap-1 text-xs text-[#5C5C5C]">
           <MapPin className="w-3 h-3" /> {prop.bairro}, {prop.cidade}
         </div>
-        <Link to={`/imoveis/${prop.id}`} className="font-serif text-xl text-[#2B3A2F] mt-2 leading-tight hover:text-[#3D5142]">
+        <Link to={`/imoveis/${prop.id}`} className="font-serif text-xl text-[#071d34] mt-2 leading-tight hover:text-[#0d2d4c]">
           {prop.titulo}
         </Link>
 
-        <div className="mt-3 text-2xl font-serif text-[#2B3A2F]">
+        <div className="mt-3 text-2xl font-serif text-[#071d34]">
           {formatMoney(prop.valor, prop.finalidade)}
         </div>
 
@@ -50,7 +50,7 @@ export default function PropertyCard({ prop }) {
           <Link
             to={`/imoveis/${prop.id}`}
             data-testid={`property-interest-${prop.id}`}
-            className="flex-1 text-center text-sm py-2.5 border border-[#2B3A2F] text-[#2B3A2F] rounded-full hover:bg-[#2B3A2F] hover:text-[#F4F1EB] transition-colors"
+            className="flex-1 text-center text-sm py-2.5 border border-[#071d34] text-[#071d34] rounded-full hover:bg-[#071d34] hover:text-[#f8fafc] transition-colors"
           >
             Tenho interesse
           </Link>
@@ -59,7 +59,7 @@ export default function PropertyCard({ prop }) {
             target="_blank"
             rel="noreferrer"
             data-testid={`property-wa-${prop.id}`}
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2B3A2F] text-[#F4F1EB] hover:bg-[#1F2A22]"
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-[#071d34] text-[#f8fafc] hover:bg-[#040f1d]"
             aria-label="WhatsApp"
           >
             <MessageCircle className="w-4 h-4" />

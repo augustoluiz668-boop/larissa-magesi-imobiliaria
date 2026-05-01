@@ -61,12 +61,12 @@ export default function FunilPage() {
                 onDragOver={(e) => onDragOver(e, stage)}
                 onDragLeave={() => setOver(null)}
                 onDrop={(e) => onDrop(e, stage)}
-                className={`kanban-col w-80 flex-shrink-0 rounded-sm border ${stageTint[stage]} ${over === stage ? "dragover ring-2 ring-[#C5A059]" : ""}`}
+                className={`kanban-col w-80 flex-shrink-0 rounded-sm border ${stageTint[stage]} ${over === stage ? "dragover ring-2 ring-[#c9a66b]" : ""}`}
                 data-testid={`kanban-col-${stage}`}
               >
                 <div className="px-4 pt-4 pb-2 flex items-center justify-between">
                   <div>
-                    <div className="font-serif text-lg text-[#2B3A2F] leading-tight">{STAGE_LABELS[stage]}</div>
+                    <div className="font-serif text-lg text-[#071d34] leading-tight">{STAGE_LABELS[stage]}</div>
                     <div className="text-xs text-[#5C5C5C]">{items.length} lead{items.length === 1 ? "" : "s"}</div>
                   </div>
                 </div>
@@ -77,7 +77,7 @@ export default function FunilPage() {
                       draggable
                       onDragStart={(e) => onDragStart(e, l.id)}
                       data-testid={`kanban-card-${l.id}`}
-                      className={`kanban-card bg-white border border-[#E5E0D8] rounded-sm p-4 shadow-sm ${draggingId === l.id ? "dragging" : ""}`}
+                      className={`kanban-card bg-white border border-[#d1dde8] rounded-sm p-4 shadow-sm ${draggingId === l.id ? "dragging" : ""}`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="font-medium text-[#2C2C2C] leading-tight">{l.nome}</div>
@@ -91,8 +91,8 @@ export default function FunilPage() {
                       <div className="mt-2 flex items-center justify-between">
                         <span className="lm-pill text-[10px]">{ORIGIN_LABELS[l.origem]}</span>
                         <div className="flex gap-1">
-                          <a href={waLink(l.whatsapp, `Olá ${l.nome}!`)} target="_blank" rel="noreferrer" className="p-1.5 rounded-full bg-[#2B3A2F] text-[#F4F1EB] hover:bg-[#1F2A22]" data-testid={`kanban-wa-${l.id}`}><MessageCircle className="w-3 h-3" /></a>
-                          <button onClick={() => setSelected(l)} className="p-1.5 rounded-full border border-[#E5E0D8] hover:bg-[#F4F1EB]" data-testid={`kanban-view-${l.id}`}><Eye className="w-3 h-3" /></button>
+                          <a href={waLink(l.whatsapp, `Olá ${l.nome}!`)} target="_blank" rel="noreferrer" className="p-1.5 rounded-full bg-[#071d34] text-[#f8fafc] hover:bg-[#040f1d]" data-testid={`kanban-wa-${l.id}`}><MessageCircle className="w-3 h-3" /></a>
+                          <button onClick={() => setSelected(l)} className="p-1.5 rounded-full border border-[#d1dde8] hover:bg-[#f8fafc]" data-testid={`kanban-view-${l.id}`}><Eye className="w-3 h-3" /></button>
                         </div>
                       </div>
                     </div>

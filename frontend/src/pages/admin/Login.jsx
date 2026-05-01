@@ -29,25 +29,25 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen grid md:grid-cols-2 bg-[#F4F1EB]">
+    <div className="min-h-screen grid md:grid-cols-2 bg-[#f8fafc]">
       <div className="hidden md:block relative">
         <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1400&q=85"
           alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-[#2B3A2F]/65" />
-        <div className="relative h-full flex flex-col justify-between p-12 text-[#F4F1EB]">
-          <Link to="/" className="flex items-center gap-2 text-sm text-[#C5A059]"><ArrowLeft className="w-4 h-4" /> Voltar ao site</Link>
+        <div className="absolute inset-0 bg-[#071d34]/65" />
+        <div className="relative h-full flex flex-col justify-between p-12 text-[#f8fafc]">
+          <Link to="/" className="flex items-center gap-2 text-sm text-[#c9a66b]"><ArrowLeft className="w-4 h-4" /> Voltar ao site</Link>
           <div>
-            <div className="lm-overline !text-[#C5A059] mb-3">Central da Corretora</div>
+            <div className="lm-overline !text-[#c9a66b] mb-3">Central da Corretora</div>
             <h1 className="font-serif text-5xl leading-tight">Leads, imóveis e oportunidades<br/>em um só lugar.</h1>
-            <p className="text-[#C9C3B4] mt-4 max-w-md">Acompanhe todo o funil comercial, organize atendimentos e transforme contatos em negócios fechados.</p>
+            <p className="text-[#a8b8cc] mt-4 max-w-md">Acompanhe todo o funil comercial, organize atendimentos e transforme contatos em negócios fechados.</p>
           </div>
-          <div className="text-xs tracking-[0.25em] uppercase text-[#C5A059]">Larissa Magesi · CRECI 290524-F</div>
+          <div className="text-xs tracking-[0.25em] uppercase text-[#c9a66b]">Larissa Magesi · CRECI 290524-F</div>
         </div>
       </div>
 
       <div className="flex items-center justify-center p-8">
-        <form onSubmit={submit} data-testid="login-form" className="w-full max-w-md bg-white border border-[#E5E0D8] rounded-sm p-10">
-          <div className="font-serif text-3xl text-[#2B3A2F]">Entrar</div>
+        <form onSubmit={submit} data-testid="login-form" className="w-full max-w-md bg-white border border-[#d1dde8] rounded-sm p-10">
+          <div className="font-serif text-3xl text-[#071d34]">Entrar</div>
           <p className="text-sm text-[#5C5C5C] mt-1">Acesse sua central de leads, imóveis e oportunidades imobiliárias.</p>
 
           <div className="mt-8 space-y-4">
@@ -67,7 +67,7 @@ export default function Login() {
             </button>
           </div>
 
-          <div className="text-xs text-[#5C5C5C] mt-6 p-3 bg-[#F4F1EB] rounded-sm">
+          <div className="text-xs text-[#5C5C5C] mt-6 p-3 bg-[#f8fafc] rounded-sm">
             <div className="lm-overline mb-1">Acesso demo</div>
             <div>larissa@magesi.com · Larissa@2026</div>
           </div>

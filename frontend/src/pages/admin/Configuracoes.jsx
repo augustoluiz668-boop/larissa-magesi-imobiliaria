@@ -65,6 +65,17 @@ export default function Configuracoes() {
           </div>
         </Section>
 
+        <Section title="Textos da Homepage">
+          <Field label="Título principal do hero" {...f("hero_titulo")} colSpan placeholder="Ex: Seu próximo endereço começa aqui" />
+          <Field label="Subtítulo do hero" {...f("hero_subtitulo")} colSpan placeholder="Ex: Compra, venda, locação..." />
+        </Section>
+
+        <Section title="Texto de apresentação (Sobre Mim)">
+          <div className="md:col-span-2"><label className="lm-label">Apresentação curta (aparece na sidebar e meta)</label>
+            <textarea rows={3} className="lm-input" {...f("sobre_apresentacao")} placeholder="Frase ou parágrafo curto de apresentação..." />
+          </div>
+        </Section>
+
         <Section title="Simulação de financiamento">
           <Field label="Taxa de juros anual (% a.a.)" type="number" {...f("finance_rate_annual")} />
         </Section>
@@ -79,18 +90,18 @@ export default function Configuracoes() {
 
 function Section({ title, children }) {
   return (
-    <div className="bg-white border border-[#E5E0D8] rounded-sm p-6">
-      <div className="font-serif text-xl text-[#2B3A2F] mb-4">{title}</div>
+    <div className="bg-white border border-[#d1dde8] rounded-sm p-6">
+      <div className="font-serif text-xl text-[#071d34] mb-4">{title}</div>
       <div className="grid md:grid-cols-2 gap-4">{children}</div>
     </div>
   );
 }
 
-function Field({ label, value, onChange, type = "text", testid, colSpan }) {
+function Field({ label, value, onChange, type = "text", testid, colSpan, placeholder }) {
   return (
     <div className={colSpan ? "md:col-span-2" : ""}>
       <label className="lm-label">{label}</label>
-      <input type={type} className="lm-input" value={value} onChange={onChange} data-testid={testid} />
+      <input type={type} className="lm-input" value={value} onChange={onChange} data-testid={testid} placeholder={placeholder} />
     </div>
   );
 }

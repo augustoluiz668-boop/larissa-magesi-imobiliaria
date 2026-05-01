@@ -118,6 +118,17 @@ class PropertyIn(BaseModel):
     lat: Optional[float] = None
     lng: Optional[float] = None
     featured_photo: int = 0
+    complemento: Optional[str] = ""
+    terreno_m2: Optional[float] = 0
+    suites: int = 0
+    edicula: bool = False
+    com_placa: bool = False
+    exclusivo: bool = False
+    piscina: bool = False
+    quintal: bool = False
+    elevador: bool = False
+    varanda: bool = False
+    observacao_interna: Optional[str] = ""
 
 
 class Property(PropertyIn):
@@ -226,6 +237,9 @@ class Settings(BaseModel):
     finance_rate_annual: Optional[float] = 10.49
     logo_url: Optional[str] = ""
     photo_url: Optional[str] = ""
+    hero_titulo: Optional[str] = ""
+    hero_subtitulo: Optional[str] = ""
+    sobre_apresentacao: Optional[str] = ""
 
 
 class FinancingIn(BaseModel):
@@ -338,6 +352,26 @@ async def public_testimonials():
     return await db.testimonials.find({}, {"_id": 0}).to_list(100)
 
 
+@api.get("/public/cities")
+async def public_cities():
+    """Return distinct cities and their neighborhoods from active properties."""
+    pipeline = [
+        {"$match": {"status": {"$in": ["disponivel", "reservado"]}}},
+        {"$group": {"_id": {"cidade": "$cidade", "bairro": "$bairro"}}},
+        {"$sort": {"_id.cidade": 1, "_id.bairro": 1}},
+    ]
+    rows = await db.properties.aggregate(pipeline).to_list(500)
+    result: dict = {}
+    for r in rows:
+        cidade = (r["_id"].get("cidade") or "").strip()
+        bairro = (r["_id"].get("bairro") or "").strip()
+        if cidade:
+            result.setdefault(cidade, [])
+            if bairro and bairro not in result[cidade]:
+                result[cidade].append(bairro)
+    return result
+
+
 @api.get("/public/properties", response_model=List[Property])
 async def public_properties(
     cidade: Optional[str] = None,
@@ -351,6 +385,11 @@ async def public_properties(
     aceita_financiamento: Optional[bool] = None,
     aceita_consorcio: Optional[bool] = None,
     aceita_permuta: Optional[bool] = None,
+    piscina: Optional[bool] = None,
+    edicula: Optional[bool] = None,
+    elevador: Optional[bool] = None,
+    varanda: Optional[bool] = None,
+    quintal: Optional[bool] = None,
     destaque: Optional[bool] = None,
     limit: int = 60,
 ):
@@ -380,6 +419,16 @@ async def public_properties(
         q["aceita_consorcio"] = True
     if aceita_permuta is True:
         q["aceita_permuta"] = True
+    if piscina is True:
+        q["piscina"] = True
+    if edicula is True:
+        q["edicula"] = True
+    if elevador is True:
+        q["elevador"] = True
+    if varanda is True:
+        q["varanda"] = True
+    if quintal is True:
+        q["quintal"] = True
     if destaque is True:
         q["destaque"] = True
     return await db.properties.find(q, {"_id": 0}).to_list(limit)
@@ -476,6 +525,27 @@ async def admin_delete_property(pid: str, user=Depends(get_current_user)):
 
 
 # ---------- Admin: leads ----------
+@api.post("/admin/leads", response_model=Lead, status_code=201)
+async def admin_create_lead(data: LeadIn, user=Depends(get_current_user)):
+    now = datetime.now(timezone.utc).isoformat()
+    lead = {
+        **data.model_dump(),
+        "id": str(uuid.uuid4()),
+        "stage": "novo",
+        "temperatura": "morno",
+        "observacoes": "",
+        "proximo_followup": "",
+        "historico": [{"data": now, "texto": f"Lead criado manualmente por {user.get('name', 'admin')}"}],
+        "imoveis_enviados": [],
+        "resultado": "",
+        "motivo_perda": "",
+        "created_at": now,
+        "updated_at": now,
+    }
+    await db.leads.insert_one(lead)
+    return await db.leads.find_one({"id": lead["id"]}, {"_id": 0})
+
+
 @api.get("/admin/leads", response_model=List[Lead])
 async def admin_list_leads(
     stage: Optional[str] = None,

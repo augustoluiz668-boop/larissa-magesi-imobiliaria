@@ -26,7 +26,7 @@ export default function About({ settings = {} }) {
   return (
     <>
       {/* HERO SOBRE */}
-      <section className="bg-white border-b border-[#E5E0D8]">
+      <section className="bg-white border-b border-[#d1dde8]">
         <div className="max-w-7xl mx-auto px-6 md:px-10 py-20 grid md:grid-cols-12 gap-12 items-center">
           <div className="md:col-span-5">
             <img
@@ -37,28 +37,36 @@ export default function About({ settings = {} }) {
             />
           </div>
           <div className="md:col-span-7 md:pl-6">
-            <div className="lm-overline mb-4">Sobre Larissa Magesi</div>
-            <h1 className="font-serif text-5xl md:text-6xl text-[#2B3A2F] leading-[1.02]">
-              Uma corretora preparada para orientar decisões importantes.
+            <div className="lm-overline mb-4">Sobre Mim</div>
+            <h1 className="font-serif text-5xl md:text-6xl text-[#071d34] leading-[1.02]">
+              Preparada para orientar as decisões mais importantes da sua vida.
             </h1>
             <div className="lm-divider mt-6 mb-8"></div>
             <p className="text-[#5C5C5C] leading-relaxed mb-5">
-              Com atuação em Bauru e região, ofereço atendimento próximo, consultivo e humanizado. Meu papel é acompanhar você
-              desde a primeira conversa até o momento da assinatura das chaves — com informação clara, segurança jurídica e visão de mercado.
+              Atuando no mercado imobiliário de Bauru há mais de 10 anos, construí minha trajetória com base em relacionamento,
+              confiança e resultados consistentes. Inscrita no CRECI 290524-F, desenvolvi uma atuação voltada para entender
+              profundamente o perfil de cada cliente — seja na busca pelo primeiro imóvel, no investimento estratégico ou na
+              venda com segurança.
+            </p>
+            <p className="text-[#5C5C5C] leading-relaxed mb-5">
+              Meu trabalho abrange imóveis residenciais e oportunidades de investimento, incluindo compra, venda, locação,
+              permuta, financiamento bancário, consórcio imobiliário, avaliação e regularização de imóveis. Acredito que
+              uma boa negociação começa muito antes do contrato — começa na escuta, no planejamento e na honestidade.
             </p>
             <p className="text-[#5C5C5C] leading-relaxed mb-8">
-              Atuo com compra, venda, locação, permuta, financiamento bancário e consórcio imobiliário, ajudando famílias,
-              investidores e empreendedores a encontrar o imóvel ideal para cada momento da vida.
+              Como cristã, esposa e mãe, carrego valores que refletem diretamente no meu atendimento: empatia, responsabilidade
+              e compromisso genuíno com o bem-estar de cada família que atendo. Estou preparada para te auxiliar desde a
+              primeira conversa até o pós-venda — com informação clara, segurança jurídica e visão de mercado.
             </p>
 
             <ul className="grid sm:grid-cols-2 gap-3 text-sm text-[#2C2C2C]">
               {["Atendimento próximo e consultivo", "Conhecimento do mercado de Bauru", "Segurança em cada negociação",
-                "Apoio em financiamento e consórcio", "Acompanhamento completo", "Suporte em permutas e avaliações"].map((x) => (
-                <li key={x} className="flex items-start gap-2"><Check className="w-4 h-4 text-[#C5A059] mt-0.5" /> {x}</li>
+                "Apoio em financiamento e consórcio", "Avaliação e regularização de imóveis", "Suporte do primeiro contato ao pós-venda"].map((x) => (
+                <li key={x} className="flex items-start gap-2"><Check className="w-4 h-4 text-[#c9a66b] mt-0.5" /> {x}</li>
               ))}
             </ul>
 
-            <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-5 border-t border-[#E5E0D8] pt-8 text-sm">
+            <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-5 border-t border-[#d1dde8] pt-8 text-sm">
               <div><div className="lm-overline mb-1">CRECI</div><div>{settings.creci || "—"}</div></div>
               <div><div className="lm-overline mb-1">Cidade</div><div>{settings.cidade || "—"}</div></div>
               <div><div className="lm-overline mb-1">Instagram</div><div>{settings.instagram || "—"}</div></div>
@@ -69,7 +77,7 @@ export default function About({ settings = {} }) {
               <div className="mt-8 flex flex-wrap gap-3">
                 {socials.map(({ icon: Icon, url, label }) => (
                   <a key={label} href={url} target="_blank" rel="noreferrer" data-testid={`about-social-${label.toLowerCase()}`}
-                    className="w-11 h-11 rounded-full bg-[#F4F1EB] border border-[#E5E0D8] hover:border-[#C5A059] hover:bg-[#C5A059]/10 text-[#2B3A2F] flex items-center justify-center transition-all" aria-label={label}>
+                    className="w-11 h-11 rounded-full bg-[#f8fafc] border border-[#d1dde8] hover:border-[#c9a66b] hover:bg-[#c9a66b]/10 text-[#071d34] flex items-center justify-center transition-all" aria-label={label}>
                     <Icon className="w-5 h-5" />
                   </a>
                 ))}
@@ -83,36 +91,36 @@ export default function About({ settings = {} }) {
       <section className="max-w-7xl mx-auto px-6 md:px-10 py-24">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <div className="lm-overline mb-3">Compromisso profissional</div>
-          <h2 className="font-serif text-4xl md:text-5xl text-[#2B3A2F] leading-tight">Missão, Visão e Valores</h2>
+          <h2 className="font-serif text-4xl md:text-5xl text-[#071d34] leading-tight">Missão, Visão e Valores</h2>
           <div className="lm-divider mt-6 mx-auto"></div>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-white border border-[#E5E0D8] rounded-sm p-8" data-testid="card-missao">
-            <div className="w-12 h-12 rounded-full bg-[#2B3A2F] text-[#C5A059] flex items-center justify-center mb-5"><Heart className="w-5 h-5" strokeWidth={1.6} /></div>
-            <div className="font-serif text-2xl text-[#2B3A2F] mb-3">Missão</div>
+          <div className="bg-white border border-[#d1dde8] rounded-sm p-8" data-testid="card-missao">
+            <div className="w-12 h-12 rounded-full bg-[#071d34] text-[#c9a66b] flex items-center justify-center mb-5"><Heart className="w-5 h-5" strokeWidth={1.6} /></div>
+            <div className="font-serif text-2xl text-[#071d34] mb-3">Missão</div>
             <p className="text-[#5C5C5C] leading-relaxed text-sm">{settings.missao}</p>
           </div>
-          <div className="bg-[#2B3A2F] text-[#F4F1EB] rounded-sm p-8" data-testid="card-visao">
-            <div className="w-12 h-12 rounded-full bg-[#C5A059] text-[#2B3A2F] flex items-center justify-center mb-5"><Compass className="w-5 h-5" strokeWidth={1.6} /></div>
+          <div className="bg-[#071d34] text-[#f8fafc] rounded-sm p-8" data-testid="card-visao">
+            <div className="w-12 h-12 rounded-full bg-[#c9a66b] text-[#071d34] flex items-center justify-center mb-5"><Compass className="w-5 h-5" strokeWidth={1.6} /></div>
             <div className="font-serif text-2xl mb-3">Visão</div>
-            <p className="text-[#C9C3B4] leading-relaxed text-sm">{settings.visao}</p>
+            <p className="text-[#a8b8cc] leading-relaxed text-sm">{settings.visao}</p>
           </div>
-          <div className="bg-white border border-[#E5E0D8] rounded-sm p-8" data-testid="card-valores">
-            <div className="w-12 h-12 rounded-full bg-[#C5A059]/15 text-[#C5A059] flex items-center justify-center mb-5"><Award className="w-5 h-5" strokeWidth={1.6} /></div>
-            <div className="font-serif text-2xl text-[#2B3A2F] mb-3">Valores</div>
+          <div className="bg-white border border-[#d1dde8] rounded-sm p-8" data-testid="card-valores">
+            <div className="w-12 h-12 rounded-full bg-[#c9a66b]/15 text-[#c9a66b] flex items-center justify-center mb-5"><Award className="w-5 h-5" strokeWidth={1.6} /></div>
+            <div className="font-serif text-2xl text-[#071d34] mb-3">Valores</div>
             <ul className="space-y-2 text-sm text-[#5C5C5C]">
-              {valores.map((v) => <li key={v} className="flex items-start gap-2"><Lightbulb className="w-3.5 h-3.5 text-[#C5A059] mt-1 flex-shrink-0" /> {v}</li>)}
+              {valores.map((v) => <li key={v} className="flex items-start gap-2"><Lightbulb className="w-3.5 h-3.5 text-[#c9a66b] mt-1 flex-shrink-0" /> {v}</li>)}
             </ul>
           </div>
         </div>
       </section>
 
       {/* DEPOIMENTOS */}
-      <section className="bg-[#EEE8DB] border-y border-[#E5E0D8]">
+      <section className="bg-[#eef2f7] border-y border-[#d1dde8]">
         <div className="max-w-7xl mx-auto px-6 md:px-10 py-24">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <div className="lm-overline mb-3">Depoimentos</div>
-            <h2 className="font-serif text-4xl md:text-5xl text-[#2B3A2F]">Clientes que confiaram em cada etapa</h2>
+            <h2 className="font-serif text-4xl md:text-5xl text-[#071d34]">Clientes que confiaram em cada etapa</h2>
             <div className="lm-divider mt-6 mx-auto"></div>
           </div>
           {depo.length === 0 ? (
@@ -120,11 +128,11 @@ export default function About({ settings = {} }) {
           ) : (
             <div className="grid md:grid-cols-3 gap-5">
               {depo.map((d) => (
-                <figure key={d.id} data-testid={`testimonial-${d.id}`} className="bg-white border border-[#E5E0D8] p-8 rounded-sm">
-                  <div className="flex items-center gap-1 text-[#C5A059]">
+                <figure key={d.id} data-testid={`testimonial-${d.id}`} className="bg-white border border-[#d1dde8] p-8 rounded-sm">
+                  <div className="flex items-center gap-1 text-[#c9a66b]">
                     {Array.from({ length: d.rating }).map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
                   </div>
-                  <blockquote className="font-serif text-xl text-[#2B3A2F] leading-snug mt-5">“{d.texto}”</blockquote>
+                  <blockquote className="font-serif text-xl text-[#071d34] leading-snug mt-5">“{d.texto}”</blockquote>
                   <figcaption className="mt-6">
                     <div className="font-medium text-[#2C2C2C]">{d.nome}</div>
                     <div className="text-xs tracking-wider uppercase text-[#5C5C5C] mt-0.5">{d.cidade}</div>

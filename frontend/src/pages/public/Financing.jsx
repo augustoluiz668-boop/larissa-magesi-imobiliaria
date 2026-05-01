@@ -79,30 +79,30 @@ export default function Financing({ settings = {} }) {
   return (
     <div>
       {/* HERO */}
-      <section className="bg-[#2B3A2F] text-[#F4F1EB]">
+      <section className="bg-[#071d34] text-[#f8fafc]">
         <div className="max-w-7xl mx-auto px-6 md:px-10 py-20 grid md:grid-cols-2 gap-10 items-center">
           <div>
-            <div className="text-xs tracking-[0.25em] uppercase text-[#C5A059] mb-5">Simulação de Financiamento</div>
+            <div className="text-xs tracking-[0.25em] uppercase text-[#c9a66b] mb-5">Simulação de Financiamento</div>
             <h1 className="font-serif text-5xl md:text-6xl leading-tight">
               Realize o sonho da casa própria com clareza
             </h1>
-            <p className="text-[#C9C3B4] mt-6 max-w-md leading-relaxed">
-              Em menos de 1 minuto, simule sua parcela considerando FGTS, entrada e prazo. A Larissa analisa seu perfil e entra em contato com as melhores condições reais do mercado.
+            <p className="text-[#a8b8cc] mt-6 max-w-md leading-relaxed">
+              Em menos de 1 minuto, simule sua parcela considerando FGTS, entrada e prazo. Analisarei seu perfil e entrarei em contato com as melhores condições reais do mercado para você.
             </p>
             <div className="mt-8 grid grid-cols-2 gap-4 max-w-md text-sm">
-              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#C5A059]" /> 100% gratuito</div>
-              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#C5A059]" /> Sem compromisso</div>
-              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#C5A059]" /> Atendimento humano</div>
-              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#C5A059]" /> Orientação completa</div>
+              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> 100% gratuito</div>
+              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Sem compromisso</div>
+              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Atendimento humano</div>
+              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Orientação completa</div>
             </div>
           </div>
-          <div className="bg-[#3D5142]/50 border border-[#3D5142] rounded-sm p-8">
-            <div className="lm-overline !text-[#C5A059] mb-4">Como funciona o financiamento</div>
+          <div className="bg-[#0d2d4c]/50 border border-[#0d2d4c] rounded-sm p-8">
+            <div className="lm-overline !text-[#c9a66b] mb-4">Como funciona o financiamento</div>
             <ol className="space-y-4 text-sm leading-relaxed text-[#E8E2D6]">
-              <li><span className="font-serif text-[#C5A059] text-lg mr-2">1.</span> Você simula com seus dados de renda, FGTS e entrada.</li>
-              <li><span className="font-serif text-[#C5A059] text-lg mr-2">2.</span> A Larissa recebe sua solicitação e analisa seu perfil.</li>
-              <li><span className="font-serif text-[#C5A059] text-lg mr-2">3.</span> Apresentamos imóveis compatíveis e bancos com melhor condição.</li>
-              <li><span className="font-serif text-[#C5A059] text-lg mr-2">4.</span> Acompanhamos você até a assinatura e entrega das chaves.</li>
+              <li><span className="font-serif text-[#c9a66b] text-lg mr-2">1.</span> Você simula com seus dados de renda, FGTS e entrada.</li>
+              <li><span className="font-serif text-[#c9a66b] text-lg mr-2">2.</span> Recebo sua solicitação e analiso seu perfil com atenção.</li>
+              <li><span className="font-serif text-[#c9a66b] text-lg mr-2">3.</span> Apresento imóveis compatíveis e os bancos com melhor condição.</li>
+              <li><span className="font-serif text-[#c9a66b] text-lg mr-2">4.</span> Acompanho você até a assinatura e entrega das chaves.</li>
             </ol>
           </div>
         </div>
@@ -110,19 +110,19 @@ export default function Financing({ settings = {} }) {
 
       {/* DISCLAIMER */}
       <section className="max-w-7xl mx-auto px-6 md:px-10 pt-10">
-        <div className="bg-[#C5A059]/10 border border-[#C5A059]/40 rounded-sm px-5 py-4 flex items-start gap-3 text-sm text-[#5C5C5C]">
-          <Info className="w-4 h-4 text-[#C5A059] mt-0.5 flex-shrink-0" />
+        <div className="bg-[#c9a66b]/10 border border-[#c9a66b]/40 rounded-sm px-5 py-4 flex items-start gap-3 text-sm text-[#5C5C5C]">
+          <Info className="w-4 h-4 text-[#c9a66b] mt-0.5 flex-shrink-0" />
           <div>
-            <strong className="text-[#2B3A2F]">Importante:</strong> os valores exibidos são apenas simulações orientativas (Sistema SAC). As condições reais — incluindo taxa de juros — dependem do banco, comprovação de renda, faixa do imóvel e relacionamento bancário. <strong>A Larissa entrará em contato com as melhores alternativas reais para o seu caso.</strong>
+            <strong className="text-[#071d34]">Importante:</strong> os valores exibidos são apenas simulações orientativas (Sistema SAC). As condições reais — incluindo taxa de juros — dependem do banco, comprovação de renda, faixa do imóvel e relacionamento bancário. <strong>A Larissa entrará em contato com as melhores alternativas reais para o seu caso.</strong>
           </div>
         </div>
       </section>
 
       {/* FORMULÁRIO + SIMULAÇÃO */}
       <section className="max-w-7xl mx-auto px-6 md:px-10 py-14 grid lg:grid-cols-5 gap-8">
-        <form onSubmit={submit} data-testid="financing-form" className="lg:col-span-3 bg-white border border-[#E5E0D8] rounded-sm p-8 space-y-5">
+        <form onSubmit={submit} data-testid="financing-form" className="lg:col-span-3 bg-white border border-[#d1dde8] rounded-sm p-8 space-y-5">
           <div>
-            <div className="font-serif text-2xl text-[#2B3A2F]">Seus dados</div>
+            <div className="font-serif text-2xl text-[#071d34]">Seus dados</div>
             <p className="text-xs text-[#5C5C5C] mt-1">* Campos obrigatórios</p>
           </div>
 
@@ -133,22 +133,22 @@ export default function Financing({ settings = {} }) {
             <div><label className="lm-label">Data de nascimento</label><input type="date" className="lm-input" value={form.data_nascimento} onChange={(e) => set("data_nascimento", e.target.value)} data-testid="fin-nascimento" /></div>
             <div><label className="lm-label">Renda bruta familiar (R$) *</label><input required type="number" className="lm-input" value={form.renda_bruta} onChange={(e) => set("renda_bruta", e.target.value)} data-testid="fin-renda" /></div>
             <div className="flex items-end gap-4">
-              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" className="accent-[#2B3A2F]" checked={form.tem_dependentes} onChange={(e) => set("tem_dependentes", e.target.checked)} data-testid="fin-dep" /> Tem dependentes?</label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" className="accent-[#071d34]" checked={form.tem_dependentes} onChange={(e) => set("tem_dependentes", e.target.checked)} data-testid="fin-dep" /> Tem dependentes?</label>
             </div>
           </div>
 
-          <div className="border-t border-[#E5E0D8] pt-5">
-            <div className="font-serif text-lg text-[#2B3A2F] mb-3">FGTS e entrada</div>
+          <div className="border-t border-[#d1dde8] pt-5">
+            <div className="font-serif text-lg text-[#071d34] mb-3">FGTS e entrada</div>
             <div className="grid sm:grid-cols-2 gap-4">
-              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" className="accent-[#2B3A2F]" checked={form.tem_fgts} onChange={(e) => set("tem_fgts", e.target.checked)} data-testid="fin-tem-fgts" /> Tem FGTS disponível?</label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" className="accent-[#071d34]" checked={form.tem_fgts} onChange={(e) => set("tem_fgts", e.target.checked)} data-testid="fin-tem-fgts" /> Tem FGTS disponível?</label>
               {form.tem_fgts && <div><label className="lm-label">Valor do FGTS (R$)</label><input type="number" className="lm-input" value={form.valor_fgts} onChange={(e) => set("valor_fgts", e.target.value)} data-testid="fin-val-fgts" /></div>}
-              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" className="accent-[#2B3A2F]" checked={form.tem_entrada} onChange={(e) => set("tem_entrada", e.target.checked)} data-testid="fin-tem-entrada" /> Tem entrada?</label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" className="accent-[#071d34]" checked={form.tem_entrada} onChange={(e) => set("tem_entrada", e.target.checked)} data-testid="fin-tem-entrada" /> Tem entrada?</label>
               {form.tem_entrada && <div><label className="lm-label">Valor da entrada (R$)</label><input type="number" className="lm-input" value={form.valor_entrada} onChange={(e) => set("valor_entrada", e.target.value)} data-testid="fin-val-entrada" /></div>}
             </div>
           </div>
 
-          <div className="border-t border-[#E5E0D8] pt-5">
-            <div className="font-serif text-lg text-[#2B3A2F] mb-3">Expectativa</div>
+          <div className="border-t border-[#d1dde8] pt-5">
+            <div className="font-serif text-lg text-[#071d34] mb-3">Expectativa</div>
             <div className="grid sm:grid-cols-3 gap-4">
               <div><label className="lm-label">Parcela que gostaria de pagar (R$)</label><input type="number" className="lm-input" value={form.parcela_desejada} onChange={(e) => set("parcela_desejada", e.target.value)} data-testid="fin-parcela" /></div>
               <div><label className="lm-label">Valor do imóvel pretendido (R$) *</label><input required type="number" className="lm-input" value={form.valor_imovel} onChange={(e) => set("valor_imovel", e.target.value)} data-testid="fin-valor-imovel" /></div>
@@ -167,10 +167,10 @@ export default function Financing({ settings = {} }) {
           </button>
 
           {submitted && (
-            <div className="border border-[#C5A059] bg-[#C5A059]/10 rounded-sm p-4 flex items-start gap-3 text-sm">
-              <ShieldCheck className="w-5 h-5 text-[#C5A059] mt-0.5" />
+            <div className="border border-[#c9a66b] bg-[#c9a66b]/10 rounded-sm p-4 flex items-start gap-3 text-sm">
+              <ShieldCheck className="w-5 h-5 text-[#c9a66b] mt-0.5" />
               <div>
-                <strong className="text-[#2B3A2F]">Pronto!</strong> A Larissa recebeu sua solicitação e entrará em contato no seu WhatsApp com as melhores opções reais para o seu perfil.
+                <strong className="text-[#071d34]">Pronto!</strong> Recebi sua solicitação e entrarei em contato no seu WhatsApp com as melhores opções reais para o seu perfil.
                 <a href={waLink(settings.whatsapp, `Olá Larissa! Acabei de preencher a simulação de financiamento em seu site.`)} target="_blank" rel="noreferrer" className="ml-2 font-medium underline">Falar agora <ArrowRight className="w-3 h-3 inline" /></a>
               </div>
             </div>
@@ -179,24 +179,24 @@ export default function Financing({ settings = {} }) {
 
         {/* Resultado ao vivo */}
         <aside className="lg:col-span-2">
-          <div className="sticky top-28 bg-[#2B3A2F] text-[#F4F1EB] rounded-sm p-8" data-testid="financing-result">
-            <div className="lm-overline !text-[#C5A059] mb-2">Sua simulação ao vivo</div>
+          <div className="sticky top-28 bg-[#071d34] text-[#f8fafc] rounded-sm p-8" data-testid="financing-result">
+            <div className="lm-overline !text-[#c9a66b] mb-2">Sua simulação ao vivo</div>
             <div className="font-serif text-2xl mb-6">Sistema SAC · {taxa.toFixed(2)}% a.a.</div>
             {!sim ? (
-              <p className="text-[#C9C3B4] text-sm">Preencha o valor do imóvel e o prazo para ver a simulação.</p>
+              <p className="text-[#a8b8cc] text-sm">Preencha o valor do imóvel e o prazo para ver a simulação.</p>
             ) : (
               <div className="space-y-4">
                 <ResultRow label="Valor financiado" value={formatMoney(sim.financiado)} />
                 <ResultRow label="Entrada + FGTS" value={formatMoney(sim.entradaTotal)} />
-                <div className="bg-[#C5A059] text-[#2B3A2F] rounded-sm p-5">
-                  <div className="lm-overline !text-[#2B3A2F]/70">Primeira parcela</div>
+                <div className="bg-[#c9a66b] text-[#071d34] rounded-sm p-5">
+                  <div className="lm-overline !text-[#071d34]/70">Primeira parcela</div>
                   <div className="font-serif text-3xl mt-1">{formatMoney(sim.primeiraParcela)}</div>
                 </div>
                 <ResultRow label="Última parcela" value={formatMoney(sim.ultimaParcela)} />
                 <ResultRow label="Total pago" value={formatMoney(sim.totalPago)} />
                 <ResultRow label="Total de juros" value={formatMoney(sim.juros)} />
                 {sim.comprometimento > 0 && (
-                  <div className={`text-xs rounded-sm px-3 py-2 ${sim.comprometimento > 30 ? "bg-red-900/30 text-red-200" : "bg-[#3D5142] text-[#C9C3B4]"}`}>
+                  <div className={`text-xs rounded-sm px-3 py-2 ${sim.comprometimento > 30 ? "bg-red-900/30 text-red-200" : "bg-[#0d2d4c] text-[#a8b8cc]"}`}>
                     Comprometimento da renda: <strong>{sim.comprometimento.toFixed(1)}%</strong> {sim.comprometimento > 30 && "(bancos costumam exigir até 30%)"}
                   </div>
                 )}
@@ -211,8 +211,8 @@ export default function Financing({ settings = {} }) {
 
 function ResultRow({ label, value }) {
   return (
-    <div className="flex items-baseline justify-between border-b border-[#3D5142] pb-2">
-      <span className="text-sm text-[#C9C3B4]">{label}</span>
+    <div className="flex items-baseline justify-between border-b border-[#0d2d4c] pb-2">
+      <span className="text-sm text-[#a8b8cc]">{label}</span>
       <span className="font-medium">{value}</span>
     </div>
   );

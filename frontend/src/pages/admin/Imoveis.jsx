@@ -6,10 +6,14 @@ import { toast } from "sonner";
 import axios from "axios";
 
 const empty = {
-  titulo: "", tipo: "casa", finalidade: "venda", cidade: "Bauru", bairro: "", endereco: "",
-  valor: 0, condominio: 0, iptu: 0, metragem: 0, quartos: 0, banheiros: 0, vagas: 0,
+  titulo: "", tipo: "casa", finalidade: "venda", cidade: "Bauru", bairro: "", endereco: "", complemento: "",
+  valor: 0, condominio: 0, iptu: 0, metragem: 0, terreno_m2: 0, quartos: 0, suites: 0, banheiros: 0, vagas: 0,
   aceita_financiamento: false, aceita_consorcio: false, aceita_permuta: false,
-  descricao: "", fotos: [], status: "disponivel", proprietario: "", proprietario_contato: "", comissao: 0, destaque: false, featured_photo: 0,
+  piscina: false, edicula: false, elevador: false, varanda: false, quintal: false,
+  com_placa: false, exclusivo: false,
+  descricao: "", fotos: [], status: "disponivel",
+  proprietario: "", proprietario_contato: "", comissao: 0, observacao_interna: "",
+  destaque: false, featured_photo: 0,
 };
 
 export default function ImoveisAdmin() {
@@ -28,7 +32,9 @@ export default function ImoveisAdmin() {
       condominio: Number(editing.condominio) || 0,
       iptu: Number(editing.iptu) || 0,
       metragem: Number(editing.metragem) || 0,
+      terreno_m2: Number(editing.terreno_m2) || 0,
       quartos: Number(editing.quartos) || 0,
+      suites: Number(editing.suites) || 0,
       banheiros: Number(editing.banheiros) || 0,
       vagas: Number(editing.vagas) || 0,
       featured_photo: Number(editing.featured_photo) || 0,
@@ -80,28 +86,28 @@ export default function ImoveisAdmin() {
         {filtered.map((p) => {
           const featuredPhoto = p.fotos?.[p.featured_photo || 0] || p.fotos?.[0];
           return (
-            <article key={p.id} data-testid={`admin-prop-${p.id}`} className="bg-white border border-[#E5E0D8] rounded-sm overflow-hidden">
+            <article key={p.id} data-testid={`admin-prop-${p.id}`} className="bg-white border border-[#d1dde8] rounded-sm overflow-hidden">
               <div className="relative">
                 {featuredPhoto ? (
                   <img src={featuredPhoto} alt="" className="w-full h-40 object-cover" />
                 ) : (
-                  <div className="w-full h-40 bg-[#F4F1EB] flex items-center justify-center text-[#5C5C5C]"><ImageIcon className="w-8 h-8" /></div>
+                  <div className="w-full h-40 bg-[#f8fafc] flex items-center justify-center text-[#5C5C5C]"><ImageIcon className="w-8 h-8" /></div>
                 )}
-                {p.destaque && <span className="absolute top-2 left-2 bg-[#C5A059] text-[#2B3A2F] text-[10px] px-2 py-1 rounded-full flex items-center gap-1"><Star className="w-3 h-3 fill-current" /> Destaque</span>}
-                <span className="absolute top-2 right-2 bg-white/95 text-[#2B3A2F] text-[10px] px-2 py-1 rounded-full capitalize">{p.status}</span>
+                {p.destaque && <span className="absolute top-2 left-2 bg-[#c9a66b] text-[#071d34] text-[10px] px-2 py-1 rounded-full flex items-center gap-1"><Star className="w-3 h-3 fill-current" /> Destaque</span>}
+                <span className="absolute top-2 right-2 bg-white/95 text-[#071d34] text-[10px] px-2 py-1 rounded-full capitalize">{p.status}</span>
               </div>
               <div className="p-4">
                 <div className="text-xs text-[#5C5C5C]">{p.codigo} · {TYPE_LABELS[p.tipo]} · {PURPOSE_LABELS[p.finalidade]}</div>
-                <div className="font-serif text-lg text-[#2B3A2F] mt-1 leading-tight line-clamp-2">{p.titulo}</div>
+                <div className="font-serif text-lg text-[#071d34] mt-1 leading-tight line-clamp-2">{p.titulo}</div>
                 <div className="text-xs text-[#5C5C5C]">{p.bairro}, {p.cidade} · {(p.fotos || []).length} foto(s)</div>
-                <div className="font-serif text-xl text-[#2B3A2F] mt-2">{formatMoney(p.valor, p.finalidade)}</div>
+                <div className="font-serif text-xl text-[#071d34] mt-2">{formatMoney(p.valor, p.finalidade)}</div>
 
-                <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#E5E0D8]">
+                <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#d1dde8]">
                   <div className="flex gap-1">
-                    <button onClick={() => setEditing(p)} className="p-1.5 rounded-full border border-[#E5E0D8] text-[#2B3A2F] hover:bg-[#F4F1EB]" data-testid={`edit-prop-${p.id}`}><Pencil className="w-3.5 h-3.5" /></button>
-                    <button onClick={() => remove(p.id)} className="p-1.5 rounded-full border border-[#E5E0D8] text-red-700 hover:bg-red-50" data-testid={`delete-prop-${p.id}`}><Trash2 className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => setEditing(p)} className="p-1.5 rounded-full border border-[#d1dde8] text-[#071d34] hover:bg-[#f8fafc]" data-testid={`edit-prop-${p.id}`}><Pencil className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => remove(p.id)} className="p-1.5 rounded-full border border-[#d1dde8] text-red-700 hover:bg-red-50" data-testid={`delete-prop-${p.id}`}><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
-                  <a href={waLink(null, `Olá! Confira este imóvel: ${window.location.origin}/imoveis/${p.id}`)} target="_blank" rel="noreferrer" className="text-xs text-[#2B3A2F] flex items-center gap-1 hover:text-[#C5A059]" data-testid={`share-prop-${p.id}`}><MessageCircle className="w-3.5 h-3.5" /> Compartilhar</a>
+                  <a href={waLink(null, `Olá! Confira este imóvel: ${window.location.origin}/imoveis/${p.id}`)} target="_blank" rel="noreferrer" className="text-xs text-[#071d34] flex items-center gap-1 hover:text-[#c9a66b]" data-testid={`share-prop-${p.id}`}><MessageCircle className="w-3.5 h-3.5" /> Compartilhar</a>
                 </div>
               </div>
             </article>
@@ -182,9 +188,9 @@ function PropertyModal({ data, setData, onSave }) {
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-sm w-full max-w-4xl max-h-[92vh] flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E0D8] flex-shrink-0">
-          <h2 className="font-serif text-2xl text-[#2B3A2F]">{data.id ? "Editar imóvel" : "Novo imóvel"}</h2>
-          <button onClick={() => setData(null)} className="p-2 hover:bg-[#F4F1EB] rounded"><X className="w-5 h-5" /></button>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#d1dde8] flex-shrink-0">
+          <h2 className="font-serif text-2xl text-[#071d34]">{data.id ? "Editar imóvel" : "Novo imóvel"}</h2>
+          <button onClick={() => setData(null)} className="p-2 hover:bg-[#f8fafc] rounded"><X className="w-5 h-5" /></button>
         </div>
         <form onSubmit={onSave} data-testid="property-form" className="p-6 space-y-6 overflow-y-auto flex-1">
           <section className="grid md:grid-cols-3 gap-4">
@@ -209,22 +215,25 @@ function PropertyModal({ data, setData, onSave }) {
             <div><label className="lm-label">Cidade *</label><input className="lm-input" required value={data.cidade} onChange={(e) => s("cidade", e.target.value)} /></div>
             <div><label className="lm-label">Bairro</label><input className="lm-input" value={data.bairro} onChange={(e) => s("bairro", e.target.value)} /></div>
             <div><label className="lm-label">Endereço</label><input className="lm-input" value={data.endereco} onChange={(e) => s("endereco", e.target.value)} /></div>
+            <div className="md:col-span-2"><label className="lm-label">Complemento</label><input className="lm-input" placeholder="Apto, bloco, casa..." value={data.complemento || ""} onChange={(e) => s("complemento", e.target.value)} /></div>
 
             <div><label className="lm-label">Valor (R$)</label><input type="number" className="lm-input" value={data.valor} onChange={(e) => s("valor", e.target.value)} data-testid="pf-valor" /></div>
             <div><label className="lm-label">Condomínio</label><input type="number" className="lm-input" value={data.condominio} onChange={(e) => s("condominio", e.target.value)} /></div>
             <div><label className="lm-label">IPTU</label><input type="number" className="lm-input" value={data.iptu} onChange={(e) => s("iptu", e.target.value)} /></div>
 
             <div><label className="lm-label">Metragem (m²)</label><input type="number" className="lm-input" value={data.metragem} onChange={(e) => s("metragem", e.target.value)} /></div>
+            <div><label className="lm-label">Terreno (m²)</label><input type="number" className="lm-input" placeholder="0" value={data.terreno_m2 || ""} onChange={(e) => s("terreno_m2", e.target.value)} /></div>
             <div><label className="lm-label">Quartos</label><input type="number" className="lm-input" value={data.quartos} onChange={(e) => s("quartos", e.target.value)} /></div>
+            <div><label className="lm-label">Suítes</label><input type="number" className="lm-input" placeholder="0" value={data.suites || ""} onChange={(e) => s("suites", e.target.value)} /></div>
             <div><label className="lm-label">Banheiros</label><input type="number" className="lm-input" value={data.banheiros} onChange={(e) => s("banheiros", e.target.value)} /></div>
             <div><label className="lm-label">Vagas</label><input type="number" className="lm-input" value={data.vagas} onChange={(e) => s("vagas", e.target.value)} /></div>
           </section>
 
           {/* Fotos */}
-          <section className="border-t border-[#E5E0D8] pt-5">
+          <section className="border-t border-[#d1dde8] pt-5">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <div className="font-serif text-lg text-[#2B3A2F]">Fotos do imóvel</div>
+                <div className="font-serif text-lg text-[#071d34]">Fotos do imóvel</div>
                 <p className="text-xs text-[#5C5C5C]">Arraste para reordenar · clique na estrela para escolher a foto de destaque · JPG, PNG ou WEBP, até 10MB</p>
               </div>
               <button type="button" onClick={() => fileRef.current.click()} disabled={uploading} className="lm-btn-outline text-sm py-2 px-4" data-testid="upload-photos-btn">
@@ -236,9 +245,9 @@ function PropertyModal({ data, setData, onSave }) {
             {(data.fotos || []).length === 0 ? (
               <div
                 onClick={() => fileRef.current.click()}
-                className="border-2 border-dashed border-[#E5E0D8] rounded-sm p-12 text-center text-[#5C5C5C] cursor-pointer hover:bg-[#F4F1EB] hover:border-[#C5A059] transition-colors"
+                className="border-2 border-dashed border-[#d1dde8] rounded-sm p-12 text-center text-[#5C5C5C] cursor-pointer hover:bg-[#f8fafc] hover:border-[#c9a66b] transition-colors"
               >
-                <ImageIcon className="w-10 h-10 mx-auto mb-2 text-[#C5A059]" />
+                <ImageIcon className="w-10 h-10 mx-auto mb-2 text-[#c9a66b]" />
                 <div className="text-sm">Nenhuma foto ainda. Clique para enviar.</div>
               </div>
             ) : (
@@ -250,20 +259,20 @@ function PropertyModal({ data, setData, onSave }) {
                     onDragStart={() => onDragStart(i)}
                     onDragOver={onDragOver}
                     onDrop={(e) => onDrop(e, i)}
-                    className="relative group border border-[#E5E0D8] rounded-sm overflow-hidden bg-[#F4F1EB]"
+                    className="relative group border border-[#d1dde8] rounded-sm overflow-hidden bg-[#f8fafc]"
                     data-testid={`photo-thumb-${i}`}
                   >
                     <img src={f} alt="" className="w-full h-28 object-cover cursor-move" />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100">
-                      <button type="button" onClick={() => move(i, i - 1)} className="w-7 h-7 rounded-full bg-white text-[#2B3A2F] flex items-center justify-center" title="Mover para trás"><ChevronLeft className="w-4 h-4" /></button>
-                      <button type="button" onClick={() => move(i, i + 1)} className="w-7 h-7 rounded-full bg-white text-[#2B3A2F] flex items-center justify-center" title="Mover para frente"><ChevronRight className="w-4 h-4" /></button>
+                      <button type="button" onClick={() => move(i, i - 1)} className="w-7 h-7 rounded-full bg-white text-[#071d34] flex items-center justify-center" title="Mover para trás"><ChevronLeft className="w-4 h-4" /></button>
+                      <button type="button" onClick={() => move(i, i + 1)} className="w-7 h-7 rounded-full bg-white text-[#071d34] flex items-center justify-center" title="Mover para frente"><ChevronRight className="w-4 h-4" /></button>
                       <button type="button" onClick={() => removePhoto(i)} className="w-7 h-7 rounded-full bg-red-600 text-white flex items-center justify-center" title="Remover" data-testid={`photo-remove-${i}`}><X className="w-4 h-4" /></button>
                     </div>
                     <button
                       type="button"
                       onClick={() => setFeatured(i)}
                       title="Definir como foto de destaque"
-                      className={`absolute top-1.5 left-1.5 w-7 h-7 rounded-full flex items-center justify-center transition-colors ${(data.featured_photo || 0) === i ? "bg-[#C5A059] text-[#2B3A2F]" : "bg-white/90 text-[#2B3A2F] hover:bg-[#C5A059]"}`}
+                      className={`absolute top-1.5 left-1.5 w-7 h-7 rounded-full flex items-center justify-center transition-colors ${(data.featured_photo || 0) === i ? "bg-[#c9a66b] text-[#071d34]" : "bg-white/90 text-[#071d34] hover:bg-[#c9a66b]"}`}
                       data-testid={`photo-featured-${i}`}
                     >
                       <Star className={`w-3.5 h-3.5 ${(data.featured_photo || 0) === i ? "fill-current" : ""}`} />
@@ -275,31 +284,50 @@ function PropertyModal({ data, setData, onSave }) {
             )}
           </section>
 
-          <section className="border-t border-[#E5E0D8] pt-5 grid md:grid-cols-3 gap-4">
+          <section className="border-t border-[#d1dde8] pt-5 grid md:grid-cols-3 gap-4">
             <div className="md:col-span-3"><label className="lm-label">Descrição</label>
               <textarea rows={3} className="lm-input" value={data.descricao} onChange={(e) => s("descricao", e.target.value)} />
             </div>
             <div className="md:col-span-3 flex flex-wrap gap-4 text-sm">
-              {[["aceita_financiamento", "Aceita financiamento"], ["aceita_consorcio", "Aceita consórcio"], ["aceita_permuta", "Aceita permuta"], ["destaque", "Imóvel em destaque"]].map(([k, l]) => (
+              {[
+                ["aceita_financiamento", "Aceita financiamento"],
+                ["aceita_consorcio", "Aceita consórcio"],
+                ["aceita_permuta", "Aceita permuta"],
+                ["destaque", "Imóvel em destaque"],
+                ["com_placa", "Com placa"],
+                ["exclusivo", "Exclusivo"],
+              ].map(([k, l]) => (
                 <label key={k} className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" checked={!!data[k]} onChange={(e) => s(k, e.target.checked)} className="accent-[#2B3A2F]" data-testid={`pf-${k}`} />
+                  <input type="checkbox" checked={!!data[k]} onChange={(e) => s(k, e.target.checked)} className="accent-[#071d34]" data-testid={`pf-${k}`} />
                   {l}
                 </label>
               ))}
             </div>
+            <div className="md:col-span-3">
+              <div className="text-xs font-medium text-[#5C5C5C] uppercase tracking-wider mb-2">Características / Amenidades</div>
+              <div className="flex flex-wrap gap-4 text-sm">
+                {[["piscina", "Piscina"], ["edicula", "Edícula"], ["elevador", "Elevador"], ["varanda", "Varanda"], ["quintal", "Quintal"]].map(([k, l]) => (
+                  <label key={k} className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={!!data[k]} onChange={(e) => s(k, e.target.checked)} className="accent-[#071d34]" data-testid={`pf-${k}`} />
+                    {l}
+                  </label>
+                ))}
+              </div>
+            </div>
           </section>
 
           {/* Informações internas */}
-          <section className="border-t border-[#E5E0D8] pt-5">
-            <div className="font-serif text-lg text-[#2B3A2F] mb-3">Informações internas <span className="text-xs font-sans text-[#5C5C5C] ml-1">(não aparecem no site)</span></div>
+          <section className="border-t border-[#d1dde8] pt-5">
+            <div className="font-serif text-lg text-[#071d34] mb-3">Informações internas <span className="text-xs font-sans text-[#5C5C5C] ml-1">(não aparecem no site)</span></div>
             <div className="grid md:grid-cols-3 gap-4">
               <div><label className="lm-label">Nome do proprietário</label><input className="lm-input" value={data.proprietario || ""} onChange={(e) => s("proprietario", e.target.value)} /></div>
               <div><label className="lm-label">Contato do proprietário</label><input className="lm-input" placeholder="WhatsApp ou telefone" value={data.proprietario_contato || ""} onChange={(e) => s("proprietario_contato", e.target.value)} /></div>
               <div><label className="lm-label">Comissão (%)</label><input type="number" step="0.1" className="lm-input" placeholder="Ex: 6" value={data.comissao || ""} onChange={(e) => s("comissao", e.target.value)} /></div>
+              <div className="md:col-span-3"><label className="lm-label">Observação interna</label><textarea rows={2} className="lm-input" placeholder="Anotações internas sobre o imóvel (não aparecem no site)" value={data.observacao_interna || ""} onChange={(e) => s("observacao_interna", e.target.value)} /></div>
             </div>
           </section>
 
-          <div className="flex justify-end gap-2 border-t border-[#E5E0D8] pt-4">
+          <div className="flex justify-end gap-2 border-t border-[#d1dde8] pt-4">
             <button type="button" onClick={() => setData(null)} className="lm-btn-outline">Cancelar</button>
             <button type="submit" className="lm-btn-primary" data-testid="pf-submit">Salvar</button>
           </div>

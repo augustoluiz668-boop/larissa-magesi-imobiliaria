@@ -10,6 +10,8 @@ import ImoveisList from "./pages/public/ImoveisList";
 import ImovelDetail from "./pages/public/ImovelDetail";
 import About from "./pages/public/About";
 import Financing from "./pages/public/Financing";
+import Contact from "./pages/public/Contact";
+import CadastrarImovel from "./pages/public/CadastrarImovel";
 
 import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
@@ -47,7 +49,7 @@ function PublicShell({ children }) {
     api.get("/public/settings").then((r) => setSettings(r.data)).catch(() => {});
   }, []);
   return (
-    <div className="bg-[#F4F1EB] min-h-screen flex flex-col">
+    <div className="bg-[#f8fafc] min-h-screen flex flex-col">
       <Navbar settings={settings} />
       <main className="flex-1">{React.cloneElement(children, { settings })}</main>
       <Footer settings={settings} />
@@ -69,6 +71,8 @@ function App() {
             <Route path="/imoveis/:id" element={<PublicShell><ImovelDetail /></PublicShell>} />
             <Route path="/sobre" element={<PublicShell><About /></PublicShell>} />
             <Route path="/financiamento" element={<PublicShell><Financing /></PublicShell>} />
+            <Route path="/contato" element={<PublicShell><Contact /></PublicShell>} />
+            <Route path="/cadastrar-imovel" element={<PublicShell><CadastrarImovel /></PublicShell>} />
 
             <Route path="/admin/login" element={<Login />} />
             <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

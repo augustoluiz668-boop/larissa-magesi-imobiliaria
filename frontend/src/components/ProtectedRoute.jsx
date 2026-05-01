@@ -6,8 +6,8 @@ export default function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F4F1EB]">
-        <div className="font-serif text-2xl text-[#2B3A2F]">Carregando…</div>
+      <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
+        <div className="font-serif text-2xl text-[#071d34]">Carregando…</div>
       </div>
     );
   }

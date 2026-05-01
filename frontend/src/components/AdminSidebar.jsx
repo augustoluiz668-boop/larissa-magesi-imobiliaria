@@ -24,11 +24,11 @@ export default function AdminSidebar() {
     nav("/admin/login");
   };
   return (
-    <aside className="hidden md:flex flex-col w-64 bg-[#2B3A2F] text-[#E8E2D6] min-h-screen sticky top-0">
-      <div className="px-6 py-7 border-b border-[#3D5142]">
+    <aside className="hidden md:flex flex-col w-64 bg-[#071d34] text-[#E8E2D6] min-h-screen sticky top-0">
+      <div className="px-6 py-7 border-b border-[#0d2d4c]">
         <Link to="/" className="block">
-          <div className="font-serif text-2xl text-[#F4F1EB]">Larissa Magesi</div>
-          <div className="text-[10px] tracking-[0.22em] uppercase text-[#C5A059] mt-1">Painel Administrativo</div>
+          <div className="font-serif text-2xl text-[#f8fafc]">Larissa Magesi</div>
+          <div className="text-[10px] tracking-[0.22em] uppercase text-[#c9a66b] mt-1">Painel Administrativo</div>
         </Link>
       </div>
 
@@ -42,8 +42,8 @@ export default function AdminSidebar() {
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
                 isActive
-                  ? "bg-[#3D5142] text-[#F4F1EB] border-l-2 border-[#C5A059]"
-                  : "text-[#C9C3B4] hover:bg-[#3D5142]/50"
+                  ? "bg-[#0d2d4c] text-[#f8fafc] border-l-2 border-[#c9a66b]"
+                  : "text-[#a8b8cc] hover:bg-[#0d2d4c]/50"
               }`
             }
           >
@@ -52,13 +52,13 @@ export default function AdminSidebar() {
         ))}
       </nav>
 
-      <div className="px-5 py-5 border-t border-[#3D5142]">
-        <div className="text-xs text-[#C9C3B4] mb-1">Conectada como</div>
-        <div className="font-medium text-[#F4F1EB] text-sm">{user?.name || user?.email}</div>
+      <div className="px-5 py-5 border-t border-[#0d2d4c]">
+        <div className="text-xs text-[#a8b8cc] mb-1">Conectada como</div>
+        <div className="font-medium text-[#f8fafc] text-sm">{user?.name || user?.email}</div>
         <button
           data-testid="sidebar-logout"
           onClick={handleLogout}
-          className="mt-4 w-full flex items-center justify-center gap-2 text-xs py-2 rounded-full border border-[#C5A059] text-[#C5A059] hover:bg-[#C5A059] hover:text-[#2B3A2F] transition-colors"
+          className="mt-4 w-full flex items-center justify-center gap-2 text-xs py-2 rounded-full border border-[#c9a66b] text-[#c9a66b] hover:bg-[#c9a66b] hover:text-[#071d34] transition-colors"
         >
           <LogOut className="w-3.5 h-3.5" /> Sair
         </button>

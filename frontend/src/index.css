@@ -5,16 +5,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --lm-olive: #2B3A2F;
-  --lm-olive-dark: #1F2A22;
-  --lm-olive-light: #3D5142;
-  --lm-gold: #C5A059;
-  --lm-gold-light: #D4B574;
-  --lm-nude: #F4F1EB;
-  --lm-nude-dark: #E8E2D6;
+  --lm-olive: #071d34;
+  --lm-olive-dark: #040f1d;
+  --lm-olive-light: #0d2d4c;
+  --lm-gold: #c9a66b;
+  --lm-gold-light: #dbbf8a;
+  --lm-nude: #f8fafc;
+  --lm-nude-dark: #e2eaf2;
   --lm-graphite: #2C2C2C;
   --lm-gray: #5C5C5C;
-  --lm-border: #E5E0D8;
+  --lm-border: #d1dde8;
   --lm-white: #FFFFFF;
 }
 
@@ -27,36 +27,54 @@ html, body, #root {
   scroll-behavior: smooth;
 }
 
+/* WhatsApp floating button */
+.wa-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(37,211,102,0.4);
+  z-index: 9000;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.wa-float:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(37,211,102,0.55); }
+
 .font-serif { font-family: 'Cormorant Garamond', serif; }
 .font-sans { font-family: 'Outfit', sans-serif; }
 
 /* shadcn tokens */
 @layer base {
   :root {
-    --background: 40 25% 94%;
+    --background: 210 30% 98%;
     --foreground: 0 0% 17%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 17%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 17%;
-    --primary: 135 15% 20%;
-    --primary-foreground: 40 25% 94%;
-    --secondary: 38 46% 85%;
-    --secondary-foreground: 135 15% 20%;
-    --muted: 40 20% 92%;
+    --primary: 210 75% 12%;
+    --primary-foreground: 210 30% 98%;
+    --secondary: 36 50% 85%;
+    --secondary-foreground: 210 75% 12%;
+    --muted: 210 20% 94%;
     --muted-foreground: 0 0% 36%;
-    --accent: 40 43% 56%;
-    --accent-foreground: 135 15% 20%;
+    --accent: 36 48% 60%;
+    --accent-foreground: 210 75% 12%;
     --destructive: 0 60% 45%;
-    --destructive-foreground: 40 25% 94%;
-    --border: 36 27% 87%;
-    --input: 36 27% 87%;
-    --ring: 135 15% 20%;
+    --destructive-foreground: 210 30% 98%;
+    --border: 210 25% 86%;
+    --input: 210 25% 86%;
+    --ring: 210 75% 12%;
     --radius: 0.5rem;
-    --chart-1: 135 15% 20%;
-    --chart-2: 40 43% 56%;
-    --chart-3: 22 40% 45%;
-    --chart-4: 170 30% 40%;
+    --chart-1: 210 75% 12%;
+    --chart-2: 36 48% 60%;
+    --chart-3: 210 50% 35%;
+    --chart-4: 200 50% 40%;
     --chart-5: 340 35% 50%;
   }
 }
@@ -162,11 +180,11 @@ html, body, #root {
 .kanban-card { cursor: grab; transition: box-shadow 0.2s; }
 .kanban-card:active { cursor: grabbing; }
 .kanban-card.dragging { opacity: 0.5; }
-.kanban-col.dragover { background: #F4F1EB; }
+.kanban-col.dragover { background: #eef2f7; }
 
 /* hero gradient overlay (used intentionally only on hero image) */
 .hero-overlay {
-  background: linear-gradient(90deg, rgba(43,58,47,0.55) 0%, rgba(43,58,47,0.18) 55%, rgba(43,58,47,0) 100%);
+  background: linear-gradient(90deg, rgba(7,29,52,0.65) 0%, rgba(7,29,52,0.22) 55%, rgba(7,29,52,0) 100%);
 }
 
 /* Fade in */

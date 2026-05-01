@@ -30,12 +30,12 @@ export default function LeadDetailModal({ lead, onClose }) {
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-start md:items-center justify-center p-4 overflow-y-auto" data-testid="lead-detail-modal">
       <div className="bg-white rounded-sm w-full max-w-3xl my-6">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E0D8]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#d1dde8]">
           <div>
             <div className="lm-overline">Detalhes do lead</div>
-            <h2 className="font-serif text-2xl text-[#2B3A2F]">{l.nome}</h2>
+            <h2 className="font-serif text-2xl text-[#071d34]">{l.nome}</h2>
           </div>
-          <button onClick={onClose} data-testid="modal-close" className="p-2 hover:bg-[#F4F1EB] rounded"><X className="w-5 h-5" /></button>
+          <button onClick={onClose} data-testid="modal-close" className="p-2 hover:bg-[#f8fafc] rounded"><X className="w-5 h-5" /></button>
         </div>
 
         <div className="p-6 space-y-6">
@@ -55,7 +55,7 @@ export default function LeadDetailModal({ lead, onClose }) {
           </div>
 
           {l.mensagem && (
-            <div className="bg-[#F4F1EB] border border-[#E5E0D8] rounded-sm p-4 text-sm italic text-[#2C2C2C]">“{l.mensagem}”</div>
+            <div className="bg-[#f8fafc] border border-[#d1dde8] rounded-sm p-4 text-sm italic text-[#2C2C2C]">“{l.mensagem}”</div>
           )}
 
           <div className="grid md:grid-cols-3 gap-3">
@@ -98,7 +98,7 @@ export default function LeadDetailModal({ lead, onClose }) {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 pt-4 border-t border-[#E5E0D8]">
+          <div className="flex flex-wrap gap-2 pt-4 border-t border-[#d1dde8]">
             <a href={waLink(l.whatsapp, `Olá ${l.nome}!`)} target="_blank" rel="noreferrer" data-testid="modal-wa" className="lm-btn-primary"><MessageCircle className="w-4 h-4" /> Chamar no WhatsApp</a>
             <button onClick={() => patch({ stage: "fechado" })} disabled={saving} data-testid="modal-mark-closed" className="lm-btn-gold"><CheckCircle2 className="w-4 h-4" /> Marcar como fechado</button>
             <button onClick={() => patch({ stage: "perdido" })} disabled={saving} data-testid="modal-mark-lost" className="lm-btn-outline"><XCircle className="w-4 h-4" /> Marcar como perdido</button>
