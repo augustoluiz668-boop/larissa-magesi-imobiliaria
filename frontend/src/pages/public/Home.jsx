@@ -57,16 +57,41 @@ export default function HomePage({ settings = {} }) {
   return (
     <>
       {/* HERO */}
-      <section className="bg-[#071d34] text-[#f8fafc] overflow-hidden">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-[1fr_400px] lg:grid-cols-[1fr_460px] items-stretch min-h-[580px]">
+      <section
+        className="text-[#f8fafc] overflow-hidden relative"
+        style={{ background: "linear-gradient(135deg, #040f1d 0%, #071d34 55%, #0d2d4c 100%)" }}
+      >
+        {/* Gold radial glow — top-left of photo area */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: "-15%", right: "25%",
+            width: "700px", height: "700px",
+            background: "radial-gradient(circle, rgba(201,166,107,0.07) 0%, transparent 65%)",
+          }}
+        />
+        <div className="max-w-7xl mx-auto grid md:grid-cols-[1fr_420px] lg:grid-cols-[1fr_480px] items-center min-h-[640px] px-6 md:px-10 py-16 md:py-20 gap-10 lg:gap-16">
           {/* COPY — esquerda */}
-          <div className="px-6 md:pl-10 md:pr-12 py-16 md:py-24 flex flex-col justify-center">
+          <div className="flex flex-col justify-center">
+            {/* Logo em caixa com borda — estilo protótipo */}
             {settings.logo_url && (
-              <img src={settings.logo_url} alt="Larissa Magesi" className="h-12 w-auto mb-8 opacity-90" />
+              <div className="mb-8">
+                <div
+                  className="inline-flex items-center justify-center px-4 py-3 rounded"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.13)" }}
+                >
+                  <img src={settings.logo_url} alt="Larissa Magesi" className="h-10 w-auto" fetchpriority="high" />
+                </div>
+              </div>
             )}
-            <div className="lm-overline mb-5">Bauru e região</div>
-            <h1 className="font-serif text-[2.75rem] leading-[1.05] sm:text-5xl lg:text-[3.25rem] tracking-tight">
-              Seu próximo <em>endereço</em><br className="hidden sm:block" /> começa aqui.
+            <div className="lm-overline mb-4">Bauru e região</div>
+            <h1
+              className="font-serif tracking-tight leading-[1.04]"
+              style={{ fontSize: "clamp(2.4rem, 5.4vw, 4.8rem)" }}
+            >
+              Seu próximo{" "}
+              <em style={{ fontStyle: "italic", color: "#c9a66b" }}>endereço</em>
+              <br className="hidden sm:block" /> começa aqui.
             </h1>
             <p className="mt-6 text-[#a8b8cc] text-base md:text-lg leading-relaxed max-w-lg">
               Atendimento personalizado para compra, venda, locação, avaliação, regularização, financiamento e consórcio de imóveis em Bauru e região.
@@ -86,39 +111,53 @@ export default function HomePage({ settings = {} }) {
               </Link>
             </div>
 
-            {/* STATS — proof items dentro da coluna, igual protótipo */}
-            <div className="mt-10 pt-8 border-t border-[#0d2d4c] grid grid-cols-2 sm:grid-cols-4 gap-5">
+            {/* STATS — proof-items com borda e fundo semi-transparente (igual protótipo) */}
+            <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3">
               {stats.map((s, i) => (
-                <div key={i}>
+                <div
+                  key={i}
+                  className="rounded px-4 py-3"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+                >
                   <div className="font-serif text-2xl text-[#f8fafc] leading-none">{s.value}</div>
-                  <div className="text-xs text-[#a8b8cc] mt-1 leading-tight">{s.label}</div>
+                  <div className="text-[11px] text-[#a8b8cc] mt-1 leading-snug">{s.label}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* RETRATO — direita, retangular, full height */}
-          <div className="hidden md:block relative">
-            {settings.photo_url ? (
-              <img
-                src={settings.photo_url}
-                alt="Larissa Magesi — Corretora de Imóveis"
-                className="absolute inset-0 w-full h-full object-cover object-top"
-                fetchpriority="high"
-                loading="eager"
-              />
-            ) : (
-              <div className="absolute inset-0 bg-[#0d2d4c] flex items-center justify-center">
-                <span className="font-serif text-[10rem] text-[#c9a66b]/20 select-none leading-none">LM</span>
-              </div>
-            )}
-            {/* gradiente na base */}
-            <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#071d34] to-transparent pointer-events-none" />
-            {/* badge nome */}
-            <div className="absolute bottom-6 left-0 right-0 flex justify-center">
-              <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-full px-5 py-2 text-center">
-                <div className="font-serif text-sm text-[#f8fafc] leading-tight">Larissa Magesi</div>
-                <div className="text-[10px] tracking-[0.2em] uppercase text-[#c9a66b]">CRECI {settings.creci || "290524-F"}</div>
+          {/* RETRATO — direita, com border-radius e badge branco */}
+          <div className="hidden md:flex flex-col items-stretch">
+            <div className="relative w-full">
+              {settings.photo_url ? (
+                <img
+                  src={settings.photo_url}
+                  alt="Larissa Magesi — Corretora de Imóveis"
+                  className="w-full object-cover object-top"
+                  style={{ height: "580px", borderRadius: "14px" }}
+                  fetchpriority="high"
+                  loading="eager"
+                />
+              ) : (
+                <div
+                  className="w-full flex items-center justify-center"
+                  style={{ height: "580px", borderRadius: "14px", background: "#0d2d4c" }}
+                >
+                  <span className="font-serif text-[10rem] text-[#c9a66b]/20 select-none leading-none">LM</span>
+                </div>
+              )}
+              {/* Badge — cartão branco/creme no canto inferior direito */}
+              <div
+                className="absolute bottom-5 right-5 px-5 py-3 shadow-2xl"
+                style={{
+                  background: "linear-gradient(135deg, #ffffff 0%, #f2ece0 100%)",
+                  borderRadius: "10px",
+                }}
+              >
+                <div className="font-serif text-sm text-[#071d34] leading-tight font-medium">Larissa Magesi</div>
+                <div className="text-[10px] tracking-[0.2em] uppercase mt-0.5" style={{ color: "#c9a66b" }}>
+                  CRECI {settings.creci || "290524-F"}
+                </div>
               </div>
             </div>
           </div>
