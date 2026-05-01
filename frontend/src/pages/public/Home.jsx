@@ -58,7 +58,7 @@ export default function HomePage({ settings = {} }) {
     <>
       {/* HERO */}
       <section className="bg-[#071d34] text-[#f8fafc]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-20 grid md:grid-cols-2 gap-14 items-center">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-6 md:pb-20 grid md:grid-cols-2 gap-14 items-center">
           {/* texto */}
           <div className="lm-fade-up order-2 md:order-1">
             <div className="lm-overline mb-5">Corretora de Imóveis · Bauru/SP</div>
@@ -103,9 +103,6 @@ export default function HomePage({ settings = {} }) {
               </div>
               {/* anel decorativo */}
               <div className="absolute -inset-3 rounded-full border border-[#c9a66b]/30 pointer-events-none" />
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#c9a66b] text-[#071d34] text-xs font-semibold tracking-widest uppercase px-4 py-1.5 rounded-full whitespace-nowrap shadow-lg">
-                CRECI {settings.creci || "290524-F"}
-              </div>
             </div>
           </div>
         </div>
