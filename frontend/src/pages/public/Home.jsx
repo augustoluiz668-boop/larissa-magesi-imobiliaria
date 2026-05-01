@@ -158,7 +158,7 @@ export default function HomePage({ settings = {} }) {
                     src={settings.photo_url}
                     alt="Larissa Magesi — Corretora de Imóveis"
                     className="w-full"
-                    style={{ height: "580px", borderRadius: "14px", objectFit: "cover", objectPosition: "center 10%" }}
+                    style={{ height: "580px", borderRadius: "14px", objectFit: "contain", background: "#071d34" }}
                     fetchpriority="high"
                     loading="eager"
                   />

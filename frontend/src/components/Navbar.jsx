@@ -43,14 +43,23 @@ export default function Navbar({ settings = {} }) {
           </Link>
         </div>
 
-        <button
-          data-testid="navbar-mobile-toggle"
-          className="lg:hidden p-2 text-[#071d34]"
-          onClick={() => setOpen(!open)}
-          aria-label="Menu"
-        >
-          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="lg:hidden flex items-center gap-2">
+          {settings.photo_url && (
+            <img
+              src={settings.photo_url}
+              alt="Larissa Magesi"
+              className="w-10 h-10 rounded-full object-cover object-top border-2 border-[#c9a66b]"
+            />
+          )}
+          <button
+            data-testid="navbar-mobile-toggle"
+            className="p-2 text-[#071d34]"
+            onClick={() => setOpen(!open)}
+            aria-label="Menu"
+          >
+            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {open && (
