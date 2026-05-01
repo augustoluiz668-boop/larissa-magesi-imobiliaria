@@ -45,24 +45,33 @@ export default function About({ settings = {} }) {
           <div className="md:col-span-7 md:pl-6">
             <div className="lm-overline mb-4">Sobre Mim</div>
             <h1 className="font-serif text-5xl md:text-6xl text-[#071d34] leading-[1.02]">
-              Preparada para orientar as decisões mais importantes da sua vida.
+              Conheça Larissa Magesi
             </h1>
             <div className="lm-divider mt-6 mb-8"></div>
             <p className="text-[#5C5C5C] leading-relaxed mb-5">
-              Atuando no mercado imobiliário de Bauru há mais de 10 anos, construí minha trajetória com base em relacionamento,
-              confiança e resultados consistentes. Inscrita no CRECI 290524-F, desenvolvi uma atuação voltada para entender
-              profundamente o perfil de cada cliente — seja na busca pelo primeiro imóvel, no investimento estratégico ou na
-              venda com segurança.
+              Atuando no mercado imobiliário de Bauru há +10 anos, construiu sua trajetória com base em relacionamento,
+              confiança e resultados consistentes.
             </p>
             <p className="text-[#5C5C5C] leading-relaxed mb-5">
-              Meu trabalho abrange imóveis residenciais e oportunidades de investimento, incluindo compra, venda, locação,
-              permuta, financiamento bancário, consórcio imobiliário, avaliação e regularização de imóveis. Acredito que
-              uma boa negociação começa muito antes do contrato — começa na escuta, no planejamento e na honestidade.
+              Inscrita no CRECI 290524-F, desenvolveu uma atuação voltada para entender profundamente o perfil de cada cliente,
+              oferecendo orientações seguras e personalizadas em todas as etapas da negociação.
+            </p>
+            <p className="text-[#5C5C5C] leading-relaxed mb-5">
+              Seu trabalho abrange imóveis residenciais e oportunidades de investimento, sempre com um olhar estratégico e
+              atento às melhores opções do mercado local. Mais do que intermediar vendas, se dedica a facilitar decisões
+              importantes com clareza, responsabilidade e transparência.
+            </p>
+            <p className="text-[#5C5C5C] leading-relaxed mb-5">
+              Ao longo dos anos, conquistou a confiança de clientes por meio de um atendimento próximo e comprometido,
+              prezando por negociações seguras e bem conduzidas tanto para quem compra quanto para quem vende.
+            </p>
+            <p className="text-[#5C5C5C] leading-relaxed mb-5">
+              Cristã, esposa e mãe dedicada, leva seus valores pessoais para a vida profissional, refletindo isso em um
+              atendimento ético, humano e verdadeiro.
             </p>
             <p className="text-[#5C5C5C] leading-relaxed mb-8">
-              Como cristã, esposa e mãe, carrego valores que refletem diretamente no meu atendimento: empatia, responsabilidade
-              e compromisso genuíno com o bem-estar de cada família que atendo. Estou preparada para te auxiliar desde a
-              primeira conversa até o pós-venda — com informação clara, segurança jurídica e visão de mercado.
+              Com uma atuação consistente e focada em resultados, está preparada para te auxiliar a encontrar o imóvel ideal
+              e realizar uma negociação com tranquilidade e segurança.
             </p>
 
             <ul className="grid sm:grid-cols-2 gap-3 text-sm text-[#2C2C2C]">

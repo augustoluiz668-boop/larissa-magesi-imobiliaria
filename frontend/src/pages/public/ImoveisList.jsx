@@ -23,6 +23,7 @@ const oliveIcon = L.divIcon({
 });
 
 const initial = {
+  codigo: "", nome_condominio: "",
   cidade: "", bairro: "", tipo: "", finalidade: "",
   quartos_min: "", vagas_min: "", valor_min: "", valor_max: "",
   aceita_financiamento: false, aceita_consorcio: false, aceita_permuta: false,
@@ -101,6 +102,17 @@ export default function ImoveisList() {
           <div className="flex items-center gap-2 mb-1">
             <Search className="w-4 h-4 text-[#071d34]" />
             <span className="font-serif text-lg text-[#071d34]">Filtros</span>
+          </div>
+          {/* Busca rápida por código ou condomínio */}
+          <div className="grid grid-cols-2 gap-3 pb-3 border-b border-[#d1dde8]">
+            <div>
+              <label className="lm-label">Cód. do imóvel</label>
+              <input className="lm-input" placeholder="Ex: LM-001" value={filters.codigo} onChange={(e) => set("codigo", e.target.value)} data-testid="filter-codigo" />
+            </div>
+            <div>
+              <label className="lm-label">Nome do condomínio</label>
+              <input className="lm-input" placeholder="Ex: Villaggio" value={filters.nome_condominio} onChange={(e) => set("nome_condominio", e.target.value)} data-testid="filter-condominio" />
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {/* Cidade — dropdown */}

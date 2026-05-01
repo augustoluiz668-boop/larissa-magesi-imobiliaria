@@ -8,6 +8,7 @@ const nav = [
   { to: "/financiamento", label: "Simulação" },
   { to: "/sobre", label: "Sobre Mim" },
   { to: "/contato", label: "Contato" },
+  { to: "/cadastrar-imovel", label: "Cadastrar Imóvel" },
 ];
 
 export default function Navbar({ settings = {} }) {

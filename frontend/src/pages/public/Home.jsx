@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ArrowRight, Check, Calculator, Clock, MapPin, Star } from "lucide-react";
+import { Search, ArrowRight, Check, Calculator, Clock, MapPin, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { api, waLink } from "../../lib/api";
@@ -82,7 +82,7 @@ export default function HomePage({ settings = {} }) {
                 <img
                   src={settings.logo_url || "/logo-lm.png"}
                   alt="Larissa Magesi"
-                  className="h-14 w-auto"
+                  className="h-20 w-auto"
                   fetchpriority="high"
                 />
               </div>
@@ -109,7 +109,14 @@ export default function HomePage({ settings = {} }) {
               >
                 Converse comigo no WhatsApp <ArrowRight className="w-4 h-4" />
               </a>
-              <Link to="/imoveis" data-testid="hero-properties-btn" className="lm-btn-outline border-[#a8b8cc] text-[#f8fafc] hover:bg-white/10 hover:text-[#f8fafc]">
+              <Link
+                to="/imoveis"
+                data-testid="hero-properties-btn"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-medium tracking-[0.04em] transition-colors"
+                style={{ border: "1px solid rgba(168,184,204,0.7)", color: "#f8fafc", background: "transparent" }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              >
                 Ver imóveis disponíveis
               </Link>
             </div>
@@ -148,8 +155,8 @@ export default function HomePage({ settings = {} }) {
                   <img
                     src={settings.photo_url}
                     alt="Larissa Magesi — Corretora de Imóveis"
-                    className="w-full object-cover object-top"
-                    style={{ height: "580px", borderRadius: "14px" }}
+                    className="w-full"
+                    style={{ height: "580px", borderRadius: "14px", objectFit: "cover", objectPosition: "center 10%" }}
                     fetchpriority="high"
                     loading="eager"
                   />
@@ -201,13 +208,22 @@ export default function HomePage({ settings = {} }) {
               <label className="lm-label">Finalidade</label>
               <select className="lm-input" value={search.finalidade} onChange={(e) => setSearch({ ...search, finalidade: e.target.value })}>
                 <option value="">Comprar ou Alugar</option>
-                <option value="comprar">Comprar</option>
-                <option value="alugar">Alugar</option>
+                <option value="venda">Comprar</option>
+                <option value="locacao">Alugar</option>
               </select>
             </div>
             <div>
-              <label className="lm-label">Valor máximo (R$)</label>
-              <input type="number" className="lm-input" placeholder="Ex: 500000" value={search.valor_max} onChange={(e) => setSearch({ ...search, valor_max: e.target.value })} />
+              <label className="lm-label">Valor máximo</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#5C5C5C] pointer-events-none">R$</span>
+                <input
+                  type="number"
+                  className="lm-input pl-9"
+                  placeholder="500.000"
+                  value={search.valor_max}
+                  onChange={(e) => setSearch({ ...search, valor_max: e.target.value })}
+                />
+              </div>
             </div>
             <button type="submit" className="lm-btn-primary w-full justify-center">
               <Search className="w-4 h-4" /> Buscar imóveis
@@ -228,15 +244,33 @@ export default function HomePage({ settings = {} }) {
               Ver todos <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex gap-6">
-              {destaques.map((p) => (
-                <div key={p.id} className="flex-none w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
-                  <PropertyCard prop={p} />
-                </div>
-              ))}
+          <div className="relative">
+            <div className="overflow-hidden" ref={emblaRef}>
+              <div className="flex gap-6">
+                {destaques.map((p) => (
+                  <div key={p.id} className="flex-none w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+                    <PropertyCard prop={p} />
+                  </div>
+                ))}
+              </div>
             </div>
+            {/* Setas prev/next */}
+            <button
+              onClick={() => emblaApi?.scrollPrev()}
+              aria-label="Anterior"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-10 h-10 rounded-full bg-white border border-[#d1dde8] shadow-md flex items-center justify-center text-[#071d34] hover:bg-[#c9a66b] hover:text-white hover:border-[#c9a66b] transition-colors z-10"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => emblaApi?.scrollNext()}
+              aria-label="Próximo"
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-10 h-10 rounded-full bg-white border border-[#d1dde8] shadow-md flex items-center justify-center text-[#071d34] hover:bg-[#c9a66b] hover:text-white hover:border-[#c9a66b] transition-colors z-10"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
+          {/* Dots */}
           {destaques.length > 3 && (
             <div className="flex justify-center gap-2 mt-6">
               {destaques.map((_, i) => (

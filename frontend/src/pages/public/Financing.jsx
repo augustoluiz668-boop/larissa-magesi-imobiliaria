@@ -1,23 +1,7 @@
-import React, { useMemo, useState } from "react";
-import { api, formatMoney, waLink } from "../../lib/api";
-import { Calculator, Check, Info, ArrowRight, ShieldCheck } from "lucide-react";
+import React, { useState } from "react";
+import { api, waLink } from "../../lib/api";
+import { Calculator, Check, ArrowRight, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
-
-// SAC simulation
-function simulateSAC(valorFinanciado, prazoMeses, taxaAnual) {
-  const taxaMensal = Math.pow(1 + taxaAnual / 100, 1 / 12) - 1;
-  const amortizacao = valorFinanciado / prazoMeses;
-  const primeiraParcela = amortizacao + valorFinanciado * taxaMensal;
-  const ultimaParcela = amortizacao + amortizacao * taxaMensal;
-  let saldo = valorFinanciado;
-  let totalPago = 0;
-  for (let i = 0; i < prazoMeses; i++) {
-    const juros = saldo * taxaMensal;
-    totalPago += amortizacao + juros;
-    saldo -= amortizacao;
-  }
-  return { primeiraParcela, ultimaParcela, totalPago, juros: totalPago - valorFinanciado };
-}
 
 const prazoOptions = [120, 180, 240, 300, 360, 420];
 
@@ -32,20 +16,6 @@ export default function Financing({ settings = {} }) {
   });
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
-  const taxa = Number(settings.finance_rate_annual) || 10.49;
-
-  const sim = useMemo(() => {
-    const valor = Number(form.valor_imovel) || 0;
-    const entrada = form.tem_entrada ? Number(form.valor_entrada) || 0 : 0;
-    const fgts = form.tem_fgts ? Number(form.valor_fgts) || 0 : 0;
-    const financiado = Math.max(0, valor - entrada - fgts);
-    if (!financiado || !form.prazo) return null;
-    const r = simulateSAC(financiado, Number(form.prazo), taxa);
-    const renda = Number(form.renda_bruta) || 0;
-    const comprometimento = renda > 0 ? (r.primeiraParcela / renda) * 100 : 0;
-    return { ...r, financiado, entradaTotal: entrada + fgts, comprometimento };
-  }, [form, taxa]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -108,19 +78,9 @@ export default function Financing({ settings = {} }) {
         </div>
       </section>
 
-      {/* DISCLAIMER */}
-      <section className="max-w-7xl mx-auto px-6 md:px-10 pt-10">
-        <div className="bg-[#c9a66b]/10 border border-[#c9a66b]/40 rounded-sm px-5 py-4 flex items-start gap-3 text-sm text-[#5C5C5C]">
-          <Info className="w-4 h-4 text-[#c9a66b] mt-0.5 flex-shrink-0" />
-          <div>
-            <strong className="text-[#071d34]">Importante:</strong> os valores exibidos são apenas simulações orientativas (Sistema SAC). As condições reais — incluindo taxa de juros — dependem do banco, comprovação de renda, faixa do imóvel e relacionamento bancário. <strong>A Larissa entrará em contato com as melhores alternativas reais para o seu caso.</strong>
-          </div>
-        </div>
-      </section>
-
-      {/* FORMULÁRIO + SIMULAÇÃO */}
-      <section className="max-w-7xl mx-auto px-6 md:px-10 py-14 grid lg:grid-cols-5 gap-8">
-        <form onSubmit={submit} data-testid="financing-form" className="lg:col-span-3 bg-white border border-[#d1dde8] rounded-sm p-8 space-y-5">
+      {/* FORMULÁRIO */}
+      <section className="max-w-3xl mx-auto px-6 md:px-10 py-14">
+        <form onSubmit={submit} data-testid="financing-form" className="bg-white border border-[#d1dde8] rounded-sm p-8 space-y-5">
           <div>
             <div className="font-serif text-2xl text-[#071d34]">Seus dados</div>
             <p className="text-xs text-[#5C5C5C] mt-1">* Campos obrigatórios</p>
@@ -176,34 +136,6 @@ export default function Financing({ settings = {} }) {
             </div>
           )}
         </form>
-
-        {/* Resultado ao vivo */}
-        <aside className="lg:col-span-2">
-          <div className="sticky top-28 bg-[#071d34] text-[#f8fafc] rounded-sm p-8" data-testid="financing-result">
-            <div className="lm-overline !text-[#c9a66b] mb-2">Sua simulação ao vivo</div>
-            <div className="font-serif text-2xl mb-6">Sistema SAC · {taxa.toFixed(2)}% a.a.</div>
-            {!sim ? (
-              <p className="text-[#a8b8cc] text-sm">Preencha o valor do imóvel e o prazo para ver a simulação.</p>
-            ) : (
-              <div className="space-y-4">
-                <ResultRow label="Valor financiado" value={formatMoney(sim.financiado)} />
-                <ResultRow label="Entrada + FGTS" value={formatMoney(sim.entradaTotal)} />
-                <div className="bg-[#c9a66b] text-[#071d34] rounded-sm p-5">
-                  <div className="lm-overline !text-[#071d34]/70">Primeira parcela</div>
-                  <div className="font-serif text-3xl mt-1">{formatMoney(sim.primeiraParcela)}</div>
-                </div>
-                <ResultRow label="Última parcela" value={formatMoney(sim.ultimaParcela)} />
-                <ResultRow label="Total pago" value={formatMoney(sim.totalPago)} />
-                <ResultRow label="Total de juros" value={formatMoney(sim.juros)} />
-                {sim.comprometimento > 0 && (
-                  <div className={`text-xs rounded-sm px-3 py-2 ${sim.comprometimento > 30 ? "bg-red-900/30 text-red-200" : "bg-[#0d2d4c] text-[#a8b8cc]"}`}>
-                    Comprometimento da renda: <strong>{sim.comprometimento.toFixed(1)}%</strong> {sim.comprometimento > 30 && "(bancos costumam exigir até 30%)"}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </aside>
       </section>
     </div>
   );
