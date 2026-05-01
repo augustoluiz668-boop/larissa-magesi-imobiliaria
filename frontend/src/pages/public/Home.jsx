@@ -214,11 +214,12 @@ export default function HomePage({ settings = {} }) {
             </div>
             <div>
               <label className="lm-label">Valor máximo</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#5C5C5C] pointer-events-none">R$</span>
+              <div className="flex items-center w-full" style={{ background: "#fff", border: "1px solid #d1dde8", borderRadius: "4px", transition: "border 0.2s" }}>
+                <span className="pl-3 pr-1 text-sm select-none" style={{ color: "#5C5C5C", whiteSpace: "nowrap" }}>R$</span>
                 <input
                   type="number"
-                  className="lm-input pl-9"
+                  className="flex-1 bg-transparent outline-none py-3 pr-3"
+                  style={{ fontSize: "0.92rem", color: "#2C2C2C", minWidth: 0 }}
                   placeholder="500.000"
                   value={search.valor_max}
                   onChange={(e) => setSearch({ ...search, valor_max: e.target.value })}
