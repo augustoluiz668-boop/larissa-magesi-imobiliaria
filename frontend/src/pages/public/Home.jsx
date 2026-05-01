@@ -10,7 +10,7 @@ import { toast } from "sonner";
 export default function HomePage({ settings = {} }) {
   const navigate = useNavigate();
   const [destaques, setDestaques] = useState([]);
-  const [search, setSearch] = useState({ tipo: "", finalidade: "", valor_max: "" });
+  const [search, setSearch] = useState({ tipo: "", finalidade: "", valor_max: "", codigo: "", nome_condominio: "" });
   const [simForm, setSimForm] = useState({ nome: "", whatsapp: "", renda: "", valor_imovel: "", fgts: "" });
   const [sending, setSending] = useState(false);
 
@@ -29,6 +29,8 @@ export default function HomePage({ settings = {} }) {
     if (search.tipo) params.set("tipo", search.tipo);
     if (search.finalidade) params.set("finalidade", search.finalidade);
     if (search.valor_max) params.set("valor_max", search.valor_max);
+    if (search.codigo) params.set("codigo", search.codigo);
+    if (search.nome_condominio) params.set("nome_condominio", search.nome_condominio);
     navigate(`/imoveis?${params.toString()}`);
   };
 
@@ -80,7 +82,7 @@ export default function HomePage({ settings = {} }) {
                 style={{ background: "rgba(4,15,29,0.6)", border: "1px solid rgba(201,166,107,0.55)", boxShadow: "0 0 0 1px rgba(201,166,107,0.15)" }}
               >
                 <img
-                  src={settings.logo_url || "/logo-lm.png"}
+                  src={settings.logo_url || "/lmm.png"}
                   alt="Larissa Magesi"
                   className="h-20 w-auto"
                   fetchpriority="high"
@@ -194,42 +196,52 @@ export default function HomePage({ settings = {} }) {
             <div className="lm-overline mb-3">Encontre seu imóvel</div>
             <h2 className="font-serif text-3xl md:text-4xl text-[#071d34]">Buscar imóveis em Bauru e Região</h2>
           </div>
-          <form onSubmit={handleSearch} className="bg-white border border-[#d1dde8] rounded-sm p-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-            <div>
-              <label className="lm-label">Tipo de imóvel</label>
-              <select className="lm-input" value={search.tipo} onChange={(e) => setSearch({ ...search, tipo: e.target.value })}>
-                <option value="">Todos</option>
-                <option value="casa">Casa</option>
-                <option value="apartamento">Apartamento</option>
-                <option value="condominio">Condomínio</option>
-              </select>
-            </div>
-            <div>
-              <label className="lm-label">Finalidade</label>
-              <select className="lm-input" value={search.finalidade} onChange={(e) => setSearch({ ...search, finalidade: e.target.value })}>
-                <option value="">Comprar ou Alugar</option>
-                <option value="venda">Comprar</option>
-                <option value="locacao">Alugar</option>
-              </select>
-            </div>
-            <div>
-              <label className="lm-label">Valor máximo</label>
-              <div className="flex items-center w-full" style={{ background: "#fff", border: "1px solid #d1dde8", borderRadius: "4px", padding: "0.75rem 0.9rem", gap: "4px" }}>
-                <span className="text-sm shrink-0" style={{ color: "#5C5C5C" }}>R$</span>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  className="flex-1 bg-transparent outline-none"
-                  style={{ fontSize: "0.92rem", color: "#2C2C2C", minWidth: 0 }}
-                  placeholder=""
-                  value={search.valor_max ? new Intl.NumberFormat("pt-BR").format(Number(search.valor_max)) : ""}
-                  onChange={(e) => setSearch({ ...search, valor_max: e.target.value.replace(/\D/g, "") })}
-                />
+          <form onSubmit={handleSearch} className="bg-white border border-[#d1dde8] rounded-sm p-6 space-y-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label className="lm-label">Tipo de imóvel</label>
+                <select className="lm-input" value={search.tipo} onChange={(e) => setSearch({ ...search, tipo: e.target.value })}>
+                  <option value="">Todos</option>
+                  <option value="casa">Casa</option>
+                  <option value="apartamento">Apartamento</option>
+                  <option value="condominio">Condomínio</option>
+                </select>
               </div>
+              <div>
+                <label className="lm-label">Finalidade</label>
+                <select className="lm-input" value={search.finalidade} onChange={(e) => setSearch({ ...search, finalidade: e.target.value })}>
+                  <option value="">Comprar ou Alugar</option>
+                  <option value="venda">Comprar</option>
+                  <option value="locacao">Alugar</option>
+                </select>
+              </div>
+              <div>
+                <label className="lm-label">Valor máximo</label>
+                <div className="flex items-center w-full" style={{ background: "#fff", border: "1px solid #d1dde8", borderRadius: "4px", padding: "0.75rem 0.9rem", gap: "4px" }}>
+                  <span className="text-sm shrink-0" style={{ color: "#5C5C5C" }}>R$</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    className="flex-1 bg-transparent outline-none"
+                    style={{ fontSize: "0.92rem", color: "#2C2C2C", minWidth: 0 }}
+                    placeholder=""
+                    value={search.valor_max ? new Intl.NumberFormat("pt-BR").format(Number(search.valor_max)) : ""}
+                    onChange={(e) => setSearch({ ...search, valor_max: e.target.value.replace(/\D/g, "") })}
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="lm-label">Código do imóvel</label>
+                <input className="lm-input" placeholder="Ex: LM-001" value={search.codigo} onChange={(e) => setSearch({ ...search, codigo: e.target.value })} />
+              </div>
+              <div>
+                <label className="lm-label">Nome do condomínio</label>
+                <input className="lm-input" placeholder="Ex: Villaggio 3" value={search.nome_condominio} onChange={(e) => setSearch({ ...search, nome_condominio: e.target.value })} />
+              </div>
+              <button type="submit" className="lm-btn-primary w-full justify-center self-end">
+                <Search className="w-4 h-4" /> Buscar imóveis
+              </button>
             </div>
-            <button type="submit" className="lm-btn-primary w-full justify-center">
-              <Search className="w-4 h-4" /> Buscar imóveis
-            </button>
           </form>
         </div>
       </section>

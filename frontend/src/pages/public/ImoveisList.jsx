@@ -41,6 +41,8 @@ export default function ImoveisList() {
       tipo: p.get("tipo") || "",
       finalidade: p.get("finalidade") || "",
       valor_max: p.get("valor_max") || "",
+      codigo: p.get("codigo") || "",
+      nome_condominio: p.get("nome_condominio") || "",
     };
   });
   const [props, setProps] = useState([]);

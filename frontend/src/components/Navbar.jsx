@@ -19,14 +19,7 @@ export default function Navbar({ settings = {} }) {
     <header className="sticky top-0 z-40 bg-[#f8fafc]/95 backdrop-blur-md border-b border-[#d1dde8]">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-5 md:px-10 h-24">
         <Link to="/" data-testid="navbar-logo" className="flex items-center gap-3">
-          {settings.logo_url ? (
-            <img src={settings.logo_url} alt="Larissa Magesi" className="h-14 w-auto" />
-          ) : (
-            <div className="flex flex-col leading-tight">
-              <span className="font-serif text-2xl text-[#071d34]">Larissa Magesi</span>
-              <span className="lm-overline">Corretora de Imóveis</span>
-            </div>
-          )}
+          <img src={settings.logo_url || "/lmmm.png"} alt="Larissa Magesi" className="h-14 w-auto" />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-8">
