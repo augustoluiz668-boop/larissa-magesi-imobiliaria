@@ -57,18 +57,21 @@ export default function HomePage({ settings = {} }) {
   return (
     <>
       {/* HERO */}
-      <section className="bg-[#071d34] text-[#f8fafc]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-6 md:pb-20 grid md:grid-cols-2 gap-14 items-center">
-          {/* texto */}
-          <div className="lm-fade-up order-2 md:order-1">
-            <div className="lm-overline mb-5">Corretora de Imóveis · Bauru/SP</div>
-            <h1 className="font-serif text-[2.75rem] leading-[1.02] sm:text-5xl lg:text-6xl tracking-tight">
-              Seu próximo endereço começa aqui
+      <section className="bg-[#071d34] text-[#f8fafc] overflow-hidden">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-[1fr_400px] lg:grid-cols-[1fr_460px] items-stretch min-h-[580px]">
+          {/* COPY — esquerda */}
+          <div className="px-6 md:pl-10 md:pr-12 py-16 md:py-24 flex flex-col justify-center">
+            {settings.logo_url && (
+              <img src={settings.logo_url} alt="Larissa Magesi" className="h-12 w-auto mb-8 opacity-90" />
+            )}
+            <div className="lm-overline mb-5">Bauru e região</div>
+            <h1 className="font-serif text-[2.75rem] leading-[1.05] sm:text-5xl lg:text-[3.25rem] tracking-tight">
+              Seu próximo <em>endereço</em><br className="hidden sm:block" /> começa aqui.
             </h1>
-            <p className="mt-6 text-[#a8b8cc] text-base md:text-lg leading-relaxed max-w-xl">
-              Compra, venda, locação, avaliação e regularização de imóveis — com atendimento personalizado em Bauru e região.
+            <p className="mt-6 text-[#a8b8cc] text-base md:text-lg leading-relaxed max-w-lg">
+              Atendimento personalizado para compra, venda, locação, avaliação, regularização, financiamento e consórcio de imóveis em Bauru e região.
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-3 flex-wrap">
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 flex-wrap">
               <a
                 href={waLink(settings.whatsapp)}
                 target="_blank"
@@ -82,45 +85,42 @@ export default function HomePage({ settings = {} }) {
                 Ver imóveis disponíveis
               </Link>
             </div>
-          </div>
 
-          {/* foto */}
-          <div className="order-1 md:order-2 flex flex-col items-center lm-fade-up lm-fade-delay-2">
-            <div className="text-xs tracking-[0.22em] uppercase text-[#c9a66b] mb-3 font-medium">Bauru e Região</div>
-            <div className="relative">
-              <div className="w-72 h-72 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-[#c9a66b] shadow-2xl bg-[#0d2d4c] flex items-center justify-center">
-                {settings.photo_url ? (
-                  <img
-                    src={settings.photo_url}
-                    alt="Larissa Magesi — Corretora de Imóveis"
-                    className="w-full h-full object-cover object-top transition-opacity duration-500"
-                    fetchpriority="high"
-                    loading="eager"
-                  />
-                ) : (
-                  <span className="font-serif text-6xl text-[#c9a66b] select-none">LM</span>
-                )}
-              </div>
-              {/* anel decorativo */}
-              <div className="absolute -inset-3 rounded-full border border-[#c9a66b]/30 pointer-events-none" />
+            {/* STATS — proof items dentro da coluna, igual protótipo */}
+            <div className="mt-10 pt-8 border-t border-[#0d2d4c] grid grid-cols-2 sm:grid-cols-4 gap-5">
+              {stats.map((s, i) => (
+                <div key={i}>
+                  <div className="font-serif text-2xl text-[#f8fafc] leading-none">{s.value}</div>
+                  <div className="text-xs text-[#a8b8cc] mt-1 leading-tight">{s.label}</div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* 4 STATS */}
-        <div className="border-t border-[#0d2d4c]">
-          <div className="max-w-7xl mx-auto px-6 md:px-10 grid grid-cols-2 md:grid-cols-4">
-            {stats.map((s, i) => (
-              <div key={i} className={`flex items-center gap-4 py-6 px-4 ${i < 3 ? "border-r border-[#0d2d4c]" : ""}`}>
-                <div className="w-10 h-10 rounded-full bg-[#c9a66b]/15 flex items-center justify-center flex-shrink-0">
-                  <s.icon className="w-5 h-5 text-[#c9a66b]" />
-                </div>
-                <div>
-                  <div className="font-serif text-2xl text-[#f8fafc] leading-none">{s.value}</div>
-                  <div className="text-xs text-[#a8b8cc] mt-0.5 leading-tight">{s.label}</div>
-                </div>
+          {/* RETRATO — direita, retangular, full height */}
+          <div className="hidden md:block relative">
+            {settings.photo_url ? (
+              <img
+                src={settings.photo_url}
+                alt="Larissa Magesi — Corretora de Imóveis"
+                className="absolute inset-0 w-full h-full object-cover object-top"
+                fetchpriority="high"
+                loading="eager"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-[#0d2d4c] flex items-center justify-center">
+                <span className="font-serif text-[10rem] text-[#c9a66b]/20 select-none leading-none">LM</span>
               </div>
-            ))}
+            )}
+            {/* gradiente na base */}
+            <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#071d34] to-transparent pointer-events-none" />
+            {/* badge nome */}
+            <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+              <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-full px-5 py-2 text-center">
+                <div className="font-serif text-sm text-[#f8fafc] leading-tight">Larissa Magesi</div>
+                <div className="text-[10px] tracking-[0.2em] uppercase text-[#c9a66b]">CRECI {settings.creci || "290524-F"}</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
