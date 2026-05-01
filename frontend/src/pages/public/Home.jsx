@@ -88,12 +88,16 @@ export default function HomePage({ settings = {} }) {
           <div className="order-1 md:order-2 flex flex-col items-center lm-fade-up lm-fade-delay-2">
             <div className="text-xs tracking-[0.22em] uppercase text-[#c9a66b] mb-3 font-medium">Bauru e Região</div>
             <div className="relative">
-              <div className="w-72 h-72 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-[#c9a66b] shadow-2xl">
-                <img
-                  src={settings.photo_url || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=85"}
-                  alt="Larissa Magesi — Corretora de Imóveis"
-                  className="w-full h-full object-cover object-top"
-                />
+              <div className="w-72 h-72 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-[#c9a66b] shadow-2xl bg-[#0d2d4c] flex items-center justify-center">
+                {settings.photo_url ? (
+                  <img
+                    src={settings.photo_url}
+                    alt="Larissa Magesi — Corretora de Imóveis"
+                    className="w-full h-full object-cover object-top"
+                  />
+                ) : (
+                  <span className="font-serif text-6xl text-[#c9a66b] select-none">LM</span>
+                )}
               </div>
               {/* anel decorativo */}
               <div className="absolute -inset-3 rounded-full border border-[#c9a66b]/30 pointer-events-none" />

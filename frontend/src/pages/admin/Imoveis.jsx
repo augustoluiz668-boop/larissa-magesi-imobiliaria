@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import axios from "axios";
 
 const empty = {
-  titulo: "", tipo: "casa", finalidade: "venda", cidade: "Bauru", bairro: "", endereco: "", complemento: "",
+  codigo: "", titulo: "", tipo: "casa", finalidade: "venda", cidade: "Bauru", bairro: "", endereco: "", complemento: "",
   valor: 0, condominio: 0, iptu: 0, metragem: 0, terreno_m2: 0, quartos: 0, suites: 0, banheiros: 0, vagas: 0,
   aceita_financiamento: false, aceita_consorcio: false, aceita_permuta: false,
   piscina: false, edicula: false, elevador: false, varanda: false, quintal: false,
@@ -194,7 +194,8 @@ function PropertyModal({ data, setData, onSave }) {
         </div>
         <form onSubmit={onSave} data-testid="property-form" className="p-6 space-y-6 overflow-y-auto flex-1">
           <section className="grid md:grid-cols-3 gap-4">
-            <div className="md:col-span-3"><label className="lm-label">Título *</label><input className="lm-input" required value={data.titulo} onChange={(e) => s("titulo", e.target.value)} data-testid="pf-titulo" /></div>
+            <div><label className="lm-label">Código (ID)</label><input className="lm-input" placeholder="Ex: RN-131" value={data.codigo || ""} onChange={(e) => s("codigo", e.target.value)} data-testid="pf-codigo" /></div>
+            <div className="md:col-span-2"><label className="lm-label">Título *</label><input className="lm-input" required value={data.titulo} onChange={(e) => s("titulo", e.target.value)} data-testid="pf-titulo" /></div>
             <div><label className="lm-label">Tipo</label>
               <select className="lm-input" value={data.tipo} onChange={(e) => s("tipo", e.target.value)}>
                 {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}

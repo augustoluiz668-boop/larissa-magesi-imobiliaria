@@ -29,12 +29,18 @@ export default function About({ settings = {} }) {
       <section className="bg-white border-b border-[#d1dde8]">
         <div className="max-w-7xl mx-auto px-6 md:px-10 py-20 grid md:grid-cols-12 gap-12 items-center">
           <div className="md:col-span-5">
-            <img
-              src={settings.photo_url || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=900&q=85"}
-              alt="Larissa Magesi — Corretora de Imóveis"
-              className="w-full h-[620px] object-cover object-top rounded-sm shadow-lg"
-              data-testid="about-photo"
-            />
+            {settings.photo_url ? (
+              <img
+                src={settings.photo_url}
+                alt="Larissa Magesi — Corretora de Imóveis"
+                className="w-full h-[620px] object-cover object-top rounded-sm shadow-lg"
+                data-testid="about-photo"
+              />
+            ) : (
+              <div className="w-full h-[620px] rounded-sm shadow-lg bg-[#0d2d4c] flex items-center justify-center" data-testid="about-photo">
+                <span className="font-serif text-9xl text-[#c9a66b] select-none">LM</span>
+              </div>
+            )}
           </div>
           <div className="md:col-span-7 md:pl-6">
             <div className="lm-overline mb-4">Sobre Mim</div>
