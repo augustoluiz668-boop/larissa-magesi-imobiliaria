@@ -75,10 +75,10 @@ export default function HomePage({ settings = {} }) {
         <div className="max-w-7xl mx-auto grid md:grid-cols-[1fr_420px] lg:grid-cols-[1fr_480px] items-center min-h-[640px] px-6 md:px-10 py-16 md:py-20 gap-10 lg:gap-16">
           {/* COPY — esquerda */}
           <div className="flex flex-col justify-center">
-            {/* Logo em caixa com borda dourada — sem padding, imagem preenche o frame */}
-            <div className="mb-8">
+            {/* Logo + foto mobile — lado a lado apenas no mobile */}
+            <div className="mb-8 flex items-stretch gap-3">
               <div
-                className="inline-block overflow-hidden"
+                className="inline-block overflow-hidden shrink-0"
                 style={{ border: "1.5px solid rgba(201,166,107,0.7)", borderRadius: "6px", lineHeight: 0 }}
               >
                 <img
@@ -88,6 +88,16 @@ export default function HomePage({ settings = {} }) {
                   fetchpriority="high"
                 />
               </div>
+              {/* Foto da Larissa — só no mobile, some no md+ (onde aparece coluna direita) */}
+              {settings.photo_url && (
+                <div className="md:hidden flex-1 overflow-hidden" style={{ borderRadius: "6px", border: "1.5px solid rgba(201,166,107,0.55)" }}>
+                  <img
+                    src={settings.photo_url}
+                    alt="Larissa Magesi"
+                    style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "top", background: "#071d34", display: "block" }}
+                  />
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-3 mb-4">
               <div style={{ width: "32px", height: "1.5px", background: "#c9a66b", flexShrink: 0 }} />

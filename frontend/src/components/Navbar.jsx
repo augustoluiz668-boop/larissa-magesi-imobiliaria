@@ -41,17 +41,6 @@ export default function Navbar({ settings = {} }) {
           <img src="/lmmm.png" alt="Larissa Magesi" className="h-16 w-auto" />
         </Link>
 
-        {/* Foto retangular — preenche espaço central */}
-        {settings.photo_url && (
-          <div className="flex-1 flex justify-end pr-3">
-            <img
-              src={settings.photo_url}
-              alt="Larissa Magesi"
-              style={{ height: "72px", width: "54px", objectFit: "contain", objectPosition: "top", borderRadius: "6px", border: "1.5px solid rgba(201,166,107,0.6)" }}
-            />
-          </div>
-        )}
-
         <button
           data-testid="navbar-mobile-toggle"
           className="p-2 text-[#071d34] shrink-0"
