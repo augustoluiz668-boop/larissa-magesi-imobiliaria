@@ -180,13 +180,13 @@ function PropertyModal({ data, setData, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-start md:items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-sm w-full max-w-4xl my-6">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E0D8]">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-sm w-full max-w-4xl max-h-[92vh] flex flex-col">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E0D8] flex-shrink-0">
           <h2 className="font-serif text-2xl text-[#2B3A2F]">{data.id ? "Editar imóvel" : "Novo imóvel"}</h2>
           <button onClick={() => setData(null)} className="p-2 hover:bg-[#F4F1EB] rounded"><X className="w-5 h-5" /></button>
         </div>
-        <form onSubmit={onSave} data-testid="property-form" className="p-6 space-y-6">
+        <form onSubmit={onSave} data-testid="property-form" className="p-6 space-y-6 overflow-y-auto flex-1">
           <section className="grid md:grid-cols-3 gap-4">
             <div className="md:col-span-3"><label className="lm-label">Título *</label><input className="lm-input" required value={data.titulo} onChange={(e) => s("titulo", e.target.value)} data-testid="pf-titulo" /></div>
             <div><label className="lm-label">Tipo</label>
