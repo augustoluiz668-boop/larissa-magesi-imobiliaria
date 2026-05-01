@@ -213,18 +213,15 @@ export default function HomePage({ settings = {} }) {
               </select>
             </div>
             <div>
-              <label className="lm-label">Valor máximo</label>
-              <div className="flex items-center w-full" style={{ background: "#fff", border: "1px solid #d1dde8", borderRadius: "4px", transition: "border 0.2s" }}>
-                <span className="pl-3 pr-1 text-sm select-none" style={{ color: "#5C5C5C", whiteSpace: "nowrap" }}>R$</span>
-                <input
-                  type="number"
-                  className="flex-1 bg-transparent outline-none py-3 pr-3"
-                  style={{ fontSize: "0.92rem", color: "#2C2C2C", minWidth: 0 }}
-                  placeholder="500.000"
-                  value={search.valor_max}
-                  onChange={(e) => setSearch({ ...search, valor_max: e.target.value })}
-                />
-              </div>
+              <label className="lm-label">Valor</label>
+              <input
+                type="text"
+                inputMode="numeric"
+                className="lm-input"
+                placeholder=""
+                value={search.valor_max ? new Intl.NumberFormat("pt-BR").format(Number(search.valor_max)) : ""}
+                onChange={(e) => setSearch({ ...search, valor_max: e.target.value.replace(/\D/g, "") })}
+              />
             </div>
             <button type="submit" className="lm-btn-primary w-full justify-center">
               <Search className="w-4 h-4" /> Buscar imóveis
