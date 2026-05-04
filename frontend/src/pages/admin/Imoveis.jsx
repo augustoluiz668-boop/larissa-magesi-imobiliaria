@@ -143,11 +143,13 @@ function PropertyModal({ data, setData, onSave }) {
     const urls = [];
     for (const file of files) {
       try {
-        const fileName = `${Date.now()}-${file.name.replace(/\s/g, "_")}`;
-        const { error: upErr } = await supabase.storage.from("imoveis").upload(fileName, file, { upsert: true });
-        if (upErr) throw upErr;
-        const { data: { publicUrl } } = supabase.storage.from("imoveis").getPublicUrl(fileName);
-        urls.push(publicUrl);
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("upload_preset", "lm_imoveis");
+        const res = await fetch("https://api.cloudinary.com/v1_1/dwrblaqet/image/upload", { method: "POST", body: fd });
+        if (!res.ok) throw new Error("Upload falhou");
+        const json = await res.json();
+        urls.push(json.secure_url);
       } catch {
         toast.error(`Falha no upload de ${file.name}`);
       }
