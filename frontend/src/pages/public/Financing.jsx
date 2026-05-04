@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { waLink } from "../../lib/api";
+import { waLink, maskPhone, maskCurrency, parseCurrency } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
 import { Calculator, Check, ArrowRight, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -32,7 +32,7 @@ export default function Financing({ settings = {} }) {
         email: form.email,
         finalidade: "financiar",
         origem: "site",
-        orcamento: Number(form.valor_imovel) || 0,
+        orcamento: parseCurrency(form.valor_imovel),
         mensagem,
         created_at: new Date().toISOString(),
       });
@@ -86,10 +86,10 @@ export default function Financing({ settings = {} }) {
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div><label className="lm-label">Nome completo *</label><input required className="lm-input" value={form.nome} onChange={(e) => set("nome", e.target.value)} data-testid="fin-nome" /></div>
-            <div><label className="lm-label">Telefone / WhatsApp *</label><input required className="lm-input" value={form.telefone} onChange={(e) => set("telefone", e.target.value)} data-testid="fin-telefone" /></div>
+            <div><label className="lm-label">Telefone / WhatsApp *</label><input required className="lm-input" placeholder="(14) 99999-9999" value={form.telefone} onChange={(e) => set("telefone", maskPhone(e.target.value))} data-testid="fin-telefone" /></div>
             <div><label className="lm-label">E-mail</label><input type="email" className="lm-input" value={form.email} onChange={(e) => set("email", e.target.value)} /></div>
             <div><label className="lm-label">Data de nascimento</label><input type="date" className="lm-input" value={form.data_nascimento} onChange={(e) => set("data_nascimento", e.target.value)} data-testid="fin-nascimento" /></div>
-            <div><label className="lm-label">Renda bruta familiar (R$) *</label><input required type="number" className="lm-input" value={form.renda_bruta} onChange={(e) => set("renda_bruta", e.target.value)} data-testid="fin-renda" /></div>
+            <div><label className="lm-label">Renda bruta familiar (R$) *</label><input required className="lm-input" placeholder="R$ 0,00" value={form.renda_bruta} onChange={(e) => set("renda_bruta", maskCurrency(e.target.value))} data-testid="fin-renda" /></div>
             <div className="flex items-end gap-4">
               <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" className="accent-[#071d34]" checked={form.tem_dependentes} onChange={(e) => set("tem_dependentes", e.target.checked)} data-testid="fin-dep" /> Tem dependentes?</label>
             </div>
@@ -99,17 +99,17 @@ export default function Financing({ settings = {} }) {
             <div className="font-serif text-lg text-[#071d34] mb-3">FGTS e entrada</div>
             <div className="grid sm:grid-cols-2 gap-4">
               <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" className="accent-[#071d34]" checked={form.tem_fgts} onChange={(e) => set("tem_fgts", e.target.checked)} data-testid="fin-tem-fgts" /> Tem FGTS disponível?</label>
-              {form.tem_fgts && <div><label className="lm-label">Valor do FGTS (R$)</label><input type="number" className="lm-input" value={form.valor_fgts} onChange={(e) => set("valor_fgts", e.target.value)} data-testid="fin-val-fgts" /></div>}
+              {form.tem_fgts && <div><label className="lm-label">Valor do FGTS (R$)</label><input className="lm-input" placeholder="R$ 0,00" value={form.valor_fgts} onChange={(e) => set("valor_fgts", maskCurrency(e.target.value))} data-testid="fin-val-fgts" /></div>}
               <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" className="accent-[#071d34]" checked={form.tem_entrada} onChange={(e) => set("tem_entrada", e.target.checked)} data-testid="fin-tem-entrada" /> Tem entrada?</label>
-              {form.tem_entrada && <div><label className="lm-label">Valor da entrada (R$)</label><input type="number" className="lm-input" value={form.valor_entrada} onChange={(e) => set("valor_entrada", e.target.value)} data-testid="fin-val-entrada" /></div>}
+              {form.tem_entrada && <div><label className="lm-label">Valor da entrada (R$)</label><input className="lm-input" placeholder="R$ 0,00" value={form.valor_entrada} onChange={(e) => set("valor_entrada", maskCurrency(e.target.value))} data-testid="fin-val-entrada" /></div>}
             </div>
           </div>
 
           <div className="border-t border-[#d1dde8] pt-5">
             <div className="font-serif text-lg text-[#071d34] mb-3">Expectativa</div>
             <div className="grid sm:grid-cols-3 gap-4">
-              <div><label className="lm-label">Parcela que gostaria de pagar (R$)</label><input type="number" className="lm-input" value={form.parcela_desejada} onChange={(e) => set("parcela_desejada", e.target.value)} data-testid="fin-parcela" /></div>
-              <div><label className="lm-label">Valor do imóvel pretendido (R$) *</label><input required type="number" className="lm-input" value={form.valor_imovel} onChange={(e) => set("valor_imovel", e.target.value)} data-testid="fin-valor-imovel" /></div>
+              <div><label className="lm-label">Parcela que gostaria de pagar (R$)</label><input className="lm-input" placeholder="R$ 0,00" value={form.parcela_desejada} onChange={(e) => set("parcela_desejada", maskCurrency(e.target.value))} data-testid="fin-parcela" /></div>
+              <div><label className="lm-label">Valor do imóvel pretendido (R$) *</label><input required className="lm-input" placeholder="R$ 0,00" value={form.valor_imovel} onChange={(e) => set("valor_imovel", maskCurrency(e.target.value))} data-testid="fin-valor-imovel" /></div>
               <div><label className="lm-label">Prazo (meses)</label>
                 <select className="lm-input" value={form.prazo} onChange={(e) => set("prazo", Number(e.target.value))} data-testid="fin-prazo">
                   {prazoOptions.map((p) => <option key={p} value={p}>{p} meses ({Math.round(p / 12)} anos)</option>)}

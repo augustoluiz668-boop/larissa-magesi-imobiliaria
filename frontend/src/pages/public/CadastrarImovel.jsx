@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ArrowRight, Home, Check } from "lucide-react";
-import { waLink } from "../../lib/api";
+import { waLink, maskPhone, maskCurrency, parseCurrency } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
 import { toast } from "sonner";
 
@@ -27,7 +27,7 @@ export default function CadastrarImovel({ settings = {} }) {
         email: form.email,
         tipo_imovel: form.tipo,
         finalidade: form.finalidade,
-        orcamento: Number(form.valor) || 0,
+        orcamento: parseCurrency(form.valor),
         mensagem: msg,
         origem: "site",
         created_at: new Date().toISOString(),
@@ -110,7 +110,7 @@ export default function CadastrarImovel({ settings = {} }) {
                 </div>
                 <div>
                   <label className="lm-label">WhatsApp *</label>
-                  <input required className="lm-input" placeholder="(14) 99999-9999" value={form.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} data-testid="cad-whatsapp" />
+                  <input required className="lm-input" placeholder="(14) 99999-9999" value={form.whatsapp} onChange={(e) => set("whatsapp", maskPhone(e.target.value))} data-testid="cad-whatsapp" />
                 </div>
                 <div className="sm:col-span-2">
                   <label className="lm-label">E-mail</label>
@@ -155,7 +155,7 @@ export default function CadastrarImovel({ settings = {} }) {
                   </div>
                   <div className="sm:col-span-2">
                     <label className="lm-label">Valor pretendido (R$)</label>
-                    <input type="number" className="lm-input" placeholder="Ex: 450000" value={form.valor} onChange={(e) => set("valor", e.target.value)} />
+                    <input className="lm-input" placeholder="R$ 0,00" value={form.valor} onChange={(e) => set("valor", maskCurrency(e.target.value))} />
                   </div>
                 </div>
               </div>
