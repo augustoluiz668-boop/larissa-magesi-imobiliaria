@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { api } from "../lib/api";
+import { supabase } from "../lib/supabase";
 
 const AuthCtx = createContext(null);
 export const useAuth = () => useContext(AuthCtx);
@@ -9,30 +9,23 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("lm_token");
-    if (!token) {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
       setLoading(false);
-      return;
-    }
-    api
-      .get("/auth/me")
-      .then((r) => setUser(r.data))
-      .catch(() => {
-        localStorage.removeItem("lm_token");
-        setUser(null);
-      })
-      .finally(() => setLoading(false));
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email, password) => {
-    const { data } = await api.post("/auth/login", { email, password });
-    localStorage.setItem("lm_token", data.token);
-    setUser(data.user);
-    return data.user;
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
   };
 
-  const logout = () => {
-    localStorage.removeItem("lm_token");
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
   };
 

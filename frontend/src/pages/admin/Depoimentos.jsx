@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
-import { api } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { Plus, Pencil, Trash2, X, Star, Save } from "lucide-react";
 import { toast } from "sonner";
 
@@ -10,14 +10,17 @@ export default function Depoimentos() {
   const [items, setItems] = useState([]);
   const [editing, setEditing] = useState(null);
 
-  const load = () => api.get("/public/testimonials").then((r) => setItems(r.data));
+  const load = () => supabase.from("testimonials").select("*").order("created_at", { ascending: false }).then(({ data }) => setItems(data || []));
   useEffect(() => { load(); }, []);
 
   const save = async (e) => {
     e.preventDefault();
     try {
-      if (editing.id) await api.put(`/admin/testimonials/${editing.id}`, editing);
-      else await api.post("/admin/testimonials", editing);
+      const { id, ...rest } = editing;
+      let error;
+      if (id) ({ error } = await supabase.from("testimonials").update(rest).eq("id", id));
+      else ({ error } = await supabase.from("testimonials").insert(rest));
+      if (error) throw error;
       toast.success("Depoimento salvo");
       setEditing(null);
       load();
@@ -26,7 +29,7 @@ export default function Depoimentos() {
 
   const remove = async (id) => {
     if (!window.confirm("Excluir depoimento?")) return;
-    await api.delete(`/admin/testimonials/${id}`);
+    await supabase.from("testimonials").delete().eq("id", id);
     toast.success("Depoimento excluído");
     load();
   };

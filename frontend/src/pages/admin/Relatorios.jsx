@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
-import { api, STAGE_LABELS, ORIGIN_LABELS, TYPE_LABELS, formatMoney } from "../../lib/api";
+import { STAGE_LABELS, ORIGIN_LABELS, TYPE_LABELS, formatMoney } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell,
@@ -33,9 +34,28 @@ export default function Relatorios() {
   const [leads, setLeads] = useState([]);
 
   useEffect(() => {
-    api.get("/admin/dashboard/stats").then((r) => setS(r.data));
-    api.get("/admin/reports/insights").then((r) => setInsights(r.data.insights || []));
-    api.get("/admin/leads").then((r) => setLeads(r.data)).catch(() => {});
+    supabase.from("leads").select("*").then(({ data }) => {
+      if (!data) return;
+      setLeads(data);
+      const count = (stage) => data.filter((l) => l.stage === stage).length;
+      const total = data.length;
+      const fechados = count("fechado");
+      const por_origem = Object.entries(
+        data.reduce((acc, l) => { acc[l.origem || "outros"] = (acc[l.origem || "outros"] || 0) + 1; return acc; }, {})
+      ).map(([name, value]) => ({ name, value }));
+      const funil = Object.entries(
+        data.reduce((acc, l) => { acc[l.stage || "novo"] = (acc[l.stage || "novo"] || 0) + 1; return acc; }, {})
+      ).map(([stage, total]) => ({ stage, total }));
+      setS({
+        total_leads: total, novos: count("novo"), visitas: count("visita_agendada"),
+        fechados, em_atendimento: count("primeiro_contato") + count("qualificacao") + count("imoveis_enviados"),
+        propostas: count("proposta"), negociacoes: count("negociacao"),
+        conversao: total > 0 ? Math.round((fechados / total) * 100) : 0,
+        valor_aberto: data.filter((l) => !["fechado","perdido"].includes(l.stage)).reduce((a, l) => a + (l.orcamento || 0), 0),
+        valor_fechado: data.filter((l) => l.stage === "fechado").reduce((a, l) => a + (l.orcamento || 0), 0),
+        perdidos: count("perdido"), por_origem, funil,
+      });
+    });
   }, []);
 
   if (!s) return <AdminLayout title="Relatórios"><div className="py-24 text-center text-[#5C5C5C]">Carregando…</div></AdminLayout>;

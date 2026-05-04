@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PropertyCard from "../../components/PropertyCard";
-import { api, formatMoney, TYPE_LABELS, PURPOSE_LABELS } from "../../lib/api";
+import { formatMoney, TYPE_LABELS, PURPOSE_LABELS } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { Search, X, Map as MapIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -49,10 +50,21 @@ export default function ImoveisList() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
 
-  // City → neighborhoods map from API
+  // City → neighborhoods map from Supabase
   const [citiesMap, setCitiesMap] = useState({});
   useEffect(() => {
-    api.get("/public/cities").then((r) => setCitiesMap(r.data)).catch(() => {});
+    supabase.from("properties").select("cidade, bairro").neq("status", "inativo").then(({ data }) => {
+      if (!data) return;
+      const map = {};
+      data.forEach(({ cidade, bairro }) => {
+        if (!cidade) return;
+        if (!map[cidade]) map[cidade] = new Set();
+        if (bairro) map[cidade].add(bairro);
+      });
+      const result = {};
+      Object.entries(map).forEach(([c, s]) => { result[c] = [...s].sort(); });
+      setCitiesMap(result);
+    });
   }, []);
 
   const cities = Object.keys(citiesMap).sort();
@@ -61,10 +73,28 @@ export default function ImoveisList() {
   const load = async (f) => {
     setLoading(true);
     setPage(1);
-    const params = Object.fromEntries(Object.entries(f).filter(([_, v]) => v !== "" && v !== false));
     try {
-      const r = await api.get("/public/properties", { params });
-      setProps(r.data);
+      let q = supabase.from("properties").select("*").neq("status", "inativo");
+      if (f.tipo) q = q.eq("tipo", f.tipo);
+      if (f.finalidade) q = q.eq("finalidade", f.finalidade);
+      if (f.cidade) q = q.ilike("cidade", `%${f.cidade}%`);
+      if (f.bairro) q = q.ilike("bairro", `%${f.bairro}%`);
+      if (f.codigo) q = q.eq("codigo", f.codigo);
+      if (f.nome_condominio) q = q.ilike("nome_condominio", `%${f.nome_condominio}%`);
+      if (f.valor_min) q = q.gte("valor", Number(f.valor_min));
+      if (f.valor_max) q = q.lte("valor", Number(f.valor_max));
+      if (f.quartos_min) q = q.gte("quartos", Number(f.quartos_min));
+      if (f.vagas_min) q = q.gte("vagas", Number(f.vagas_min));
+      if (f.aceita_financiamento) q = q.eq("aceita_financiamento", true);
+      if (f.aceita_consorcio) q = q.eq("aceita_consorcio", true);
+      if (f.aceita_permuta) q = q.eq("aceita_permuta", true);
+      if (f.piscina) q = q.eq("piscina", true);
+      if (f.edicula) q = q.eq("edicula", true);
+      if (f.elevador) q = q.eq("elevador", true);
+      if (f.varanda) q = q.eq("varanda", true);
+      if (f.quintal) q = q.eq("quintal", true);
+      const { data } = await q.order("created_at", { ascending: false });
+      setProps(data || []);
     } finally { setLoading(false); }
   };
 

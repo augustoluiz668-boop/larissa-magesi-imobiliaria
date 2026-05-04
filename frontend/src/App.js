@@ -3,7 +3,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "sonner";
-import { api } from "./lib/api";
+import { supabase } from "./lib/supabase";
 
 import Home from "./pages/public/Home";
 import ImoveisList from "./pages/public/ImoveisList";
@@ -48,10 +48,12 @@ function PublicShell({ children }) {
     try { return JSON.parse(localStorage.getItem("lm_settings") || "{}"); } catch { return {}; }
   });
   useEffect(() => {
-    api.get("/public/settings").then((r) => {
-      setSettings(r.data);
-      try { localStorage.setItem("lm_settings", JSON.stringify(r.data)); } catch {}
-    }).catch(() => {});
+    supabase.from("settings").select("*").single().then(({ data }) => {
+      if (data) {
+        setSettings(data);
+        try { localStorage.setItem("lm_settings", JSON.stringify(data)); } catch {}
+      }
+    });
   }, []);
   return (
     <div className="bg-[#f8fafc] min-h-screen flex flex-col">

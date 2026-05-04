@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
-import { api, API, formatMoney, TYPE_LABELS, PURPOSE_LABELS, waLink } from "../../lib/api";
+import { formatMoney, TYPE_LABELS, PURPOSE_LABELS, waLink } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { Plus, Pencil, Trash2, MessageCircle, Star, X, Upload, Image as ImageIcon, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import axios from "axios";
 
 const empty = {
   codigo: "", titulo: "", tipo: "casa", finalidade: "venda", cidade: "Bauru", bairro: "", endereco: "", complemento: "",
@@ -21,13 +21,14 @@ export default function ImoveisAdmin() {
   const [editing, setEditing] = useState(null);
   const [filter, setFilter] = useState({ tipo: "", status: "", cidade: "" });
 
-  const load = () => api.get("/admin/properties").then((r) => setItems(r.data));
+  const load = () => supabase.from("properties").select("*").order("created_at", { ascending: false }).then(({ data }) => setItems(data || []));
   useEffect(() => { load(); }, []);
 
   const save = async (e) => {
     e.preventDefault();
+    const { id, ...rest } = editing;
     const payload = {
-      ...editing,
+      ...rest,
       valor: Number(editing.valor) || 0,
       condominio: Number(editing.condominio) || 0,
       iptu: Number(editing.iptu) || 0,
@@ -42,9 +43,14 @@ export default function ImoveisAdmin() {
       fotos: (editing.fotos || []).filter(Boolean),
     };
     try {
-      if (editing.id) await api.put(`/admin/properties/${editing.id}`, payload);
-      else await api.post("/admin/properties", payload);
-      toast.success(editing.id ? "Imóvel atualizado" : "Imóvel cadastrado");
+      let error;
+      if (id) {
+        ({ error } = await supabase.from("properties").update(payload).eq("id", id));
+      } else {
+        ({ error } = await supabase.from("properties").insert(payload));
+      }
+      if (error) throw error;
+      toast.success(id ? "Imóvel atualizado" : "Imóvel cadastrado");
       setEditing(null);
       load();
     } catch { toast.error("Falha ao salvar"); }
@@ -52,7 +58,7 @@ export default function ImoveisAdmin() {
 
   const remove = async (id) => {
     if (!window.confirm("Excluir imóvel?")) return;
-    await api.delete(`/admin/properties/${id}`);
+    await supabase.from("properties").delete().eq("id", id);
     toast.success("Imóvel excluído");
     load();
   };
@@ -67,7 +73,12 @@ export default function ImoveisAdmin() {
     <AdminLayout
       title="Imóveis"
       subtitle={`${items.length} imóveis cadastrados`}
-      actions={<button onClick={async () => { const { data } = await api.get("/admin/properties/next-code"); setEditing({ ...empty, codigo: data.next_code }); }} data-testid="add-property-btn" className="lm-btn-primary"><Plus className="w-4 h-4" /> Novo imóvel</button>}
+      actions={<button onClick={async () => {
+  const { data } = await supabase.from("properties").select("codigo").order("codigo", { ascending: false }).limit(1);
+  const last = data?.[0]?.codigo || "00000";
+  const next = String(parseInt(last, 10) + 1).padStart(5, "0");
+  setEditing({ ...empty, codigo: next });
+}} data-testid="add-property-btn" className="lm-btn-primary"><Plus className="w-4 h-4" /> Novo imóvel</button>}
     >
       <div className="flex flex-wrap gap-3 mb-5">
         <select className="lm-input max-w-xs" value={filter.tipo} onChange={(e) => setFilter({ ...filter, tipo: e.target.value })} data-testid="filter-prop-tipo">
@@ -129,17 +140,15 @@ function PropertyModal({ data, setData, onSave }) {
 
   const uploadFiles = async (files) => {
     setUploading(true);
-    const token = localStorage.getItem("lm_token");
     const urls = [];
     for (const file of files) {
       try {
-        const fd = new FormData();
-        fd.append("file", file);
-        const r = await axios.post(`${API}/upload`, fd, {
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
-        });
-        urls.push(`${API}${r.data.url.replace("/api", "")}`);
-      } catch (e) {
+        const fileName = `${Date.now()}-${file.name.replace(/\s/g, "_")}`;
+        const { error: upErr } = await supabase.storage.from("imoveis").upload(fileName, file, { upsert: true });
+        if (upErr) throw upErr;
+        const { data: { publicUrl } } = supabase.storage.from("imoveis").getPublicUrl(fileName);
+        urls.push(publicUrl);
+      } catch {
         toast.error(`Falha no upload de ${file.name}`);
       }
     }

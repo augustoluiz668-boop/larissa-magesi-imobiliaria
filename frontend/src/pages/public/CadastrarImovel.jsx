@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ArrowRight, Home, Check } from "lucide-react";
-import { api, waLink } from "../../lib/api";
+import { waLink } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { toast } from "sonner";
 
 export default function CadastrarImovel({ settings = {} }) {
@@ -20,7 +21,7 @@ export default function CadastrarImovel({ settings = {} }) {
     setSending(true);
     try {
       const msg = `Quero cadastrar meu imóvel — Tipo: ${form.tipo || "não informado"} | Finalidade: ${form.finalidade} | Endereço: ${form.endereco || "não informado"}, ${form.bairro || ""}, ${form.cidade || ""} | Valor: R$${form.valor || "não informado"} | ${form.descricao}`;
-      await api.post("/public/leads", {
+      const { error } = await supabase.from("leads").insert({
         nome: form.nome,
         whatsapp: form.whatsapp,
         email: form.email,
@@ -29,7 +30,9 @@ export default function CadastrarImovel({ settings = {} }) {
         orcamento: Number(form.valor) || 0,
         mensagem: msg,
         origem: "site",
+        created_at: new Date().toISOString(),
       });
+      if (error) throw error;
       setSent(true);
       toast.success("Cadastro recebido! Entrarei em contato em breve.");
     } catch {

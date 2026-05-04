@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
-import { api, formatMoney, STAGE_LABELS, ORIGIN_LABELS } from "../../lib/api";
+import { formatMoney, STAGE_LABELS, ORIGIN_LABELS } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import {
   Users, TrendingUp, KeyRound, CheckCircle2, X, Home, Calendar, Activity, Thermometer, DollarSign,
 } from "lucide-react";
@@ -34,8 +35,33 @@ export default function Dashboard() {
   const [insights, setInsights] = useState([]);
 
   useEffect(() => {
-    api.get("/admin/dashboard/stats").then((r) => setS(r.data));
-    api.get("/admin/reports/insights").then((r) => setInsights(r.data.insights || []));
+    supabase.from("leads").select("*").then(({ data: leads }) => {
+      if (!leads) return;
+      const count = (stage) => leads.filter((l) => l.stage === stage).length;
+      const fechados = count("fechado");
+      const total = leads.length;
+      const por_origem = Object.entries(
+        leads.reduce((acc, l) => { acc[l.origem || "outros"] = (acc[l.origem || "outros"] || 0) + 1; return acc; }, {})
+      ).map(([name, value]) => ({ name, value }));
+      const funil = Object.entries(
+        leads.reduce((acc, l) => { acc[l.stage || "novo"] = (acc[l.stage || "novo"] || 0) + 1; return acc; }, {})
+      ).map(([stage, total]) => ({ stage, total }));
+      setS({
+        total_leads: total,
+        novos: count("novo"),
+        visitas: count("visita_agendada"),
+        fechados,
+        em_atendimento: count("primeiro_contato") + count("qualificacao") + count("imoveis_enviados"),
+        propostas: count("proposta"),
+        negociacoes: count("negociacao"),
+        conversao: total > 0 ? Math.round((fechados / total) * 100) : 0,
+        valor_aberto: leads.filter((l) => !["fechado","perdido"].includes(l.stage)).reduce((a, l) => a + (l.orcamento || 0), 0),
+        valor_fechado: leads.filter((l) => l.stage === "fechado").reduce((a, l) => a + (l.orcamento || 0), 0),
+        perdidos: count("perdido"),
+        por_origem,
+        funil,
+      });
+    });
   }, []);
 
   if (!s) return <AdminLayout title="Dashboard"><div className="py-24 text-center text-[#5C5C5C]">Carregando…</div></AdminLayout>;

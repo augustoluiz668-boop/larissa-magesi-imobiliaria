@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
-import { api } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 
@@ -9,14 +9,16 @@ export default function Configuracoes() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    api.get("/public/settings").then((r) => setS(r.data));
+    supabase.from("settings").select("*").single().then(({ data }) => { if (data) setS(data); });
   }, []);
 
   const save = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
-      await api.put("/admin/settings", { ...s, finance_rate_annual: Number(s.finance_rate_annual) || 10.49 });
+      const payload = { ...s, finance_rate_annual: Number(s.finance_rate_annual) || 10.49 };
+      const { error } = await supabase.from("settings").update(payload).eq("id", s.id);
+      if (error) throw error;
       toast.success("Configurações salvas");
     } catch { toast.error("Falha ao salvar"); } finally { setSaving(false); }
   };

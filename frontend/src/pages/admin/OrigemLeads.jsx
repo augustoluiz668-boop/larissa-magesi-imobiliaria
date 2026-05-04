@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
-import { api, ORIGIN_LABELS, formatMoney } from "../../lib/api";
+import { ORIGIN_LABELS, formatMoney } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { TrendingUp, Target, DollarSign } from "lucide-react";
 
 export default function OrigemLeads() {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    api.get("/admin/reports/origin").then((r) => setRows(r.data));
+    supabase.from("leads").select("*").then(({ data }) => {
+      if (!data) return;
+      const map = {};
+      data.forEach((l) => {
+        const o = l.origem || "outros";
+        if (!map[o]) map[o] = { origem: o, total: 0, fechados: 0, valor: 0 };
+        map[o].total++;
+        if (l.stage === "fechado") { map[o].fechados++; map[o].valor += l.orcamento || 0; }
+      });
+      setRows(Object.values(map).map((r) => ({ ...r, conversao: r.total > 0 ? Math.round((r.fechados / r.total) * 100) : 0 })));
+    });
   }, []);
 
   const totals = rows.reduce((a, r) => ({

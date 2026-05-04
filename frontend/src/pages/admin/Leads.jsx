@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
-import { api, STAGE_LABELS, ORIGIN_LABELS, STAGES, formatMoney, waLink } from "../../lib/api";
+import { STAGE_LABELS, ORIGIN_LABELS, STAGES, formatMoney, waLink } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { MessageCircle, Eye, Search, Plus, X } from "lucide-react";
 import LeadDetailModal from "./LeadDetailModal";
 import { toast } from "sonner";
@@ -29,10 +30,12 @@ function NewLeadModal({ onClose, onSaved }) {
     if (!form.nome || !form.whatsapp) return toast.error("Nome e WhatsApp obrigatórios");
     setSaving(true);
     try {
-      await api.post("/admin/leads", {
+      const { error } = await supabase.from("leads").insert({
         ...form,
         orcamento: Number(form.orcamento) || 0,
+        created_at: new Date().toISOString(),
       });
+      if (error) throw error;
       toast.success("Lead criado com sucesso");
       onSaved();
       onClose();
@@ -91,11 +94,11 @@ export default function LeadsPage() {
   const [showNew, setShowNew] = useState(false);
 
   const load = async () => {
-    const params = {};
-    if (stage) params.stage = stage;
-    if (origem) params.origem = origem;
-    const r = await api.get("/admin/leads", { params });
-    setLeads(r.data);
+    let q2 = supabase.from("leads").select("*").order("created_at", { ascending: false });
+    if (stage) q2 = q2.eq("stage", stage);
+    if (origem) q2 = q2.eq("origem", origem);
+    const { data } = await q2;
+    setLeads(data || []);
   };
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [stage, origem]);

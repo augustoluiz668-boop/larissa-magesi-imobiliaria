@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { api, waLink } from "../../lib/api";
+import { waLink } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { Calculator, Check, ArrowRight, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
@@ -24,21 +25,18 @@ export default function Financing({ settings = {} }) {
     }
     setSending(true);
     try {
-      await api.post("/public/financing", {
+      const mensagem = `Simulação — Renda: R$${form.renda_bruta} | Valor imóvel: R$${form.valor_imovel} | Prazo: ${form.prazo}m | FGTS: ${form.tem_fgts ? `R$${form.valor_fgts}` : "não"} | Entrada: ${form.tem_entrada ? `R$${form.valor_entrada}` : "não"} | Obs: ${form.observacoes}`;
+      const { error } = await supabase.from("leads").insert({
         nome: form.nome,
-        telefone: form.telefone,
+        whatsapp: form.telefone,
         email: form.email,
-        renda_bruta: Number(form.renda_bruta),
-        data_nascimento: form.data_nascimento,
-        tem_dependentes: form.tem_dependentes,
-        tem_fgts: form.tem_fgts,
-        valor_fgts: Number(form.valor_fgts) || 0,
-        tem_entrada: form.tem_entrada,
-        valor_entrada: Number(form.valor_entrada) || 0,
-        parcela_desejada: Number(form.parcela_desejada) || 0,
-        valor_imovel: Number(form.valor_imovel),
-        observacoes: form.observacoes,
+        finalidade: "financiar",
+        origem: "site",
+        orcamento: Number(form.valor_imovel) || 0,
+        mensagem,
+        created_at: new Date().toISOString(),
       });
+      if (error) throw error;
       setSubmitted(true);
       toast.success("Solicitação recebida! Larissa vai entrar em contato em breve.");
     } catch { toast.error("Não foi possível enviar."); } finally { setSending(false); }

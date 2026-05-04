@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
-import { api, STAGES, STAGE_LABELS, ORIGIN_LABELS, formatMoney, waLink } from "../../lib/api";
+import { STAGES, STAGE_LABELS, ORIGIN_LABELS, formatMoney, waLink } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { MessageCircle, Eye, Thermometer } from "lucide-react";
 import LeadDetailModal from "./LeadDetailModal";
 import { toast } from "sonner";
@@ -23,7 +24,7 @@ export default function FunilPage() {
   const [draggingId, setDraggingId] = useState(null);
   const [over, setOver] = useState(null);
 
-  const load = () => api.get("/admin/leads").then((r) => setLeads(r.data));
+  const load = () => supabase.from("leads").select("*").order("created_at", { ascending: false }).then(({ data }) => setLeads(data || []));
   useEffect(() => { load(); }, []);
 
   const onDragStart = (e, id) => { setDraggingId(id); e.dataTransfer.effectAllowed = "move"; };
@@ -38,7 +39,7 @@ export default function FunilPage() {
     setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, stage: targetStage } : l)));
     setDraggingId(null);
     try {
-      await api.patch(`/admin/leads/${id}`, { stage: targetStage });
+      await supabase.from("leads").update({ stage: targetStage }).eq("id", id);
       toast.success(`Lead movido para "${STAGE_LABELS[targetStage]}"`);
     } catch {
       toast.error("Falha ao mover. Recarregando…");

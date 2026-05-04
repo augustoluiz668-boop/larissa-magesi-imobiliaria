@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Star, Check, Instagram, Facebook, Youtube, Linkedin, Globe, Heart, Award, Lightbulb, Compass } from "lucide-react";
-import { api } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 
 const TiktokIcon = (p) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...p}><path d="M16.5 4.5c.4 1.4 1.2 2.6 2.3 3.5 1 .8 2.3 1.3 3.7 1.3v3.7c-2 0-3.9-.6-5.5-1.7v6.4c0 3.5-2.8 6.3-6.3 6.3S4.4 21.2 4.4 17.7s2.8-6.3 6.3-6.3c.4 0 .9 0 1.3.1v3.8c-.4-.2-.9-.3-1.3-.3-1.5 0-2.7 1.2-2.7 2.7s1.2 2.7 2.7 2.7 2.7-1.2 2.7-2.7V2.5h3.1z"/></svg>
@@ -9,7 +9,7 @@ const TiktokIcon = (p) => (
 export default function About({ settings = {} }) {
   const [depo, setDepo] = useState([]);
   useEffect(() => {
-    api.get("/public/testimonials").then((r) => setDepo(r.data)).catch(() => {});
+    supabase.from("testimonials").select("*").eq("ativo", true).order("created_at", { ascending: false }).then(({ data }) => setDepo(data || []));
   }, []);
 
   const valores = (settings.valores || "").split("·").map((v) => v.trim()).filter(Boolean);

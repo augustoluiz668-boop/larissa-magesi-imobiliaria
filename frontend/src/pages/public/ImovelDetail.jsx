@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { api, formatMoney, waLink, TYPE_LABELS, PURPOSE_LABELS } from "../../lib/api";
+import { formatMoney, waLink, TYPE_LABELS, PURPOSE_LABELS } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { Bed, Bath, Car, Ruler, MapPin, MessageCircle, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -22,13 +23,18 @@ export default function ImovelDetail({ settings = {} }) {
 
   useEffect(() => {
     let cancelled = false;
-    api.get(`/public/properties/${id}`).then((r) => {
+    supabase.from("properties").select("*").eq("codigo", id).single().then(({ data }) => {
       if (cancelled) return;
-      setProp(r.data);
-      const featured = r.data.featured_photo || 0;
-      setPhoto(Math.min(featured, (r.data.fotos || []).length - 1));
+      if (!data) { setProp(null); return; }
+      setProp(data);
+      const featured = data.featured_photo || 0;
+      setPhoto(Math.min(featured, (data.fotos || []).length - 1));
+      // Load similar
+      supabase.from("properties").select("*")
+        .eq("tipo", data.tipo).eq("finalidade", data.finalidade)
+        .neq("id", data.id).in("status", ["disponivel", "reservado"])
+        .limit(4).then(({ data: sim }) => !cancelled && setSimilar(sim || []));
     }).catch(() => setProp(null));
-    api.get(`/public/properties/${id}/similar?limit=4`).then((r) => !cancelled && setSimilar(r.data)).catch(() => {});
     return () => { cancelled = true; };
   }, [id]);
 

@@ -21,8 +21,7 @@ export default function Login() {
       toast.success("Bem-vinda, Larissa!");
       nav("/admin");
     } catch (err) {
-      const detail = err.response?.data?.detail;
-      setError(typeof detail === "string" ? detail : "E-mail ou senha inválidos");
+      setError(err.message || "E-mail ou senha inválidos");
     } finally {
       setLoading(false);
     }

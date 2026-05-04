@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Search, ArrowRight, Check, Calculator, Clock, MapPin, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { api, waLink } from "../../lib/api";
+import { waLink } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import PropertyCard from "../../components/PropertyCard";
 import { toast } from "sonner";
 
@@ -20,7 +21,7 @@ export default function HomePage({ settings = {} }) {
   );
 
   useEffect(() => {
-    api.get("/public/properties?destaque=true").then((r) => setDestaques(r.data.slice(0, 9))).catch(() => {});
+    supabase.from("properties").select("*").eq("destaque", true).in("status", ["disponivel", "reservado"]).limit(9).then(({ data }) => setDestaques(data || []));
   }, []);
 
   const handleSearch = (e) => {
@@ -40,10 +41,12 @@ export default function HomePage({ settings = {} }) {
     setSending(true);
     const mensagem = `Simulação de financiamento — Renda: R$${simForm.renda || "não informada"} | Valor do imóvel: R$${simForm.valor_imovel || "não informado"} | FGTS: R$${simForm.fgts || "não informado"}`;
     try {
-      await api.post("/public/leads", {
+      const { error } = await supabase.from("leads").insert({
         nome: simForm.nome, whatsapp: simForm.whatsapp, finalidade: "financiar",
         origem: "site", orcamento: Number(simForm.valor_imovel) || 0, mensagem,
+        created_at: new Date().toISOString(),
       });
+      if (error) throw error;
       toast.success("Recebi seu pedido! Entrarei em contato com sua simulação em breve.");
       setSimForm({ nome: "", whatsapp: "", renda: "", valor_imovel: "", fgts: "" });
     } catch { toast.error("Não foi possível enviar."); } finally { setSending(false); }

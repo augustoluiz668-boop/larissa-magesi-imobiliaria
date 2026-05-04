@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { api, STAGES, STAGE_LABELS, ORIGIN_LABELS, formatMoney, waLink } from "../../lib/api";
+import { STAGES, STAGE_LABELS, ORIGIN_LABELS, formatMoney, waLink } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { X, MessageCircle, CheckCircle2, XCircle, Save } from "lucide-react";
 import { toast } from "sonner";
 
@@ -11,8 +12,9 @@ export default function LeadDetailModal({ lead, onClose }) {
   const patch = async (updates) => {
     setSaving(true);
     try {
-      const r = await api.patch(`/admin/leads/${l.id}`, updates);
-      setL(r.data);
+      const { data, error } = await supabase.from("leads").update(updates).eq("id", l.id).select().single();
+      if (error) throw error;
+      setL(data);
       toast.success("Lead atualizado");
     } catch {
       toast.error("Falha ao atualizar");
@@ -21,10 +23,9 @@ export default function LeadDetailModal({ lead, onClose }) {
 
   const addNote = async () => {
     if (!note.trim()) return;
-    const r = await api.post(`/admin/leads/${l.id}/notes`, { texto: note });
-    setL(r.data);
-    setNote("");
-    toast.success("Observação adicionada");
+    const notas = [...(l.notas || []), { texto: note, created_at: new Date().toISOString() }];
+    const { data, error } = await supabase.from("leads").update({ notas }).eq("id", l.id).select().single();
+    if (!error && data) { setL(data); setNote(""); toast.success("Observação adicionada"); }
   };
 
   return (

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ArrowRight, Send, MapPin, Phone, Mail, Clock } from "lucide-react";
-import { api, waLink } from "../../lib/api";
+import { waLink } from "../../lib/api";
+import { supabase } from "../../lib/supabase";
 import { toast } from "sonner";
 
 export default function Contact({ settings = {} }) {
@@ -17,7 +18,7 @@ export default function Contact({ settings = {} }) {
     if (!form.nome || !form.whatsapp) return toast.error("Preencha nome e WhatsApp.");
     setSending(true);
     try {
-      await api.post("/public/leads", {
+      const { error } = await supabase.from("leads").insert({
         nome: form.nome,
         whatsapp: form.whatsapp,
         email: form.email,
@@ -26,7 +27,9 @@ export default function Contact({ settings = {} }) {
         orcamento: Number(form.orcamento) || 0,
         mensagem: form.mensagem,
         origem: "site",
+        created_at: new Date().toISOString(),
       });
+      if (error) throw error;
       setSent(true);
       toast.success("Mensagem enviada! Entrarei em contato em breve.");
     } catch {
