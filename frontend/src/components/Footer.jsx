@@ -49,11 +49,21 @@ export default function Footer({ settings = {} }) {
           <div className="lm-overline !text-[#c9a66b] mb-4">Contato</div>
           <ul className="space-y-3 text-sm">
             <li className="flex items-start gap-2">
-              <Phone className="w-4 h-4 mt-0.5 flex-shrink-0" />
-              <a href={`tel:${(s.telefone || "").replace(/\D/g, "")}`} className="hover:text-[#c9a66b]" data-testid="footer-phone">{s.telefone}</a>
+              <Phone className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#c9a66b]" />
+              <a href={`tel:${(s.telefone || "14991136895").replace(/\D/g, "")}`} className="hover:text-[#c9a66b]" data-testid="footer-phone">
+                {s.telefone || "(14) 99113-6895"}
+              </a>
             </li>
-            <li className="flex items-start gap-2"><Mail className="w-4 h-4 mt-0.5 flex-shrink-0" /> <a href={`mailto:${s.email}`} className="hover:text-[#c9a66b] break-all">{s.email}</a></li>
-            <li className="flex items-start gap-2"><MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" /> {s.cidade}</li>
+            <li className="flex items-start gap-2">
+              <Mail className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#c9a66b]" />
+              <a href={`mailto:${s.email || "larissa@magesi.com"}`} className="hover:text-[#c9a66b] break-all">
+                {s.email || "larissa@magesi.com"}
+              </a>
+            </li>
+            <li className="flex items-start gap-2">
+              <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#c9a66b]" />
+              {s.cidade || "Bauru/SP"}
+            </li>
           </ul>
         </div>
 
