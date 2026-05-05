@@ -35,21 +35,17 @@ export default function HomePage({ settings = {} }) {
     navigate(`/imoveis?${params.toString()}`);
   };
 
-  const submitSim = async (e) => {
+  const submitSim = (e) => {
     e.preventDefault();
     if (!simForm.nome || !simForm.whatsapp) return toast.error("Preencha nome e WhatsApp");
-    setSending(true);
-    const mensagem = `Simulação de financiamento — Renda: R$${simForm.renda || "não informada"} | Valor do imóvel: R$${simForm.valor_imovel || "não informado"} | FGTS: R$${simForm.fgts || "não informado"}`;
-    try {
-      const { error } = await supabase.from("leads").insert({
-        nome: simForm.nome, whatsapp: simForm.whatsapp, finalidade: "financiar",
-        origem: "site", orcamento: parseCurrency(simForm.valor_imovel), mensagem,
-        created_at: new Date().toISOString(),
-      });
-      if (error) throw error;
-      toast.success("Recebi seu pedido! Entrarei em contato com sua simulação em breve.");
-      setSimForm({ nome: "", whatsapp: "", renda: "", valor_imovel: "", fgts: "" });
-    } catch { toast.error("Não foi possível enviar."); } finally { setSending(false); }
+    const params = new URLSearchParams({
+      nome: simForm.nome,
+      telefone: simForm.whatsapp,
+      renda_bruta: simForm.renda,
+      valor_imovel: simForm.valor_imovel,
+      valor_fgts: simForm.fgts,
+    });
+    navigate(`/financiamento?${params.toString()}`);
   };
 
   const stats = [

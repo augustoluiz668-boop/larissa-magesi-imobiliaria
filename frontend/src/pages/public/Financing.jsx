@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { waLink, maskPhone, maskCurrency, parseCurrency } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
 import { Calculator, Check, ArrowRight, ShieldCheck } from "lucide-react";
@@ -7,12 +8,20 @@ import { toast } from "sonner";
 const prazoOptions = [120, 180, 240, 300, 360, 420];
 
 export default function Financing({ settings = {} }) {
+  const { search } = useLocation();
+  const p = new URLSearchParams(search);
   const [form, setForm] = useState({
-    nome: "", telefone: "", email: "",
-    renda_bruta: "", data_nascimento: "",
-    tem_dependentes: false, tem_fgts: false, valor_fgts: "",
+    nome: p.get("nome") || "",
+    telefone: p.get("telefone") || "",
+    email: "",
+    renda_bruta: p.get("renda_bruta") || "",
+    data_nascimento: "",
+    tem_dependentes: false,
+    tem_fgts: !!p.get("valor_fgts"),
+    valor_fgts: p.get("valor_fgts") || "",
     tem_entrada: false, valor_entrada: "",
-    parcela_desejada: "", valor_imovel: "",
+    parcela_desejada: "",
+    valor_imovel: p.get("valor_imovel") || "",
     prazo: 360, observacoes: "",
   });
   const [sending, setSending] = useState(false);

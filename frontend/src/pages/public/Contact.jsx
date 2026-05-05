@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ArrowRight, Send, MapPin, Phone, Mail, Clock } from "lucide-react";
-import { waLink } from "../../lib/api";
+import { waLink, maskPhone, maskCurrency, parseCurrency } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
 import { toast } from "sonner";
 
@@ -24,7 +24,7 @@ export default function Contact({ settings = {} }) {
         email: form.email,
         tipo_imovel: form.tipo,
         finalidade: form.finalidade || "comprar",
-        orcamento: Number(form.orcamento) || 0,
+        orcamento: parseCurrency(form.orcamento),
         mensagem: form.mensagem,
         origem: "site",
         created_at: new Date().toISOString(),
@@ -97,7 +97,7 @@ export default function Contact({ settings = {} }) {
                     className="lm-input"
                     placeholder="(14) 99999-9999"
                     value={form.whatsapp}
-                    onChange={(e) => set("whatsapp", e.target.value)}
+                    onChange={(e) => set("whatsapp", maskPhone(e.target.value))}
                     data-testid="contact-whatsapp"
                   />
                 </div>
@@ -139,11 +139,10 @@ export default function Contact({ settings = {} }) {
                   <div className="sm:col-span-2">
                     <label className="lm-label">Faixa de orçamento (R$)</label>
                     <input
-                      type="number"
                       className="lm-input"
-                      placeholder="Ex: 350000"
+                      placeholder="R$ 0,00"
                       value={form.orcamento}
-                      onChange={(e) => set("orcamento", e.target.value)}
+                      onChange={(e) => set("orcamento", maskCurrency(e.target.value))}
                       data-testid="contact-orcamento"
                     />
                   </div>
