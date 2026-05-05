@@ -147,11 +147,11 @@ function PropertyModal({ data, setData, onSave }) {
         fd.append("file", file);
         fd.append("upload_preset", "lm_imoveis");
         const res = await fetch("https://api.cloudinary.com/v1_1/dwrblaqet/image/upload", { method: "POST", body: fd });
-        if (!res.ok) throw new Error("Upload falhou");
         const json = await res.json();
+        if (json.error) throw new Error(json.error.message);
         urls.push(json.secure_url);
-      } catch {
-        toast.error(`Falha no upload de ${file.name}`);
+      } catch (err) {
+        toast.error(`Erro no upload: ${err.message}`);
       }
     }
     if (urls.length) {
