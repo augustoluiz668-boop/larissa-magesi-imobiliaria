@@ -33,7 +33,7 @@ export default function About({ settings = {} }) {
               <img
                 src={settings.photo_url}
                 alt="Larissa Magesi — Corretora de Imóveis"
-                className="w-full h-[620px] object-contain rounded-sm shadow-lg bg-[#f8fafc]"
+                className="w-full h-[620px] object-cover object-top rounded-2xl shadow-lg"
                 data-testid="about-photo"
               />
             ) : (

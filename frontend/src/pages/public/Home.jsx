@@ -109,7 +109,7 @@ export default function HomePage({ settings = {} }) {
                   <img
                     src={settings.photo_url}
                     alt="Larissa Magesi"
-                    style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "top", background: "#071d34", display: "block" }}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
                   />
                 </div>
               )}
@@ -186,7 +186,7 @@ export default function HomePage({ settings = {} }) {
                     src={settings.photo_url}
                     alt="Larissa Magesi — Corretora de Imóveis"
                     className="w-full"
-                    style={{ height: "580px", borderRadius: "14px", objectFit: "contain", background: "#071d34" }}
+                    style={{ height: "580px", borderRadius: "14px", objectFit: "cover", objectPosition: "top" }}
                     fetchpriority="high"
                     loading="eager"
                   />
