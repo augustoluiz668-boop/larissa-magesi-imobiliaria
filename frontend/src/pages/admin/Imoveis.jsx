@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
-import { formatMoney, TYPE_LABELS, PURPOSE_LABELS, waLink } from "../../lib/api";
+import { formatMoney, TYPE_LABELS, PURPOSE_LABELS, waLink, maskPhone, maskCurrency, parseCurrency } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
 import { Plus, Pencil, Trash2, MessageCircle, Star, X, Upload, Image as ImageIcon, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -29,9 +29,9 @@ export default function ImoveisAdmin() {
     const { id, ...rest } = editing;
     const payload = {
       ...rest,
-      valor: Number(editing.valor) || 0,
-      condominio: Number(editing.condominio) || 0,
-      iptu: Number(editing.iptu) || 0,
+      valor: parseCurrency(editing.valor),
+      condominio: parseCurrency(editing.condominio),
+      iptu: parseCurrency(editing.iptu),
       metragem: Number(editing.metragem) || 0,
       terreno_m2: Number(editing.terreno_m2) || 0,
       quartos: Number(editing.quartos) || 0,
@@ -229,9 +229,9 @@ function PropertyModal({ data, setData, onSave }) {
             <div><label className="lm-label">Endereço</label><input className="lm-input" value={data.endereco} onChange={(e) => s("endereco", e.target.value)} /></div>
             <div className="md:col-span-2"><label className="lm-label">Complemento</label><input className="lm-input" placeholder="Apto, bloco, casa..." value={data.complemento || ""} onChange={(e) => s("complemento", e.target.value)} /></div>
 
-            <div><label className="lm-label">Valor (R$)</label><input type="number" className="lm-input" value={data.valor} onChange={(e) => s("valor", e.target.value)} data-testid="pf-valor" /></div>
-            <div><label className="lm-label">Condomínio</label><input type="number" className="lm-input" value={data.condominio} onChange={(e) => s("condominio", e.target.value)} /></div>
-            <div><label className="lm-label">IPTU</label><input type="number" className="lm-input" value={data.iptu} onChange={(e) => s("iptu", e.target.value)} /></div>
+            <div><label className="lm-label">Valor (R$)</label><input className="lm-input" placeholder="R$ 0,00" value={data.valor} onChange={(e) => s("valor", maskCurrency(e.target.value))} data-testid="pf-valor" /></div>
+            <div><label className="lm-label">Condomínio</label><input className="lm-input" placeholder="R$ 0,00" value={data.condominio} onChange={(e) => s("condominio", maskCurrency(e.target.value))} /></div>
+            <div><label className="lm-label">IPTU</label><input className="lm-input" placeholder="R$ 0,00" value={data.iptu} onChange={(e) => s("iptu", maskCurrency(e.target.value))} /></div>
 
             <div><label className="lm-label">Metragem (m²)</label><input type="number" className="lm-input" value={data.metragem} onChange={(e) => s("metragem", e.target.value)} /></div>
             <div><label className="lm-label">Terreno (m²)</label><input type="number" className="lm-input" placeholder="0" value={data.terreno_m2 || ""} onChange={(e) => s("terreno_m2", e.target.value)} /></div>
@@ -333,7 +333,7 @@ function PropertyModal({ data, setData, onSave }) {
             <div className="font-serif text-lg text-[#071d34] mb-3">Informações internas <span className="text-xs font-sans text-[#5C5C5C] ml-1">(não aparecem no site)</span></div>
             <div className="grid md:grid-cols-3 gap-4">
               <div><label className="lm-label">Nome do proprietário</label><input className="lm-input" value={data.proprietario || ""} onChange={(e) => s("proprietario", e.target.value)} /></div>
-              <div><label className="lm-label">Contato do proprietário</label><input className="lm-input" placeholder="WhatsApp ou telefone" value={data.proprietario_contato || ""} onChange={(e) => s("proprietario_contato", e.target.value)} /></div>
+              <div><label className="lm-label">Contato do proprietário</label><input className="lm-input" placeholder="(14) 99999-9999" value={data.proprietario_contato || ""} onChange={(e) => s("proprietario_contato", maskPhone(e.target.value))} /></div>
               <div><label className="lm-label">Comissão (%)</label><input type="number" step="0.1" className="lm-input" placeholder="Ex: 6" value={data.comissao || ""} onChange={(e) => s("comissao", e.target.value)} /></div>
               <div className="md:col-span-3"><label className="lm-label">Observação interna</label><textarea rows={2} className="lm-input" placeholder="Anotações internas sobre o imóvel (não aparecem no site)" value={data.observacao_interna || ""} onChange={(e) => s("observacao_interna", e.target.value)} /></div>
             </div>

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Search, ArrowRight, Check, Calculator, Clock, MapPin, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { waLink } from "../../lib/api";
+import { waLink, maskPhone, maskCurrency, parseCurrency } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
 import PropertyCard from "../../components/PropertyCard";
 import { toast } from "sonner";
@@ -43,7 +43,7 @@ export default function HomePage({ settings = {} }) {
     try {
       const { error } = await supabase.from("leads").insert({
         nome: simForm.nome, whatsapp: simForm.whatsapp, finalidade: "financiar",
-        origem: "site", orcamento: Number(simForm.valor_imovel) || 0, mensagem,
+        origem: "site", orcamento: parseCurrency(simForm.valor_imovel), mensagem,
         created_at: new Date().toISOString(),
       });
       if (error) throw error;
@@ -355,21 +355,21 @@ export default function HomePage({ settings = {} }) {
             </div>
             <div>
               <label className="lm-label">WhatsApp *</label>
-              <input className="lm-input" value={simForm.whatsapp} onChange={(e) => setSimForm({ ...simForm, whatsapp: e.target.value })} />
+              <input className="lm-input" placeholder="(14) 99999-9999" value={simForm.whatsapp} onChange={(e) => setSimForm({ ...simForm, whatsapp: maskPhone(e.target.value) })} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="lm-label">Renda familiar (R$)</label>
-                <input type="number" className="lm-input" placeholder="Ex: 5000" value={simForm.renda} onChange={(e) => setSimForm({ ...simForm, renda: e.target.value })} />
+                <input className="lm-input" placeholder="R$ 0,00" value={simForm.renda} onChange={(e) => setSimForm({ ...simForm, renda: maskCurrency(e.target.value) })} />
               </div>
               <div>
                 <label className="lm-label">Valor do imóvel (R$)</label>
-                <input type="number" className="lm-input" placeholder="Ex: 350000" value={simForm.valor_imovel} onChange={(e) => setSimForm({ ...simForm, valor_imovel: e.target.value })} />
+                <input className="lm-input" placeholder="R$ 0,00" value={simForm.valor_imovel} onChange={(e) => setSimForm({ ...simForm, valor_imovel: maskCurrency(e.target.value) })} />
               </div>
             </div>
             <div>
               <label className="lm-label">FGTS disponível (R$)</label>
-              <input type="number" className="lm-input" placeholder="Ex: 20000" value={simForm.fgts} onChange={(e) => setSimForm({ ...simForm, fgts: e.target.value })} />
+              <input className="lm-input" placeholder="R$ 0,00" value={simForm.fgts} onChange={(e) => setSimForm({ ...simForm, fgts: maskCurrency(e.target.value) })} />
             </div>
             <button type="submit" disabled={sending} className="lm-btn-gold w-full justify-center disabled:opacity-60">
               <Calculator className="w-4 h-4" /> {sending ? "Enviando…" : "Quero minha simulação"}
@@ -389,7 +389,7 @@ export default function HomePage({ settings = {} }) {
               <p className="text-[#5C5C5C] text-sm leading-relaxed">Preencha um breve formulário e entrarei em contato com opções compatíveis com o seu perfil.</p>
             </div>
             <Link to="/contato" className="lm-btn-primary mt-6 self-start">
-              Me conte o que procuro <ArrowRight className="w-4 h-4" />
+              Me conte o que procura <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
           <div className="bg-[#071d34] text-[#f8fafc] rounded-sm p-8 flex flex-col justify-between">

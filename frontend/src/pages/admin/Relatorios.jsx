@@ -46,6 +46,21 @@ export default function Relatorios() {
       const funil = Object.entries(
         data.reduce((acc, l) => { acc[l.stage || "novo"] = (acc[l.stage || "novo"] || 0) + 1; return acc; }, {})
       ).map(([stage, total]) => ({ stage, total }));
+      const now = new Date();
+      const evolucao_mensal = Array.from({ length: 6 }, (_, i) => {
+        const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+        return { mes: d.toLocaleDateString("pt-BR", { month: "short", year: "2-digit" }), leads: data.filter((l) => (l.created_at || "").startsWith(key)).length };
+      });
+      const por_cidade = Object.entries(
+        data.reduce((acc, l) => { const c = l.cidade_interesse || "—"; acc[c] = (acc[c] || 0) + 1; return acc; }, {})
+      ).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value).slice(0, 8);
+      const por_tipo = Object.entries(
+        data.reduce((acc, l) => { if (l.tipo_imovel) { acc[l.tipo_imovel] = (acc[l.tipo_imovel] || 0) + 1; } return acc; }, {})
+      ).map(([name, value]) => ({ name, value }));
+      const por_finalidade = Object.entries(
+        data.reduce((acc, l) => { const f = l.finalidade || "outros"; acc[f] = (acc[f] || 0) + 1; return acc; }, {})
+      ).map(([name, value]) => ({ name, value }));
       setS({
         total_leads: total, novos: count("novo"), visitas: count("visita_agendada"),
         fechados, em_atendimento: count("primeiro_contato") + count("qualificacao") + count("imoveis_enviados"),
@@ -53,7 +68,7 @@ export default function Relatorios() {
         conversao: total > 0 ? Math.round((fechados / total) * 100) : 0,
         valor_aberto: data.filter((l) => !["fechado","perdido"].includes(l.stage)).reduce((a, l) => a + (l.orcamento || 0), 0),
         valor_fechado: data.filter((l) => l.stage === "fechado").reduce((a, l) => a + (l.orcamento || 0), 0),
-        perdidos: count("perdido"), por_origem, funil,
+        perdidos: count("perdido"), por_origem, funil, evolucao_mensal, por_cidade, por_tipo, por_finalidade,
       });
     });
   }, []);
@@ -109,7 +124,7 @@ export default function Relatorios() {
               <CartesianGrid strokeDasharray="3 3" stroke="#d1dde8" />
               <XAxis type="number" stroke="#5C5C5C" fontSize={12} />
               <YAxis dataKey="name" type="category" width={140} stroke="#5C5C5C" fontSize={12} />
-              <Tooltip /> <Bar dataKey="count" fill="#c9a66b" radius={[0, 4, 4, 0]} />
+              <Tooltip /> <Bar dataKey="total" fill="#c9a66b" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
