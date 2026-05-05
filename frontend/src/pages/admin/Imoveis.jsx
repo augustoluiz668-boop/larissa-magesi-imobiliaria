@@ -150,12 +150,7 @@ function PropertyModal({ data, setData, onSave }) {
         const res = await fetch("https://api.cloudinary.com/v1_1/dwrblaqet/image/upload", { method: "POST", body: fd });
         const json = await res.json();
         if (json.error) throw new Error(json.error.message);
-        // Apply watermark via URL transformation
-        const watermarked = json.secure_url.replace(
-          "/upload/",
-          "/upload/l_lm-imoveis:watermark:lm,o_50,g_south_east,w_0.25/fl_layer_apply/"
-        );
-        urls.push(watermarked);
+        urls.push(json.secure_url);
       } catch (err) {
         toast.error(`Erro no upload: ${err.message}`);
       }
