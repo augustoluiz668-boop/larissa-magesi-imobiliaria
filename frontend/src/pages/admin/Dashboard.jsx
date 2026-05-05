@@ -35,11 +35,23 @@ export default function Dashboard() {
   const [insights, setInsights] = useState([]);
 
   useEffect(() => {
-    supabase.from("leads").select("*").then(({ data: leads }) => {
+    Promise.all([
+      supabase.from("leads").select("*"),
+      supabase.from("properties").select("id", { count: "exact", head: true }),
+    ]).then(([{ data: leads }, { count: total_imoveis }]) => {
       if (!leads) return;
       const count = (stage) => leads.filter((l) => l.stage === stage).length;
       const fechados = count("fechado");
       const total = leads.length;
+      const now = new Date();
+      const evolucao_mensal = Array.from({ length: 6 }, (_, i) => {
+        const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+        return { mes: d.toLocaleDateString("pt-BR", { month: "short", year: "2-digit" }), leads: leads.filter((l) => (l.created_at || "").startsWith(key)).length };
+      });
+      const por_temperatura = Object.entries(
+        leads.reduce((acc, l) => { const t = l.temperatura || "frio"; acc[t] = (acc[t] || 0) + 1; return acc; }, {})
+      ).map(([name, value]) => ({ name, value }));
       const por_origem = Object.entries(
         leads.reduce((acc, l) => { acc[l.origem || "outros"] = (acc[l.origem || "outros"] || 0) + 1; return acc; }, {})
       ).map(([name, value]) => ({ name, value }));
@@ -58,8 +70,8 @@ export default function Dashboard() {
         valor_aberto: leads.filter((l) => !["fechado","perdido"].includes(l.stage)).reduce((a, l) => a + (l.orcamento || 0), 0),
         valor_fechado: leads.filter((l) => l.stage === "fechado").reduce((a, l) => a + (l.orcamento || 0), 0),
         perdidos: count("perdido"),
-        por_origem,
-        funil,
+        total_imoveis: total_imoveis || 0,
+        por_origem, funil, evolucao_mensal, por_temperatura,
       });
     });
   }, []);
@@ -132,7 +144,7 @@ export default function Dashboard() {
               <XAxis type="number" stroke="#5C5C5C" fontSize={12} />
               <YAxis dataKey="name" type="category" width={130} stroke="#5C5C5C" fontSize={12} />
               <Tooltip />
-              <Bar dataKey="count" fill="#071d34" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="total" fill="#071d34" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

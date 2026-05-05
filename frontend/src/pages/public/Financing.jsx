@@ -58,10 +58,10 @@ export default function Financing({ settings = {} }) {
               Em menos de 1 minuto, simule sua parcela considerando FGTS, entrada e prazo. Analisarei seu perfil e entrarei em contato com as melhores condições reais do mercado para você.
             </p>
             <div className="mt-8 grid grid-cols-2 gap-4 max-w-md text-sm">
-              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> 100% gratuito</div>
-              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Sem compromisso</div>
+              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Análise personalizada</div>
               <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Atendimento humano</div>
               <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Orientação completa</div>
+              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Acompanhamento até as chaves</div>
             </div>
           </div>
           <div className="bg-[#0d2d4c]/50 border border-[#0d2d4c] rounded-sm p-8">

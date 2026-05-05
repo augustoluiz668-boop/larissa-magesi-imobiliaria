@@ -7,7 +7,7 @@ import { toast } from "sonner";
 export default function Login() {
   const { login } = useAuth();
   const nav = useNavigate();
-  const [email, setEmail] = useState("larissa@magesi.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -66,10 +66,6 @@ export default function Login() {
             </button>
           </div>
 
-          <div className="text-xs text-[#5C5C5C] mt-6 p-3 bg-[#f8fafc] rounded-sm">
-            <div className="lm-overline mb-1">Acesso demo</div>
-            <div>larissa@magesi.com · Larissa@2026</div>
-          </div>
         </form>
       </div>
     </div>

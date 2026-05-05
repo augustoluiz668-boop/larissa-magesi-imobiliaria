@@ -139,7 +139,7 @@ export default function About({ settings = {} }) {
             <div className="lm-divider mt-6 mx-auto"></div>
           </div>
           {depo.length === 0 ? (
-            <div className="text-center text-[#5C5C5C]">Depoimentos em breve.</div>
+            <div className="text-center text-[#5C5C5C] py-8 font-serif text-xl">Cadastre um depoimento para aparecer aqui.</div>
           ) : (
             <div className="grid md:grid-cols-3 gap-5">
               {depo.map((d) => (

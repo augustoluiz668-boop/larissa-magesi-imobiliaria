@@ -52,8 +52,10 @@ export default function ImoveisList() {
 
   // City → neighborhoods map from Supabase
   const [citiesMap, setCitiesMap] = useState({});
+  const [totalCount, setTotalCount] = useState(null);
   useEffect(() => {
     supabase.from("properties").select("cidade, bairro").neq("status", "inativo").then(({ data }) => {
+      setTotalCount(data ? data.length : 0);
       if (!data) return;
       const map = {};
       data.forEach(({ cidade, bairro }) => {
@@ -240,7 +242,9 @@ export default function ImoveisList() {
       {loading ? (
         <div className="text-center text-[#5C5C5C] py-24">Carregando imóveis…</div>
       ) : props.length === 0 ? (
-        <div className="text-center text-[#5C5C5C] py-24 font-serif text-2xl">Nenhum imóvel encontrado com esses filtros.</div>
+        <div className="text-center text-[#5C5C5C] py-24 font-serif text-2xl">
+          {totalCount === 0 ? "Nenhum imóvel cadastrado ainda." : "Nenhum imóvel encontrado com esses filtros."}
+        </div>
       ) : (
         <>
           <div className="text-sm text-[#5C5C5C] mb-5">{props.length} imóvel{props.length > 1 ? "is" : ""} encontrado{props.length > 1 ? "s" : ""}</div>
