@@ -6,7 +6,7 @@ import { formatMoney, waLink, TYPE_LABELS, PURPOSE_LABELS } from "../lib/api";
 export default function PropertyCard({ prop }) {
   return (
     <article data-testid={`property-card-${prop.id}`} className="lm-card flex flex-col">
-      <Link to={`/imoveis/${prop.id}`} className="block relative">
+      <Link to={`/imoveis/${prop.codigo}`} className="block relative">
         <img
           src={prop.fotos?.[prop.featured_photo || 0] || prop.fotos?.[0]}
           alt={prop.titulo}
@@ -25,7 +25,7 @@ export default function PropertyCard({ prop }) {
         <div className="flex items-center gap-1 text-xs text-[#5C5C5C]">
           <MapPin className="w-3 h-3" /> {prop.bairro}, {prop.cidade}
         </div>
-        <Link to={`/imoveis/${prop.id}`} className="font-serif text-xl text-[#071d34] mt-2 leading-tight hover:text-[#0d2d4c]">
+        <Link to={`/imoveis/${prop.codigo}`} className="font-serif text-xl text-[#071d34] mt-2 leading-tight hover:text-[#0d2d4c]">
           {prop.titulo}
         </Link>
 

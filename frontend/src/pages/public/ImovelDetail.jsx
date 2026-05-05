@@ -18,15 +18,18 @@ const oliveIcon = L.divIcon({
 export default function ImovelDetail({ settings = {} }) {
   const { id } = useParams();
   const [prop, setProp] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [photo, setPhoto] = useState(0);
   const [similar, setSimilar] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
-    supabase.from("properties").select("*").eq("codigo", id).single().then(({ data }) => {
+    setLoading(true);
+    supabase.from("properties").select("*").eq("codigo", id).maybeSingle().then(({ data }) => {
       if (cancelled) return;
-      if (!data) { setProp(null); return; }
-      setProp(data);
+      setProp(data || null);
+      setLoading(false);
+      if (!data) return;
       const featured = data.featured_photo || 0;
       setPhoto(Math.min(featured, (data.fotos || []).length - 1));
       // Load similar
@@ -34,13 +37,12 @@ export default function ImovelDetail({ settings = {} }) {
         .eq("tipo", data.tipo).eq("finalidade", data.finalidade)
         .neq("id", data.id).in("status", ["disponivel", "reservado"])
         .limit(4).then(({ data: sim }) => !cancelled && setSimilar(sim || []));
-    }).catch(() => setProp(null));
+    }).catch(() => { if (!cancelled) { setProp(null); setLoading(false); } });
     return () => { cancelled = true; };
   }, [id]);
 
-  if (!prop) {
-    return <div className="max-w-7xl mx-auto px-6 py-24 text-center text-[#5C5C5C]">Carregando imóvel…</div>;
-  }
+  if (loading) return <div className="max-w-7xl mx-auto px-6 py-24 text-center text-[#5C5C5C]">Carregando imóvel…</div>;
+  if (!prop) return <div className="max-w-7xl mx-auto px-6 py-24 text-center text-[#5C5C5C] font-serif text-2xl">Imóvel não encontrado.</div>;
 
   const fotos = prop.fotos || [];
   const prev = () => setPhoto((photo - 1 + fotos.length) % fotos.length);

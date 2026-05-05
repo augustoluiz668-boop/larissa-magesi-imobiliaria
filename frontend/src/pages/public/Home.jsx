@@ -21,7 +21,7 @@ export default function HomePage({ settings = {} }) {
   );
 
   useEffect(() => {
-    supabase.from("properties").select("*").eq("destaque", true).in("status", ["disponivel", "reservado"]).limit(9).then(({ data }) => setDestaques(data || []));
+    supabase.from("properties").select("*").in("status", ["disponivel", "reservado"]).order("created_at", { ascending: false }).limit(9).then(({ data }) => setDestaques(data || []));
   }, []);
 
   const handleSearch = (e) => {
