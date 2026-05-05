@@ -25,7 +25,7 @@ export default function LeadDetailModal({ lead, onClose }) {
     if (!note.trim()) return;
     const notas = [...(l.notas || []), { texto: note, created_at: new Date().toISOString() }];
     const { data, error } = await supabase.from("leads").update({ notas }).eq("id", l.id).select().single();
-    if (!error && data) { setL(data); setNote(""); toast.success("Observação adicionada"); }
+    if (!error && data) { setL(data); setNote(""); toast.success("Observacao adicionada"); }
   };
 
   return (
@@ -42,22 +42,29 @@ export default function LeadDetailModal({ lead, onClose }) {
         <div className="p-6 space-y-6">
           <div className="grid md:grid-cols-3 gap-3 text-sm">
             <Info label="WhatsApp" value={l.whatsapp} />
-            <Info label="E-mail" value={l.email || "—"} />
+            <Info label="E-mail" value={l.email || "--"} />
             <Info label="Origem" value={ORIGIN_LABELS[l.origem] || l.origem} />
-            <Info label="Cidade" value={l.cidade_interesse || "—"} />
-            <Info label="Bairro" value={l.bairro_interesse || "—"} />
-            <Info label="Tipo" value={l.tipo_imovel || "—"} />
-            <Info label="Finalidade" value={l.finalidade || "—"} />
-            <Info label="Orçamento" value={formatMoney(l.orcamento) || "—"} />
-            <Info label="Urgência" value={l.urgencia || "—"} />
-            <Info label="Forma pagamento" value={l.forma_pagamento || "—"} />
-            <Info label="Prazo decisão" value={l.prazo_decisao || "—"} />
+            <Info label="Cidade" value={l.cidade_interesse || "--"} />
+            <Info label="Bairro" value={l.bairro_interesse || "--"} />
+            <Info label="Tipo" value={l.tipo_imovel || "--"} />
+            <Info label="Finalidade" value={l.finalidade || "--"} />
+            <Info label="Orcamento" value={formatMoney(l.orcamento) || "--"} />
+            <Info label="Urgencia" value={l.urgencia || "--"} />
+            <Info label="Forma pagamento" value={l.forma_pagamento || "--"} />
+            <Info label="Prazo decisao" value={l.prazo_decisao || "--"} />
             <Info label="Cadastrado" value={new Date(l.created_at).toLocaleDateString("pt-BR")} />
           </div>
 
-          {l.mensagem && (
-            <div className="bg-[#f8fafc] border border-[#d1dde8] rounded-sm p-4 text-sm italic text-[#2C2C2C]">“{l.mensagem}”</div>
-          )}
+          {l.mensagem && (() => {
+            let msg = l.mensagem;
+            try {
+              const parsed = JSON.parse(msg);
+              if (typeof parsed === "object") {
+                msg = Object.entries(parsed).map(([k, v]) => `${k}: ${v}`).join(" | ");
+              }
+            } catch (err) {}
+            return <div className="bg-[#f8fafc] border border-[#d1dde8] rounded-sm p-4 text-sm italic text-[#2C2C2C]">{msg}</div>;
+          })()}
 
           <div className="grid md:grid-cols-3 gap-3">
             <div>
@@ -73,21 +80,21 @@ export default function LeadDetailModal({ lead, onClose }) {
               </select>
             </div>
             <div>
-              <label className="lm-label">Próximo follow-up</label>
+              <label className="lm-label">Proximo follow-up</label>
               <input data-testid="modal-followup" type="date" className="lm-input" value={l.proximo_followup || ""} onChange={(e) => patch({ proximo_followup: e.target.value })} />
             </div>
           </div>
 
           <div>
-            <label className="lm-label">Adicionar observação / histórico</label>
+            <label className="lm-label">Adicionar observacao / historico</label>
             <div className="flex gap-2">
-              <input data-testid="modal-note-input" className="lm-input flex-1" placeholder="Ex: Cliente pediu para retornar na terça" value={note} onChange={(e) => setNote(e.target.value)} />
+              <input data-testid="modal-note-input" className="lm-input flex-1" placeholder="Ex: Cliente pediu para retornar na terca" value={note} onChange={(e) => setNote(e.target.value)} />
               <button onClick={addNote} data-testid="modal-note-add" className="lm-btn-primary"><Save className="w-4 h-4" /> Salvar</button>
             </div>
           </div>
 
           <div>
-            <div className="lm-overline mb-2">Histórico de interações</div>
+            <div className="lm-overline mb-2">Historico de interacoes</div>
             <div className="space-y-2 max-h-52 overflow-y-auto lm-scroll pr-2">
               {(l.historico || []).slice().reverse().map((h, i) => (
                 <div key={i} className="flex gap-3 text-sm">
@@ -95,12 +102,12 @@ export default function LeadDetailModal({ lead, onClose }) {
                   <span className="text-[#2C2C2C]">{h.texto}</span>
                 </div>
               ))}
-              {(!l.historico || l.historico.length === 0) && <div className="text-sm text-[#5C5C5C]">Sem histórico ainda.</div>}
+              {(!l.historico || l.historico.length === 0) && <div className="text-sm text-[#5C5C5C]">Sem historico ainda.</div>}
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2 pt-4 border-t border-[#d1dde8]">
-            <a href={waLink(l.whatsapp, `Olá ${l.nome}!`)} target="_blank" rel="noreferrer" data-testid="modal-wa" className="lm-btn-primary"><MessageCircle className="w-4 h-4" /> Chamar no WhatsApp</a>
+            <a href={waLink(l.whatsapp, "Ola " + l.nome + "!")} target="_blank" rel="noreferrer" data-testid="modal-wa" className="lm-btn-primary"><MessageCircle className="w-4 h-4" /> Chamar no WhatsApp</a>
             <button onClick={() => patch({ stage: "fechado" })} disabled={saving} data-testid="modal-mark-closed" className="lm-btn-gold"><CheckCircle2 className="w-4 h-4" /> Marcar como fechado</button>
             <button onClick={() => patch({ stage: "perdido" })} disabled={saving} data-testid="modal-mark-lost" className="lm-btn-outline"><XCircle className="w-4 h-4" /> Marcar como perdido</button>
           </div>
