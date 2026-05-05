@@ -74,9 +74,10 @@ export default function ImoveisAdmin() {
       title="Imóveis"
       subtitle={`${items.length} imóveis cadastrados`}
       actions={<button onClick={async () => {
-  const { data } = await supabase.from("properties").select("codigo").order("codigo", { ascending: false }).limit(1);
-  const last = data?.[0]?.codigo || "00000";
-  const next = String(parseInt(last, 10) + 1).padStart(5, "0");
+  const { data } = await supabase.from("properties").select("codigo");
+  const nums = (data || []).map(p => parseInt(p.codigo, 10)).filter(n => !isNaN(n));
+  const max = nums.length > 0 ? Math.max(...nums) : 0;
+  const next = String(max + 1).padStart(5, "0");
   setEditing({ ...empty, codigo: next });
 }} data-testid="add-property-btn" className="lm-btn-primary"><Plus className="w-4 h-4" /> Novo imóvel</button>}
     >
