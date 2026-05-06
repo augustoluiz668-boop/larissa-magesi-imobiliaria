@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd frontend && yarn install && GENERATE_SOURCEMAP=false NODE_OPTIONS=--max_old_space_size=4096 yarn build",
+  "buildCommand": "cd frontend && yarn install && CI=false GENERATE_SOURCEMAP=false yarn build",
   "outputDirectory": "frontend/build",
   "installCommand": "echo skip",
   "framework": null
