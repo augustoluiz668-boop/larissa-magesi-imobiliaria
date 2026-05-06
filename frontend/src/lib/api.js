@@ -14,6 +14,24 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+export function maskPhone(value) {
+  const d = (value || "").replace(/\D/g, "").slice(0, 11);
+  if (d.length <= 10) return d.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3").replace(/-$/, "");
+  return d.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3").replace(/-$/, "");
+}
+
+export function maskCurrency(value) {
+  const num = (value || "").replace(/\D/g, "");
+  if (!num) return "";
+  const n = parseInt(num, 10) / 100;
+  return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+export function parseCurrency(masked) {
+  if (typeof masked === "number") return masked;
+  return parseFloat((masked || "").replace(/[R$\s.]/g, "").replace(",", ".")) || 0;
+}
+
 export function formatMoney(value, finalidade) {
   if (!value && value !== 0) return "";
   try {
@@ -28,6 +46,11 @@ export function formatMoney(value, finalidade) {
   } catch {
     return `R$ ${value}`;
   }
+}
+
+export function addWatermark(url) {
+  if (!url || !url.includes("cloudinary.com")) return url;
+  return url.replace("/upload/", "/upload/l_lm/fl_layer_apply,g_center,o_50,w_0.35/");
 }
 
 export function waLink(phone, message) {

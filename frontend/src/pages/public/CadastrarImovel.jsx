@@ -20,7 +20,7 @@ export default function CadastrarImovel({ settings = {} }) {
     if (!form.nome || !form.whatsapp) return toast.error("Preencha nome e WhatsApp.");
     setSending(true);
     try {
-      const msg = `Quero cadastrar meu imóvel — Tipo: ${form.tipo || "não informado"} | Finalidade: ${form.finalidade} | Endereço: ${form.endereco || "não informado"}, ${form.bairro || ""}, ${form.cidade || ""} | Valor: R$${form.valor || "não informado"} | ${form.descricao}`;
+      const msg = `Quero cadastrar meu imóvel — Tipo: ${form.tipo || "não informado"} | Finalidade: ${form.finalidade} | Endereço: ${form.endereco || "não informado"}, ${form.bairro || ""}, ${form.cidade || ""} | Valor: ${form.valor || "não informado"} | ${form.descricao}`;
       const { error } = await supabase.from("leads").insert({
         nome: form.nome,
         whatsapp: form.whatsapp,

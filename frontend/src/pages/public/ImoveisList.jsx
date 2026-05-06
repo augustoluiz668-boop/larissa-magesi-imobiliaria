@@ -53,10 +53,15 @@ export default function ImoveisList() {
   // City → neighborhoods map from Supabase
   const [citiesMap, setCitiesMap] = useState({});
   const [totalCount, setTotalCount] = useState(null);
+  const [condominios, setCondominios] = useState([]);
+  const [showCondSug, setShowCondSug] = useState(false);
+
   useEffect(() => {
-    supabase.from("properties").select("cidade, bairro").neq("status", "inativo").then(({ data }) => {
+    supabase.from("properties").select("cidade, bairro, nome_condominio").neq("status", "inativo").then(({ data }) => {
       setTotalCount(data ? data.length : 0);
       if (!data) return;
+      const unique = [...new Set(data.map(p => p.nome_condominio).filter(Boolean))].sort();
+      setCondominios(unique);
       const map = {};
       data.forEach(({ cidade, bairro }) => {
         if (!cidade) return;
@@ -141,11 +146,31 @@ export default function ImoveisList() {
           <div className="grid grid-cols-2 gap-3 pb-3 border-b border-[#d1dde8]">
             <div>
               <label className="lm-label">Cód. do imóvel</label>
-              <input className="lm-input" placeholder="Ex: LM-001" value={filters.codigo} onChange={(e) => set("codigo", e.target.value)} data-testid="filter-codigo" />
+              <input className="lm-input" placeholder="Ex: 00001" value={filters.codigo} onChange={(e) => set("codigo", e.target.value)} data-testid="filter-codigo" />
             </div>
-            <div>
+            <div className="relative">
               <label className="lm-label">Nome do condomínio</label>
-              <input className="lm-input" placeholder="Ex: Villaggio" value={filters.nome_condominio} onChange={(e) => set("nome_condominio", e.target.value)} data-testid="filter-condominio" />
+              <input
+                className="lm-input"
+                placeholder="Ex: Villaggio"
+                value={filters.nome_condominio}
+                onChange={(e) => { set("nome_condominio", e.target.value); setShowCondSug(true); }}
+                onFocus={() => setShowCondSug(true)}
+                onBlur={() => setTimeout(() => setShowCondSug(false), 150)}
+                autoComplete="off"
+                data-testid="filter-condominio"
+              />
+              {showCondSug && condominios.filter(n => n.toLowerCase().includes((filters.nome_condominio || "").toLowerCase())).length > 0 && (
+                <div className="absolute z-20 top-full left-0 right-0 bg-white border border-[#d1dde8] rounded-sm shadow-lg max-h-48 overflow-y-auto">
+                  {condominios.filter(n => n.toLowerCase().includes((filters.nome_condominio || "").toLowerCase())).map(name => (
+                    <button key={name} type="button"
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-[#f8fafc] text-[#071d34]"
+                      onMouseDown={() => { const next = { ...filters, nome_condominio: name }; setFilters(next); load(next); setShowCondSug(false); }}>
+                      {name}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">

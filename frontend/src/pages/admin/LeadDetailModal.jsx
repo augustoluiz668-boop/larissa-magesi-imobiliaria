@@ -8,6 +8,7 @@ export default function LeadDetailModal({ lead, onClose }) {
   const [l, setL] = useState(lead);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [followupDate, setFollowupDate] = useState(lead.proximo_followup || "");
 
   const patch = async (updates) => {
     setSaving(true);
@@ -63,7 +64,12 @@ export default function LeadDetailModal({ lead, onClose }) {
                 msg = Object.entries(parsed).map(([k, v]) => `${k}: ${v}`).join(" | ");
               }
             } catch (err) {}
-            return <div className="bg-[#f8fafc] border border-[#d1dde8] rounded-sm p-4 text-sm italic text-[#2C2C2C]">{msg}</div>;
+            return (
+              <div className="bg-[#f8fafc] border border-[#d1dde8] rounded-sm p-4">
+                <div className="text-xs font-semibold uppercase tracking-wider text-[#5C5C5C] mb-2">Mensagem</div>
+                <p className="text-sm text-[#071d34] leading-relaxed font-medium">{msg}</p>
+              </div>
+            );
           })()}
 
           <div className="grid md:grid-cols-3 gap-3">
@@ -81,7 +87,7 @@ export default function LeadDetailModal({ lead, onClose }) {
             </div>
             <div>
               <label className="lm-label">Proximo follow-up</label>
-              <input data-testid="modal-followup" type="date" className="lm-input" value={l.proximo_followup || ""} onChange={(e) => patch({ proximo_followup: e.target.value })} />
+              <input data-testid="modal-followup" type="date" className="lm-input" value={followupDate} onChange={(e) => setFollowupDate(e.target.value)} onBlur={(e) => patch({ proximo_followup: e.target.value || null })} />
             </div>
           </div>
 

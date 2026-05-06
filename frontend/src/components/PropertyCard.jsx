@@ -1,14 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Bed, Bath, Car, Ruler, MessageCircle, MapPin } from "lucide-react";
-import { formatMoney, waLink, TYPE_LABELS, PURPOSE_LABELS } from "../lib/api";
+import { formatMoney, waLink, addWatermark, TYPE_LABELS, PURPOSE_LABELS } from "../lib/api";
 
 export default function PropertyCard({ prop }) {
   return (
     <article data-testid={`property-card-${prop.id}`} className="lm-card flex flex-col">
       <Link to={`/imoveis/${prop.codigo}`} className="block relative">
         <img
-          src={prop.fotos?.[prop.featured_photo || 0] || prop.fotos?.[0]}
+          src={addWatermark(prop.fotos?.[prop.featured_photo || 0] || prop.fotos?.[0])}
           alt={prop.titulo}
           className="w-full h-64 object-cover"
           loading="lazy"
@@ -48,7 +48,7 @@ export default function PropertyCard({ prop }) {
 
         <div className="mt-5 flex gap-2">
           <Link
-            to={`/imoveis/${prop.id}`}
+            to={`/imoveis/${prop.codigo}`}
             data-testid={`property-interest-${prop.id}`}
             className="flex-1 text-center text-sm py-2.5 border border-[#071d34] text-[#071d34] rounded-full hover:bg-[#071d34] hover:text-[#f8fafc] transition-colors"
           >

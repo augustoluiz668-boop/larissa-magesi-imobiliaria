@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
-import { STAGE_LABELS, ORIGIN_LABELS, STAGES, formatMoney, waLink } from "../../lib/api";
+import { STAGE_LABELS, ORIGIN_LABELS, STAGES, formatMoney, waLink, maskPhone, maskCurrency, parseCurrency } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
-import { MessageCircle, Eye, Search, Plus, X } from "lucide-react";
+import { MessageCircle, Eye, Search, Plus, X, Trash2 } from "lucide-react";
 import LeadDetailModal from "./LeadDetailModal";
 import { toast } from "sonner";
 
@@ -32,7 +32,7 @@ function NewLeadModal({ onClose, onSaved }) {
     try {
       const { error } = await supabase.from("leads").insert({
         ...form,
-        orcamento: Number(form.orcamento) || 0,
+        orcamento: parseCurrency(form.orcamento),
         created_at: new Date().toISOString(),
       });
       if (error) throw error;
@@ -52,7 +52,7 @@ function NewLeadModal({ onClose, onSaved }) {
         <form onSubmit={submit} className="p-6 space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div><label className="lm-label">Nome *</label><input required className="lm-input" value={form.nome} onChange={(e) => s("nome", e.target.value)} /></div>
-            <div><label className="lm-label">WhatsApp *</label><input required className="lm-input" placeholder="(14) 99999-9999" value={form.whatsapp} onChange={(e) => s("whatsapp", e.target.value)} /></div>
+            <div><label className="lm-label">WhatsApp *</label><input required className="lm-input" placeholder="(14) 99999-9999" value={form.whatsapp} onChange={(e) => s("whatsapp", maskPhone(e.target.value))} /></div>
             <div><label className="lm-label">E-mail</label><input type="email" className="lm-input" value={form.email} onChange={(e) => s("email", e.target.value)} /></div>
             <div><label className="lm-label">Origem</label>
               <select className="lm-input" value={form.origem} onChange={(e) => s("origem", e.target.value)}>
@@ -70,7 +70,7 @@ function NewLeadModal({ onClose, onSaved }) {
                 <option value="permutar">Permutar</option>
               </select>
             </div>
-            <div className="sm:col-span-2"><label className="lm-label">Orçamento / Entrada (R$)</label><input type="number" className="lm-input" placeholder="Ex: 350000" value={form.orcamento} onChange={(e) => s("orcamento", e.target.value)} /></div>
+            <div className="sm:col-span-2"><label className="lm-label">Orçamento / Entrada</label><input className="lm-input" placeholder="R$ 0,00" value={form.orcamento} onChange={(e) => s("orcamento", maskCurrency(e.target.value))} /></div>
             <div className="sm:col-span-2"><label className="lm-label">Mensagem / Observação</label><textarea rows={2} className="lm-input" value={form.mensagem} onChange={(e) => s("mensagem", e.target.value)} /></div>
           </div>
           <div className="flex justify-end gap-2 pt-2">
@@ -92,6 +92,14 @@ export default function LeadsPage() {
   const [origem, setOrigem] = useState("");
   const [selected, setSelected] = useState(null);
   const [showNew, setShowNew] = useState(false);
+
+  const deleteLead = async (id, nome) => {
+    if (!window.confirm(`Tem certeza? O lead "${nome}" será excluído permanentemente.`)) return;
+    const { error } = await supabase.from("leads").delete().eq("id", id);
+    if (error) return toast.error("Erro ao excluir lead");
+    toast.success("Lead excluído");
+    load();
+  };
 
   const load = async () => {
     let q2 = supabase.from("leads").select("*").order("created_at", { ascending: false });
@@ -175,6 +183,7 @@ export default function LeadsPage() {
                     <div className="flex items-center gap-2">
                       <a href={waLink(l.whatsapp, `Olá ${l.nome}!`)} target="_blank" rel="noreferrer" className="p-1.5 rounded-full bg-[#071d34] text-[#f8fafc] hover:bg-[#040f1d]" data-testid={`lead-wa-${l.id}`}><MessageCircle className="w-3.5 h-3.5" /></a>
                       <button onClick={() => setSelected(l)} data-testid={`lead-view-${l.id}`} className="p-1.5 rounded-full border border-[#d1dde8] text-[#071d34] hover:bg-[#f8fafc]"><Eye className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => deleteLead(l.id, l.nome)} data-testid={`lead-delete-${l.id}`} className="p-1.5 rounded-full border border-[#d1dde8] text-red-600 hover:bg-red-50"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
                 </tr>

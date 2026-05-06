@@ -6,7 +6,7 @@ import { Plus, Pencil, Trash2, MessageCircle, Star, X, Upload, Image as ImageIco
 import { toast } from "sonner";
 
 const empty = {
-  codigo: "", titulo: "", tipo: "casa", finalidade: "venda", cidade: "Bauru", bairro: "", endereco: "", complemento: "",
+  codigo: "", titulo: "", tipo: "casa", finalidade: "venda", cidade: "Bauru", bairro: "", endereco: "", complemento: "", nome_condominio: "",
   valor: 0, condominio: 0, iptu: 0, metragem: 0, terreno_m2: 0, quartos: 0, suites: 0, banheiros: 0, vagas: 0,
   aceita_financiamento: false, aceita_consorcio: false, aceita_permuta: false,
   piscina: false, edicula: false, elevador: false, varanda: false, quintal: false,
@@ -116,7 +116,12 @@ export default function ImoveisAdmin() {
 
                 <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#d1dde8]">
                   <div className="flex gap-1">
-                    <button onClick={() => setEditing(p)} className="p-1.5 rounded-full border border-[#d1dde8] text-[#071d34] hover:bg-[#f8fafc]" data-testid={`edit-prop-${p.id}`}><Pencil className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => setEditing({
+                        ...p,
+                        valor: p.valor ? maskCurrency(String(Math.round(p.valor * 100))) : "",
+                        condominio: p.condominio ? maskCurrency(String(Math.round(p.condominio * 100))) : "",
+                        iptu: p.iptu ? maskCurrency(String(Math.round(p.iptu * 100))) : "",
+                      })} className="p-1.5 rounded-full border border-[#d1dde8] text-[#071d34] hover:bg-[#f8fafc]" data-testid={`edit-prop-${p.id}`}><Pencil className="w-3.5 h-3.5" /></button>
                     <button onClick={() => remove(p.id)} className="p-1.5 rounded-full border border-[#d1dde8] text-red-700 hover:bg-red-50" data-testid={`delete-prop-${p.id}`}><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                   <a href={waLink(null, `Olá! Confira este imóvel: ${window.location.origin}/imoveis/${p.id}`)} target="_blank" rel="noreferrer" className="text-xs text-[#071d34] flex items-center gap-1 hover:text-[#c9a66b]" data-testid={`share-prop-${p.id}`}><MessageCircle className="w-3.5 h-3.5" /> Compartilhar</a>
@@ -229,6 +234,7 @@ function PropertyModal({ data, setData, onSave }) {
             <div><label className="lm-label">Bairro</label><input className="lm-input" value={data.bairro} onChange={(e) => s("bairro", e.target.value)} /></div>
             <div><label className="lm-label">Endereço</label><input className="lm-input" value={data.endereco} onChange={(e) => s("endereco", e.target.value)} /></div>
             <div className="md:col-span-2"><label className="lm-label">Complemento</label><input className="lm-input" placeholder="Apto, bloco, casa..." value={data.complemento || ""} onChange={(e) => s("complemento", e.target.value)} /></div>
+            <div className="md:col-span-3"><label className="lm-label">Nome do condomínio</label><input className="lm-input" placeholder="Ex: Villaggio Leon, Jardim Europa..." value={data.nome_condominio || ""} onChange={(e) => s("nome_condominio", e.target.value)} /></div>
 
             <div><label className="lm-label">Valor (R$)</label><input className="lm-input" placeholder="R$ 0,00" value={data.valor} onChange={(e) => s("valor", maskCurrency(e.target.value))} data-testid="pf-valor" /></div>
             <div><label className="lm-label">Condomínio</label><input className="lm-input" placeholder="R$ 0,00" value={data.condominio} onChange={(e) => s("condominio", maskCurrency(e.target.value))} /></div>

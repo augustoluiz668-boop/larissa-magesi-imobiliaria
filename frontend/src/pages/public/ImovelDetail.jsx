@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { formatMoney, waLink, TYPE_LABELS, PURPOSE_LABELS } from "../../lib/api";
+import { formatMoney, waLink, addWatermark, TYPE_LABELS, PURPOSE_LABELS } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
 import { Bed, Bath, Car, Ruler, MapPin, MessageCircle, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -58,7 +58,7 @@ export default function ImovelDetail({ settings = {} }) {
         {/* Carousel + details */}
         <div className="md:col-span-2">
           <div className="relative bg-black" data-testid="detail-carousel">
-            <img src={fotos[photo]} alt={prop.titulo} className="w-full h-[480px] object-cover" />
+            <img src={addWatermark(fotos[photo])} alt={prop.titulo} className="w-full h-[480px] object-cover" />
             {fotos.length > 1 && (
               <>
                 <button onClick={prev} data-testid="carousel-prev" aria-label="Anterior" className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-[#071d34] flex items-center justify-center shadow"><ChevronLeft className="w-5 h-5" /></button>
@@ -71,7 +71,7 @@ export default function ImovelDetail({ settings = {} }) {
             <div className="flex gap-2 mt-3 overflow-x-auto lm-scroll">
               {fotos.map((f, i) => (
                 <button key={i} onClick={() => setPhoto(i)} className={`flex-shrink-0 w-24 h-20 rounded-sm overflow-hidden border-2 transition-all ${photo === i ? "border-[#c9a66b]" : "border-transparent opacity-70 hover:opacity-100"}`}>
-                  <img src={f} alt="" className="w-full h-full object-cover" />
+                  <img src={addWatermark(f)} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

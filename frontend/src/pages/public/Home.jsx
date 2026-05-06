@@ -260,7 +260,7 @@ export default function HomePage({ settings = {} }) {
               </div>
               <div>
                 <label className="lm-label">Código do imóvel</label>
-                <input className="lm-input" placeholder="Ex: LM-001" value={search.codigo} onChange={(e) => setSearch({ ...search, codigo: e.target.value })} />
+                <input className="lm-input" placeholder="Ex: 00001" value={search.codigo} onChange={(e) => setSearch({ ...search, codigo: e.target.value })} />
               </div>
               <div>
                 <label className="lm-label">Nome do condomínio</label>
@@ -339,9 +339,6 @@ export default function HomePage({ settings = {} }) {
                 <div key={f} className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-[#c9a66b]" /> {f}</div>
               ))}
             </div>
-            <Link to="/financiamento" className="lm-btn-gold mt-8 inline-flex">
-              <Calculator className="w-4 h-4" /> Fazer simulação completa
-            </Link>
           </div>
           <form onSubmit={submitSim} className="bg-white text-[#2C2C2C] p-8 rounded-sm space-y-4">
             <div className="font-serif text-2xl text-[#071d34] mb-2">Quero minha simulação</div>
