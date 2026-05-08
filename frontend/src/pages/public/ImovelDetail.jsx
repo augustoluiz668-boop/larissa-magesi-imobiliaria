@@ -21,6 +21,7 @@ export default function ImovelDetail({ settings = {} }) {
   const [loading, setLoading] = useState(true);
   const [photo, setPhoto] = useState(0);
   const [similar, setSimilar] = useState([]);
+  const [coords, setCoords] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -32,6 +33,14 @@ export default function ImovelDetail({ settings = {} }) {
       if (!data) return;
       const featured = data.featured_photo || 0;
       setPhoto(Math.min(featured, (data.fotos || []).length - 1));
+      // Geocode address via Nominatim
+      if (data.bairro || data.cidade) {
+        const q = encodeURIComponent(`${data.bairro || ""}, ${data.cidade || ""}, SP, Brasil`);
+        fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`)
+          .then(r => r.json())
+          .then(res => { if (!cancelled && res[0]) setCoords({ lat: parseFloat(res[0].lat), lng: parseFloat(res[0].lon) }); })
+          .catch(() => {});
+      }
       // Load similar
       supabase.from("properties").select("*")
         .eq("tipo", data.tipo).eq("finalidade", data.finalidade)
@@ -113,14 +122,14 @@ export default function ImovelDetail({ settings = {} }) {
             </div>
 
             {/* Mapa */}
-            {prop.lat && prop.lng && (
+            {coords && (
               <div className="mt-10">
                 <div className="lm-overline mb-3">Localização aproximada</div>
                 <p className="text-xs text-[#5C5C5C] mb-3">Por privacidade do imóvel, exibimos apenas a região. O endereço completo é compartilhado após o primeiro contato.</p>
                 <div className="rounded-sm overflow-hidden border border-[#d1dde8]" style={{ height: 320 }}>
-                  <MapContainer center={[prop.lat, prop.lng]} zoom={15} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
+                  <MapContainer center={[coords.lat, coords.lng]} zoom={15} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap' />
-                    <Marker position={[prop.lat, prop.lng]} icon={oliveIcon}>
+                    <Marker position={[coords.lat, coords.lng]} icon={oliveIcon}>
                       <Popup>{prop.bairro}, {prop.cidade}</Popup>
                     </Marker>
                   </MapContainer>
