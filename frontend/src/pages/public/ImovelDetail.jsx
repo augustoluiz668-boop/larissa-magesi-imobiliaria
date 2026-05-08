@@ -49,7 +49,7 @@ export default function ImovelDetail({ settings = {} }) {
   const next = () => setPhoto((photo + 1) % fotos.length);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 md:px-10 py-10">
+    <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 overflow-x-hidden">
       <Link to="/imoveis" className="inline-flex items-center gap-1 text-sm text-[#071d34] mb-6 hover:text-[#c9a66b]" data-testid="back-to-list">
         <ArrowLeft className="w-4 h-4" /> Voltar aos imóveis
       </Link>
@@ -68,7 +68,7 @@ export default function ImovelDetail({ settings = {} }) {
             )}
           </div>
           {fotos.length > 1 && (
-            <div className="flex gap-2 mt-3 overflow-x-auto lm-scroll max-w-full">
+            <div className="flex gap-2 mt-3 overflow-x-auto lm-scroll w-full" style={{ WebkitOverflowScrolling: "touch" }}>
               {fotos.map((f, i) => (
                 <button key={i} onClick={() => setPhoto(i)} className={`flex-shrink-0 w-24 h-20 rounded-sm overflow-hidden border-2 transition-all ${photo === i ? "border-[#c9a66b]" : "border-transparent opacity-70 hover:opacity-100"}`}>
                   <img src={addWatermark(f)} alt="" className="w-full h-full object-cover" />
