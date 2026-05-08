@@ -56,7 +56,7 @@ export default function ImovelDetail({ settings = {} }) {
 
       <div className="grid md:grid-cols-3 gap-8">
         {/* Carousel + details */}
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 min-w-0">
           <div className="relative bg-black overflow-hidden" data-testid="detail-carousel">
             <img src={addWatermark(fotos[photo])} alt={prop.titulo} className="w-full h-[480px] object-cover max-w-full" />
             {fotos.length > 1 && (
