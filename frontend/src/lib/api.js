@@ -50,7 +50,7 @@ export function formatMoney(value, finalidade) {
 
 export function addWatermark(url) {
   if (!url || !url.includes("cloudinary.com")) return url;
-  return url.replace("/upload/", "/upload/l_lm/fl_layer_apply,g_center,o_50,w_0.35/");
+  return url.replace("/upload/", "/upload/l_lm/fl_layer_apply,g_center,o_10,w_0.45/");
 }
 
 export function waLink(phone, message) {

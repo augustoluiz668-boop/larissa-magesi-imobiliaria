@@ -92,7 +92,8 @@ export default function ImovelDetail({ settings = {} }) {
             {prop.iptu > 0 && <div className="text-sm text-[#5C5C5C]">IPTU: {formatMoney(prop.iptu)}/ano</div>}
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8 max-w-lg">
-              <Spec icon={Ruler} label={`${prop.metragem}m²`} />
+              {prop.terreno_m2 > 0 && <Spec icon={Ruler} label={`${prop.terreno_m2}m² terreno`} />}
+              {prop.metragem > 0 && <Spec icon={Ruler} label={`${prop.metragem}m² construído`} />}
               {prop.quartos > 0 && <Spec icon={Bed} label={`${prop.quartos} quartos`} />}
               {prop.banheiros > 0 && <Spec icon={Bath} label={`${prop.banheiros} banh.`} />}
               {prop.vagas > 0 && <Spec icon={Car} label={`${prop.vagas} vagas`} />}
