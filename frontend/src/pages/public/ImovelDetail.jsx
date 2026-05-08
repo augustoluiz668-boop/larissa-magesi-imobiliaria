@@ -68,14 +68,14 @@ export default function ImovelDetail({ settings = {} }) {
             )}
           </div>
           {fotos.length > 1 && (
-            <div className="w-full overflow-hidden mt-3">
-            <div className="flex gap-2 overflow-x-auto lm-scroll" style={{ WebkitOverflowScrolling: "touch" }}>
-              {fotos.map((f, i) => (
-                <button key={i} onClick={() => setPhoto(i)} className={`flex-shrink-0 w-24 h-20 rounded-sm overflow-hidden border-2 transition-all ${photo === i ? "border-[#c9a66b]" : "border-transparent opacity-70 hover:opacity-100"}`}>
-                  <img src={addWatermark(f)} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
+            <div className="overflow-x-auto w-full mt-3" style={{ WebkitOverflowScrolling: "touch" }}>
+              <div className="flex gap-2 w-max">
+                {fotos.map((f, i) => (
+                  <button key={i} onClick={() => setPhoto(i)} className={`flex-shrink-0 w-24 h-20 rounded-sm overflow-hidden border-2 transition-all ${photo === i ? "border-[#c9a66b]" : "border-transparent opacity-70 hover:opacity-100"}`}>
+                    <img src={addWatermark(f)} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
