@@ -95,6 +95,7 @@ export const TYPE_LABELS = {
   comercial: "Comercial",
   terreno_condominio: "Terreno em condomínio",
   terreno: "Terreno",
+  chacara: "Chácara",
 };
 
 export const PURPOSE_LABELS = {

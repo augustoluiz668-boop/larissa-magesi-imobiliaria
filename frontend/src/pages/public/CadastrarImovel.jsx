@@ -48,7 +48,7 @@ export default function CadastrarImovel({ settings = {} }) {
     "Atendimento de compradores/locatários qualificados",
     "Acompanhamento jurídico e documental completo",
     "Negociação profissional para melhores condições",
-    "Suporte até a assinatura e entrega das chaves",
+    "Suporte até o pós-venda",
   ];
 
   return (
@@ -62,7 +62,7 @@ export default function CadastrarImovel({ settings = {} }) {
               Quero cadastrar meu imóvel
             </h1>
             <p className="text-[#a8b8cc] mt-6 max-w-md leading-relaxed">
-              Posso ajudar você a divulgar, atrair interessados qualificados e conduzir a negociação com profissionalismo — do anúncio à assinatura.
+              Com um trabalho de marketing irei prospectar interessados qualificados e conduzir a negociação com profissionalismo — do anúncio ao pós-venda.
             </p>
           </div>
           <div className="bg-[#0d2d4c]/50 border border-[#0d2d4c] rounded-sm p-8">
@@ -189,7 +189,7 @@ export default function CadastrarImovel({ settings = {} }) {
               <li><span className="font-serif text-[#c9a66b] text-lg mr-2">2.</span> Entro em contato para agendar uma visita e avaliação do imóvel.</li>
               <li><span className="font-serif text-[#c9a66b] text-lg mr-2">3.</span> Crio um anúncio profissional com fotos e divulgação.</li>
               <li><span className="font-serif text-[#c9a66b] text-lg mr-2">4.</span> Apresento compradores qualificados e conduzo a negociação.</li>
-              <li><span className="font-serif text-[#c9a66b] text-lg mr-2">5.</span> Acompanho toda a documentação até a assinatura.</li>
+              <li><span className="font-serif text-[#c9a66b] text-lg mr-2">5.</span> Acompanho toda a documentação até o pós-venda.</li>
             </ol>
           </div>
 

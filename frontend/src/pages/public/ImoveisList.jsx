@@ -55,6 +55,8 @@ export default function ImoveisList() {
   const [totalCount, setTotalCount] = useState(null);
   const [condominios, setCondominios] = useState([]);
   const [showCondSug, setShowCondSug] = useState(false);
+  const [allBairros, setAllBairros] = useState([]);
+  const [showBairroSug, setShowBairroSug] = useState(false);
 
   useEffect(() => {
     supabase.from("properties").select("cidade, bairro, nome_condominio").neq("status", "inativo").then(({ data }) => {
@@ -62,6 +64,8 @@ export default function ImoveisList() {
       if (!data) return;
       const unique = [...new Set(data.map(p => p.nome_condominio).filter(Boolean))].sort();
       setCondominios(unique);
+      const uniqueBairros = [...new Set(data.map(p => p.bairro).filter(Boolean))].sort();
+      setAllBairros(uniqueBairros);
       const map = {};
       data.forEach(({ cidade, bairro }) => {
         if (!cidade) return;
@@ -182,16 +186,29 @@ export default function ImoveisList() {
                 {cities.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
-            {/* Bairro — select filtrado por cidade */}
-            <div>
+            {/* Bairro — autocomplete */}
+            <div className="relative">
               <label className="lm-label">Bairro</label>
-              {filters.cidade && neighborhoods.length > 0 ? (
-                <select data-testid="filter-bairro" className="lm-input" value={filters.bairro} onChange={(e) => set("bairro", e.target.value)}>
-                  <option value="">Todos</option>
-                  {neighborhoods.map((b) => <option key={b} value={b}>{b}</option>)}
-                </select>
-              ) : (
-                <input data-testid="filter-bairro" className="lm-input" value={filters.bairro} onChange={(e) => set("bairro", e.target.value)} placeholder="Bairro" />
+              <input
+                data-testid="filter-bairro"
+                className="lm-input"
+                value={filters.bairro}
+                onChange={(e) => { set("bairro", e.target.value); setShowBairroSug(true); }}
+                onFocus={() => setShowBairroSug(true)}
+                onBlur={() => setTimeout(() => setShowBairroSug(false), 150)}
+                placeholder="Bairro"
+                autoComplete="off"
+              />
+              {showBairroSug && filters.bairro && allBairros.filter(b => b.toLowerCase().includes(filters.bairro.toLowerCase())).length > 0 && (
+                <div className="absolute z-20 top-full left-0 right-0 bg-white border border-[#d1dde8] rounded-sm shadow-lg max-h-48 overflow-y-auto">
+                  {allBairros.filter(b => b.toLowerCase().includes(filters.bairro.toLowerCase())).map(name => (
+                    <button key={name} type="button"
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-[#f8fafc] text-[#071d34]"
+                      onMouseDown={() => { const next = { ...filters, bairro: name }; setFilters(next); load(next); setShowBairroSug(false); }}>
+                      {name}
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
             <div><label className="lm-label">Tipo</label>

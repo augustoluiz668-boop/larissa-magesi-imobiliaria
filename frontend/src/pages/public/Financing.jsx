@@ -70,7 +70,7 @@ export default function Financing({ settings = {} }) {
               <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Análise personalizada</div>
               <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Atendimento humano</div>
               <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Orientação completa</div>
-              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Acompanhamento até as chaves</div>
+              <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#c9a66b]" /> Acompanhamento até o pós-venda</div>
             </div>
           </div>
           <div className="bg-[#0d2d4c]/50 border border-[#0d2d4c] rounded-sm p-8">
@@ -79,7 +79,7 @@ export default function Financing({ settings = {} }) {
               <li><span className="font-serif text-[#c9a66b] text-lg mr-2">1.</span> Você simula com seus dados de renda, FGTS e entrada.</li>
               <li><span className="font-serif text-[#c9a66b] text-lg mr-2">2.</span> Recebo sua solicitação e analiso seu perfil com atenção.</li>
               <li><span className="font-serif text-[#c9a66b] text-lg mr-2">3.</span> Apresento imóveis compatíveis e os bancos com melhor condição.</li>
-              <li><span className="font-serif text-[#c9a66b] text-lg mr-2">4.</span> Acompanho você até a assinatura e entrega das chaves.</li>
+              <li><span className="font-serif text-[#c9a66b] text-lg mr-2">4.</span> Acompanho você até o pós-venda.</li>
             </ol>
           </div>
         </div>

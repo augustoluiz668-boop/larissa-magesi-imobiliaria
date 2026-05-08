@@ -19,7 +19,7 @@ const empty = {
 export default function ImoveisAdmin() {
   const [items, setItems] = useState([]);
   const [editing, setEditing] = useState(null);
-  const [filter, setFilter] = useState({ tipo: "", status: "", cidade: "" });
+  const [filter, setFilter] = useState({ tipo: "", status: "", cidade: "", q: "" });
 
   const load = () => supabase.from("properties").select("*").order("created_at", { ascending: false }).then(({ data }) => setItems(data || []));
   useEffect(() => { load(); }, []);
@@ -66,7 +66,8 @@ export default function ImoveisAdmin() {
   const filtered = items.filter((p) =>
     (!filter.tipo || p.tipo === filter.tipo) &&
     (!filter.status || p.status === filter.status) &&
-    (!filter.cidade || p.cidade.toLowerCase().includes(filter.cidade.toLowerCase()))
+    (!filter.cidade || p.cidade.toLowerCase().includes(filter.cidade.toLowerCase())) &&
+    (!filter.q || p.codigo?.toLowerCase().includes(filter.q.toLowerCase()) || p.titulo?.toLowerCase().includes(filter.q.toLowerCase()))
   );
 
   return (
@@ -92,6 +93,7 @@ export default function ImoveisAdmin() {
           <option value="vendido">Vendido</option><option value="alugado">Alugado</option><option value="inativo">Inativo</option>
         </select>
         <input className="lm-input max-w-xs" placeholder="Filtrar por cidade" value={filter.cidade} onChange={(e) => setFilter({ ...filter, cidade: e.target.value })} data-testid="filter-prop-cidade" />
+        <input className="lm-input max-w-xs" placeholder="Buscar por código ou título" value={filter.q} onChange={(e) => setFilter({ ...filter, q: e.target.value })} data-testid="filter-prop-q" />
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -124,7 +126,7 @@ export default function ImoveisAdmin() {
                       })} className="p-1.5 rounded-full border border-[#d1dde8] text-[#071d34] hover:bg-[#f8fafc]" data-testid={`edit-prop-${p.id}`}><Pencil className="w-3.5 h-3.5" /></button>
                     <button onClick={() => remove(p.id)} className="p-1.5 rounded-full border border-[#d1dde8] text-red-700 hover:bg-red-50" data-testid={`delete-prop-${p.id}`}><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
-                  <a href={waLink(null, `Olá! Confira este imóvel: ${window.location.origin}/imoveis/${p.id}`)} target="_blank" rel="noreferrer" className="text-xs text-[#071d34] flex items-center gap-1 hover:text-[#c9a66b]" data-testid={`share-prop-${p.id}`}><MessageCircle className="w-3.5 h-3.5" /> Compartilhar</a>
+                  <a href={waLink(null, `Olá! Confira este imóvel: ${window.location.origin}/imoveis/${p.codigo}`)} target="_blank" rel="noreferrer" className="text-xs text-[#071d34] flex items-center gap-1 hover:text-[#c9a66b]" data-testid={`share-prop-${p.id}`}><MessageCircle className="w-3.5 h-3.5" /> Compartilhar</a>
                 </div>
               </div>
             </article>
