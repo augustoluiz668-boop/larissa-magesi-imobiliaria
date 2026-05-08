@@ -233,6 +233,9 @@ export default function HomePage({ settings = {} }) {
                   <option value="casa">Casa</option>
                   <option value="apartamento">Apartamento</option>
                   <option value="condominio">Condomínio</option>
+                  <option value="comercial">Comercial</option>
+                  <option value="terreno_condominio">Terreno em condomínio</option>
+                  <option value="terreno">Terreno</option>
                 </select>
               </div>
               <div>

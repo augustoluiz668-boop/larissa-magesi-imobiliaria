@@ -93,12 +93,12 @@ export const TYPE_LABELS = {
   apartamento: "Apartamento",
   condominio: "Condomínio",
   comercial: "Comercial",
-  kitnet: "Kitnet",
+  terreno_condominio: "Terreno em condomínio",
   terreno: "Terreno",
 };
 
 export const PURPOSE_LABELS = {
   venda: "Venda",
   locacao: "Locação",
-  permuta: "Permuta",
+  venda_locacao: "Venda e Locação",
 };

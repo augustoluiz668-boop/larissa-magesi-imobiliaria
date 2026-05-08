@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 const empty = {
   codigo: "", titulo: "", tipo: "casa", finalidade: "venda", cidade: "Bauru", bairro: "", endereco: "", complemento: "", nome_condominio: "",
-  valor: 0, condominio: 0, iptu: 0, metragem: 0, terreno_m2: 0, quartos: 0, suites: 0, banheiros: 0, vagas: 0,
+  valor: 0, valor_locacao: 0, condominio: 0, iptu: 0, metragem: 0, terreno_m2: 0, quartos: 0, suites: 0, banheiros: 0, vagas: 0,
   aceita_financiamento: false, aceita_consorcio: false, aceita_permuta: false,
   piscina: false, edicula: false, elevador: false, varanda: false, quintal: false,
   com_placa: false, exclusivo: false,
@@ -236,7 +236,10 @@ function PropertyModal({ data, setData, onSave }) {
             <div className="md:col-span-2"><label className="lm-label">Complemento</label><input className="lm-input" placeholder="Apto, bloco, casa..." value={data.complemento || ""} onChange={(e) => s("complemento", e.target.value)} /></div>
             <div className="md:col-span-3"><label className="lm-label">Nome do condomínio</label><input className="lm-input" placeholder="Ex: Villaggio Leon, Jardim Europa..." value={data.nome_condominio || ""} onChange={(e) => s("nome_condominio", e.target.value)} /></div>
 
-            <div><label className="lm-label">Valor (R$)</label><input className="lm-input" placeholder="R$ 0,00" value={data.valor} onChange={(e) => s("valor", maskCurrency(e.target.value))} data-testid="pf-valor" /></div>
+            <div><label className="lm-label">{data.finalidade === "venda_locacao" ? "Valor de venda (R$)" : "Valor (R$)"}</label><input className="lm-input" placeholder="R$ 0,00" value={data.valor} onChange={(e) => s("valor", maskCurrency(e.target.value))} data-testid="pf-valor" /></div>
+            {data.finalidade === "venda_locacao" && (
+              <div><label className="lm-label">Valor de locação (R$/mês)</label><input className="lm-input" placeholder="R$ 0,00" value={data.valor_locacao || 0} onChange={(e) => s("valor_locacao", maskCurrency(e.target.value))} /></div>
+            )}
             <div><label className="lm-label">Condomínio</label><input className="lm-input" placeholder="R$ 0,00" value={data.condominio} onChange={(e) => s("condominio", maskCurrency(e.target.value))} /></div>
             <div><label className="lm-label">IPTU</label><input className="lm-input" placeholder="R$ 0,00" value={data.iptu} onChange={(e) => s("iptu", maskCurrency(e.target.value))} /></div>
 
