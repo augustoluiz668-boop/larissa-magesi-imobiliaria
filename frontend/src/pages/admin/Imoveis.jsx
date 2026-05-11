@@ -30,9 +30,10 @@ export default function ImoveisAdmin() {
     const { id, ...rest } = editing;
     const payload = {
       ...rest,
-      valor: parseCurrency(editing.valor),
-      condominio: parseCurrency(editing.condominio),
-      iptu: parseCurrency(editing.iptu),
+      valor: parseCurrency(editing.valor) || 0,
+      valor_locacao: parseCurrency(editing.valor_locacao) || 0,
+      condominio: parseCurrency(editing.condominio) || 0,
+      iptu: parseCurrency(editing.iptu) || 0,
       metragem: Number(editing.metragem) || 0,
       terreno_m2: Number(editing.terreno_m2) || 0,
       quartos: Number(editing.quartos) || 0,
@@ -40,7 +41,7 @@ export default function ImoveisAdmin() {
       banheiros: Number(editing.banheiros) || 0,
       vagas: Number(editing.vagas) || 0,
       featured_photo: Number(editing.featured_photo) || 0,
-      comissao: Number(editing.comissao) || 0,
+      comissao: parseCurrency(editing.comissao) || 0,
       fotos: (editing.fotos || []).filter(Boolean),
     };
     try {
