@@ -57,15 +57,19 @@ export default function ImoveisList() {
   const [showCondSug, setShowCondSug] = useState(false);
   const [allBairros, setAllBairros] = useState([]);
   const [showBairroSug, setShowBairroSug] = useState(false);
+  const [allCodigos, setAllCodigos] = useState([]);
+  const [showCodigoSug, setShowCodigoSug] = useState(false);
 
   useEffect(() => {
-    supabase.from("properties").select("cidade, bairro, nome_condominio").neq("status", "inativo").then(({ data }) => {
+    supabase.from("properties").select("codigo, cidade, bairro, nome_condominio").neq("status", "inativo").then(({ data }) => {
       setTotalCount(data ? data.length : 0);
       if (!data) return;
       const unique = [...new Set(data.map(p => p.nome_condominio).filter(Boolean))].sort();
       setCondominios(unique);
       const uniqueBairros = [...new Set(data.map(p => p.bairro).filter(Boolean))].sort();
       setAllBairros(uniqueBairros);
+      const uniqueCodigos = [...new Set(data.map(p => p.codigo).filter(Boolean))].sort();
+      setAllCodigos(uniqueCodigos);
       const map = {};
       data.forEach(({ cidade, bairro }) => {
         if (!cidade) return;
@@ -148,9 +152,28 @@ export default function ImoveisList() {
           </div>
           {/* Busca rápida por código ou condomínio */}
           <div className="grid grid-cols-2 gap-3 pb-3 border-b border-[#d1dde8]">
-            <div>
+            <div className="relative">
               <label className="lm-label">Cód. do imóvel</label>
-              <input className="lm-input" placeholder="Ex: 00001" value={filters.codigo} onChange={(e) => set("codigo", e.target.value)} data-testid="filter-codigo" />
+              <input
+                className="lm-input"
+                placeholder="Ex: 00001"
+                value={filters.codigo}
+                onChange={(e) => { set("codigo", e.target.value); setShowCodigoSug(true); }}
+                onFocus={() => setShowCodigoSug(true)}
+                onBlur={() => setTimeout(() => setShowCodigoSug(false), 200)}
+                data-testid="filter-codigo"
+              />
+              {showCodigoSug && filters.codigo && allCodigos.filter(c => c.toLowerCase().includes(filters.codigo.toLowerCase())).length > 0 && (
+                <ul className="absolute z-10 left-0 right-0 bg-white border border-[#d1dde8] rounded-sm max-h-48 overflow-y-auto mt-1 shadow">
+                  {allCodigos.filter(c => c.toLowerCase().includes(filters.codigo.toLowerCase())).slice(0, 8).map(c => (
+                    <li
+                      key={c}
+                      className="px-3 py-2 hover:bg-[#f8fafc] cursor-pointer text-sm"
+                      onMouseDown={() => { set("codigo", c); setShowCodigoSug(false); }}
+                    >{c}</li>
+                  ))}
+                </ul>
+              )}
             </div>
             <div className="relative">
               <label className="lm-label">Nome do condomínio</label>

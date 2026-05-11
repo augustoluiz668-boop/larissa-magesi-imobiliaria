@@ -15,6 +15,12 @@ const oliveIcon = L.divIcon({
   iconAnchor: [17, 34],
 });
 
+function getYoutubeId(url) {
+  if (!url) return null;
+  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
 export default function ImovelDetail({ settings = {} }) {
   const { id } = useParams();
   const [prop, setProp] = useState(null);
@@ -67,7 +73,7 @@ export default function ImovelDetail({ settings = {} }) {
         {/* Carousel + details */}
         <div className="md:col-span-2 min-w-0">
           <div className="relative bg-black overflow-hidden" data-testid="detail-carousel">
-            <img src={addWatermark(fotos[photo])} alt={prop.titulo} className="w-full h-[480px] object-cover max-w-full" />
+            <img src={addWatermark(fotos[photo])} alt={prop.titulo} className="w-full h-[480px] object-contain max-w-full" />
             {fotos.length > 1 && (
               <>
                 <button onClick={prev} data-testid="carousel-prev" aria-label="Anterior" className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-[#071d34] flex items-center justify-center shadow"><ChevronLeft className="w-5 h-5" /></button>
@@ -114,6 +120,21 @@ export default function ImovelDetail({ settings = {} }) {
               <div className="lm-overline mb-2">Descrição</div>
               <p className="text-[#5C5C5C] leading-relaxed whitespace-pre-line">{prop.descricao}</p>
             </div>
+
+            {getYoutubeId(prop.youtube_url) && (
+              <div className="mt-8">
+                <div className="lm-overline mb-3">Vídeo do imóvel</div>
+                <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${getYoutubeId(prop.youtube_url)}`}
+                    title="Vídeo do imóvel"
+                    className="absolute inset-0 w-full h-full rounded-sm border border-[#d1dde8]"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="mt-6 flex flex-wrap gap-2">
               {prop.aceita_financiamento && <span className="lm-pill">Aceita financiamento</span>}

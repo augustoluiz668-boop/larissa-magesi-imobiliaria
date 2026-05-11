@@ -14,6 +14,7 @@ const empty = {
   descricao: "", fotos: [], status: "disponivel",
   proprietario: "", proprietario_contato: "", comissao: 0, observacao_interna: "",
   destaque: false, featured_photo: 0,
+  youtube_url: "",
 };
 
 export default function ImoveisAdmin() {
@@ -53,7 +54,7 @@ export default function ImoveisAdmin() {
       toast.success(id ? "Imóvel atualizado" : "Imóvel cadastrado");
       setEditing(null);
       load();
-    } catch { toast.error("Falha ao salvar"); }
+    } catch (err) { toast.error(`Falha ao salvar: ${err?.message || err?.code || "erro desconhecido"}`); }
   };
 
   const remove = async (id) => {
@@ -311,6 +312,16 @@ function PropertyModal({ data, setData, onSave }) {
           <section className="border-t border-[#d1dde8] pt-5 grid md:grid-cols-3 gap-4">
             <div className="md:col-span-3"><label className="lm-label">Descrição</label>
               <textarea rows={3} className="lm-input" value={data.descricao} onChange={(e) => s("descricao", e.target.value)} />
+            </div>
+            <div className="md:col-span-3">
+              <label className="lm-label">Link do vídeo no YouTube (opcional)</label>
+              <input
+                className="lm-input"
+                placeholder="https://www.youtube.com/watch?v=..."
+                value={data.youtube_url || ""}
+                onChange={(e) => s("youtube_url", e.target.value)}
+              />
+              <p className="text-xs text-[#5C5C5C] mt-1">Cole o link completo do vídeo. Aparecerá abaixo da descrição no site.</p>
             </div>
             <div className="md:col-span-3 flex flex-wrap gap-4 text-sm">
               {[
