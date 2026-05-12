@@ -5,7 +5,10 @@ import { formatMoney, TYPE_LABELS, PURPOSE_LABELS } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
 import { Search, X, Map as MapIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import L from "leaflet";
 
 // Fix default marker icons
@@ -309,6 +312,21 @@ export default function ImoveisList() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
+              <MarkerClusterGroup
+                chunkedLoading
+                showCoverageOnHover={false}
+                spiderfyOnMaxZoom
+                maxClusterRadius={50}
+                iconCreateFunction={(cluster) => {
+                  const count = cluster.getChildCount();
+                  const size = count < 10 ? 36 : count < 100 ? 44 : 52;
+                  return L.divIcon({
+                    html: `<div style="width:${size}px;height:${size}px;background:#c9a66b;color:#fff;border:3px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:${count < 100 ? 14 : 13}px;box-shadow:0 4px 10px rgba(0,0,0,.3);font-family:Outfit,sans-serif;">${count}</div>`,
+                    className: "lm-cluster",
+                    iconSize: [size, size],
+                  });
+                }}
+              >
               {props.map((p) => {
                 const key = `${p.bairro || ""}|${p.cidade || ""}`.toLowerCase();
                 const c = (p.lat && p.lng) ? { lat: p.lat, lng: p.lng } : coordsMap[key];
@@ -328,6 +346,7 @@ export default function ImoveisList() {
                   </Marker>
                 );
               })}
+              </MarkerClusterGroup>
             </MapContainer>
           </div>
         </div>
