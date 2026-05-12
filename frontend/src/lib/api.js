@@ -101,5 +101,5 @@ export const TYPE_LABELS = {
 export const PURPOSE_LABELS = {
   venda: "Venda",
   locacao: "Locação",
-  venda_locacao: "Venda e Locação",
+  venda_locacao: "Locação e Venda",
 };

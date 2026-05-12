@@ -47,6 +47,9 @@ export default function ImoveisList() {
     };
   });
   const [props, setProps] = useState([]);
+  const [coordsMap, setCoordsMap] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("lm_geocache") || "{}"); } catch { return {}; }
+  });
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
 
@@ -110,6 +113,27 @@ export default function ImoveisList() {
       if (f.quintal) q = q.eq("quintal", true);
       const { data } = await q.order("created_at", { ascending: false });
       setProps(data || []);
+      // Geocode addresses for map pins (sequential with rate limit, cache in localStorage)
+      (async () => {
+        const cache = { ...coordsMap };
+        let changed = false;
+        for (const p of (data || [])) {
+          const key = `${p.bairro || ""}|${p.cidade || ""}`.toLowerCase();
+          if (!key.trim() || cache[key]) continue;
+          try {
+            const q = encodeURIComponent(`${p.bairro || ""}, ${p.cidade || ""}, SP, Brasil`);
+            const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`);
+            const j = await r.json();
+            if (j[0]) {
+              cache[key] = { lat: parseFloat(j[0].lat), lng: parseFloat(j[0].lon) };
+              changed = true;
+              setCoordsMap({ ...cache });
+            }
+          } catch {}
+          await new Promise(res => setTimeout(res, 1100)); // Nominatim rate limit
+        }
+        if (changed) { try { localStorage.setItem("lm_geocache", JSON.stringify(cache)); } catch {} }
+      })();
     } finally { setLoading(false); }
   };
 
@@ -285,20 +309,25 @@ export default function ImoveisList() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              {props.filter((p) => p.lat && p.lng).map((p) => (
-                <Marker key={p.id} position={[p.lat, p.lng]} icon={oliveIcon}>
-                  <Popup>
-                    <div style={{ minWidth: 200 }}>
-                      <div style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 18, color: "#071d34", lineHeight: 1.1 }}>{p.titulo}</div>
-                      <div style={{ fontSize: 12, color: "#5C5C5C", marginTop: 4 }}>{p.bairro}, {p.cidade}</div>
-                      <div style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 20, color: "#071d34", marginTop: 6 }}>
-                        {formatMoney(p.valor, p.finalidade)}
+              {props.map((p) => {
+                const key = `${p.bairro || ""}|${p.cidade || ""}`.toLowerCase();
+                const c = (p.lat && p.lng) ? { lat: p.lat, lng: p.lng } : coordsMap[key];
+                if (!c) return null;
+                return (
+                  <Marker key={p.id} position={[c.lat, c.lng]} icon={oliveIcon}>
+                    <Popup>
+                      <div style={{ minWidth: 200 }}>
+                        <div style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 18, color: "#071d34", lineHeight: 1.1 }}>{p.titulo}</div>
+                        <div style={{ fontSize: 12, color: "#5C5C5C", marginTop: 4 }}>{p.bairro}, {p.cidade}</div>
+                        <div style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 20, color: "#071d34", marginTop: 6 }}>
+                          {formatMoney(p.valor, p.finalidade)}
+                        </div>
+                        <a href={`/imoveis/${p.codigo}`} style={{ display: "inline-block", marginTop: 8, padding: "4px 12px", background: "#071d34", color: "#f8fafc", borderRadius: 999, fontSize: 12, textDecoration: "none" }}>Ver imóvel</a>
                       </div>
-                      <a href={`/imoveis/${p.id}`} style={{ display: "inline-block", marginTop: 8, padding: "4px 12px", background: "#071d34", color: "#f8fafc", borderRadius: 999, fontSize: 12, textDecoration: "none" }}>Ver imóvel</a>
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
+                    </Popup>
+                  </Marker>
+                );
+              })}
             </MapContainer>
           </div>
         </div>

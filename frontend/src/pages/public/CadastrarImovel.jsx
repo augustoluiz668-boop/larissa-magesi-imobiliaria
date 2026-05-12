@@ -7,7 +7,7 @@ import { toast } from "sonner";
 export default function CadastrarImovel({ settings = {} }) {
   const [form, setForm] = useState({
     nome: "", whatsapp: "", email: "",
-    tipo: "", finalidade: "vender", endereco: "", bairro: "", cidade: "",
+    tipo: "", finalidade: "venda_locacao", endereco: "", bairro: "", cidade: "",
     valor: "", descricao: "",
   });
   const [sending, setSending] = useState(false);
@@ -136,9 +136,9 @@ export default function CadastrarImovel({ settings = {} }) {
                   <div>
                     <label className="lm-label">Pretendo</label>
                     <select className="lm-input" value={form.finalidade} onChange={(e) => set("finalidade", e.target.value)} data-testid="cad-finalidade">
-                      <option value="vender">Vender</option>
-                      <option value="alugar">Alugar</option>
-                      <option value="vender_alugar">Vender ou Alugar</option>
+                      <option value="venda">Venda</option>
+                      <option value="locacao">Locação</option>
+                      <option value="venda_locacao">Locação e Venda</option>
                     </select>
                   </div>
                   <div className="sm:col-span-2">
