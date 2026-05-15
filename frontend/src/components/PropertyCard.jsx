@@ -55,7 +55,7 @@ export default function PropertyCard({ prop }) {
             Tenho interesse
           </Link>
           <a
-            href={waLink(null, `Olá Larissa! Tenho interesse no imóvel ${prop.codigo} — ${prop.titulo}.`)}
+            href={waLink(null, `Olá Larissa! Tenho interesse no imóvel ${prop.codigo} — ${prop.titulo}. https://larissamagesi.com.br/imoveis/${prop.codigo}`)}
             target="_blank"
             rel="noreferrer"
             data-testid={`property-wa-${prop.id}`}

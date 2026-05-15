@@ -122,18 +122,24 @@ export default function ImoveisList() {
         let changed = false;
         for (const p of (data || [])) {
           const key = `${p.bairro || ""}|${p.cidade || ""}`.toLowerCase();
-          if (!key.trim() || cache[key]) continue;
-          try {
-            const q = encodeURIComponent(`${p.bairro || ""}, ${p.cidade || ""}, SP, Brasil`);
-            const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`);
-            const j = await r.json();
-            if (j[0]) {
-              cache[key] = { lat: parseFloat(j[0].lat), lng: parseFloat(j[0].lon) };
-              changed = true;
-              setCoordsMap({ ...cache });
-            }
-          } catch {}
-          await new Promise(res => setTimeout(res, 1100)); // Nominatim rate limit
+          if (key === "|" || cache[key]) continue;
+          const tries = [
+            `${p.bairro || ""}, ${p.cidade || ""}, SP, Brasil`,
+            `${p.cidade || ""}, SP, Brasil`,
+          ].filter(s => s.replace(/[\s,]/g, "").length > 5);
+          for (const query of tries) {
+            try {
+              const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`);
+              const j = await r.json();
+              if (j[0]) {
+                cache[key] = { lat: parseFloat(j[0].lat), lng: parseFloat(j[0].lon) };
+                changed = true;
+                setCoordsMap({ ...cache });
+                break;
+              }
+            } catch {}
+            await new Promise(res => setTimeout(res, 1100));
+          }
         }
         if (changed) { try { localStorage.setItem("lm_geocache", JSON.stringify(cache)); } catch {} }
       })();

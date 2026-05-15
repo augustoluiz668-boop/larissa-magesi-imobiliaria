@@ -39,13 +39,25 @@ export default function ImovelDetail({ settings = {} }) {
       if (!data) return;
       const featured = data.featured_photo || 0;
       setPhoto(Math.min(featured, (data.fotos || []).length - 1));
-      // Geocode address via Nominatim
+      // Geocode address via Nominatim (with fallback chain)
       if (data.bairro || data.cidade) {
-        const q = encodeURIComponent(`${data.bairro || ""}, ${data.cidade || ""}, SP, Brasil`);
-        fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`)
-          .then(r => r.json())
-          .then(res => { if (!cancelled && res[0]) setCoords({ lat: parseFloat(res[0].lat), lng: parseFloat(res[0].lon) }); })
-          .catch(() => {});
+        (async () => {
+          const tries = [
+            `${data.bairro || ""}, ${data.cidade || ""}, SP, Brasil`,
+            `${data.cidade || ""}, SP, Brasil`,
+          ].filter(s => s.replace(/[\s,]/g, "").length > 5);
+          for (const query of tries) {
+            try {
+              const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`);
+              const j = await r.json();
+              if (!cancelled && j[0]) {
+                setCoords({ lat: parseFloat(j[0].lat), lng: parseFloat(j[0].lon) });
+                return;
+              }
+            } catch {}
+            await new Promise(res => setTimeout(res, 1100));
+          }
+        })();
       }
       // Load similar
       supabase.from("properties").select("*")
@@ -72,7 +84,7 @@ export default function ImovelDetail({ settings = {} }) {
       <div className="grid md:grid-cols-3 gap-8">
         {/* Carousel + details */}
         <div className="md:col-span-2 min-w-0">
-          <div className="relative bg-black overflow-hidden" data-testid="detail-carousel">
+          <div className="relative bg-white border border-[#d1dde8] overflow-hidden" data-testid="detail-carousel">
             <img src={addWatermark(fotos[photo])} alt={prop.titulo} className="w-full h-[480px] object-contain max-w-full" />
             {fotos.length > 1 && (
               <>
@@ -165,7 +177,7 @@ export default function ImovelDetail({ settings = {} }) {
             <div className="bg-white border border-[#d1dde8] p-6 rounded-sm">
               <div className="lm-overline mb-2">Quer visitar ou tirar dúvidas?</div>
               <div className="font-serif text-xl text-[#071d34] leading-tight mb-4">Chame Larissa no WhatsApp</div>
-              <a href={waLink(settings.whatsapp, `Olá Larissa! Tenho interesse no imóvel ${prop.codigo} — ${prop.titulo}.`)}
+              <a href={waLink(settings.whatsapp, `Olá Larissa! Tenho interesse no imóvel ${prop.codigo} — ${prop.titulo}. https://larissamagesi.com.br/imoveis/${prop.codigo}`)}
                 target="_blank" rel="noreferrer" data-testid="detail-wa-btn"
                 className="lm-btn-primary w-full justify-center">
                 <MessageCircle className="w-4 h-4" /> Falar agora
