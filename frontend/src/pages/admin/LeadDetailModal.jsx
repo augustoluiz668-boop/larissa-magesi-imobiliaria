@@ -24,9 +24,10 @@ export default function LeadDetailModal({ lead, onClose }) {
 
   const addNote = async () => {
     if (!note.trim()) return;
-    const notas = [...(l.notas || []), { texto: note, created_at: new Date().toISOString() }];
-    const { data, error } = await supabase.from("leads").update({ notas }).eq("id", l.id).select().single();
-    if (!error && data) { setL(data); setNote(""); toast.success("Observacao adicionada"); }
+    const historico = [...(l.historico || []), { texto: note, data: new Date().toISOString() }];
+    const { data, error } = await supabase.from("leads").update({ historico }).eq("id", l.id).select().single();
+    if (error) { toast.error(`Falha ao salvar: ${error.message || error.code}`); return; }
+    if (data) { setL(data); setNote(""); toast.success("Observação adicionada"); }
   };
 
   return (
