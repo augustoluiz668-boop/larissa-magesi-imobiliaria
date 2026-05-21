@@ -29,7 +29,13 @@
       "Bash(python -c \"import sys,json; p=json.load\\(sys.stdin\\); print\\('\\\\n'.join\\(sorted\\(list\\(p.get\\('dependencies',{}\\).keys\\(\\)\\)+list\\(p.get\\('devDependencies',{}\\).keys\\(\\)\\)\\)\\)\\)\")",
       "Bash(python3 -c ' *)",
       "Bash(yarn build *)",
-      "Bash(yarn add *)"
+      "Bash(yarn add *)",
+      "Bash(python gen_covers.py)",
+      "Bash(curl -s -o \"C:\\\\Users\\\\supre\\\\Downloads\\\\test_pollinations.png\" \"https://image.pollinations.ai/prompt/elegant%20luxury%20real%20estate%20banner%2C%20deep%20navy%20background%2C%20gold%20accents%2C%20minimalist%20typography%2C%20professional?width=1024&height=576&model=flux&nologo=true\")",
+      "Bash(python -c \"from PIL import Image; i=Image.open\\(r'C:\\\\Users\\\\supre\\\\Downloads\\\\test_pollinations.png'\\); print\\(f'OK {i.size} {i.format}'\\)\")",
+      "Bash(python gen_covers_pollinations.py)",
+      "Bash(python -c \"exec\\(open\\('gen_covers_pollinations.py'\\).read\\(\\).replace\\('TARGETS = [', 'TARGETS = [#'\\).replace\\('#    \\(\\\\\"youtube_2560x1440\\\\\",        2560, 1440\\),', '    \\(\\\\\"youtube_2560x1440\\\\\",        2560, 1440\\),'\\)\\)\")",
+      "Bash(python -c \"import urllib.parse, urllib.request; from PIL import Image; from pathlib import Path; SRC=Path\\(r'C:\\\\Users\\\\supre\\\\Downloads\\\\cover lm.png'\\); OUT=Path\\(r'C:\\\\Users\\\\supre\\\\Downloads'\\); src=Image.open\\(SRC\\).convert\\('RGB'\\); prompt='elegant luxury real estate banner background, deep midnight navy color, subtle gold dust particles, minimalist abstract pattern, soft golden bokeh light, premium editorial aesthetic, vignette corners, no text, no people, cinematic depth, brand identity background'; url=f'https://image.pollinations.ai/prompt/{urllib.parse.quote\\(prompt\\)}?width=2560&height=1440&model=flux&nologo=true&seed=42'; req=urllib.request.Request\\(url,headers={'User-Agent':'Mozilla/5.0'}\\); tmp=OUT/'_bg_yt.jpg'; open\\(tmp,'wb'\\).write\\(urllib.request.urlopen\\(req,timeout=180\\).read\\(\\)\\); bg=Image.open\\(tmp\\).convert\\('RGB'\\); print\\(f'bg got {bg.size}'\\); bg=bg.resize\\(\\(2560,1440\\),Image.LANCZOS\\) if bg.size!=\\(2560,1440\\) else bg; iw,ih=src.size; scale=min\\(2560*0.92/iw,1440*0.92/ih\\); nw,nh=int\\(iw*scale\\),int\\(ih*scale\\); o=src.resize\\(\\(nw,nh\\),Image.LANCZOS\\); bg.paste\\(o,\\(\\(2560-nw\\)//2,\\(1440-nh\\)//2\\)\\); bg.save\\(OUT/'larissa_youtube_2560x1440_v2.png','PNG',optimize=True\\); print\\('done'\\)\")"
     ]
   }
 }

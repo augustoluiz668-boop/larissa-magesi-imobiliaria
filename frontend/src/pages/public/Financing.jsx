@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { waLink, maskPhone, maskCurrency, parseCurrency } from "../../lib/api";
+import { waLink, maskPhone, maskCurrency, parseCurrency, maskCPF } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
 import { Calculator, Check, ArrowRight, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -14,27 +14,42 @@ export default function Financing({ settings = {} }) {
     nome: p.get("nome") || "",
     telefone: p.get("telefone") || "",
     email: "",
+    cpf: "",
     renda_bruta: p.get("renda_bruta") || "",
     data_nascimento: "",
     tem_dependentes: false,
+    primeiro_imovel: false,
     tem_fgts: !!p.get("valor_fgts"),
     valor_fgts: p.get("valor_fgts") || "",
     tem_entrada: false, valor_entrada: "",
     parcela_desejada: "",
     valor_imovel: p.get("valor_imovel") || "",
-    prazo: 360, observacoes: "",
+    prazo: 420, observacoes: "",
   });
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!form.nome || !form.telefone || !form.renda_bruta || !form.valor_imovel) {
+    if (!form.nome || !form.telefone || !form.cpf || !form.renda_bruta || !form.valor_imovel) {
       return toast.error("Preencha os campos obrigatórios");
     }
     setSending(true);
     try {
-      const mensagem = `Simulação — Renda: R$${form.renda_bruta} | Valor imóvel: R$${form.valor_imovel} | Prazo: ${form.prazo}m | FGTS: ${form.tem_fgts ? `R$${form.valor_fgts}` : "não"} | Entrada: ${form.tem_entrada ? `R$${form.valor_entrada}` : "não"} | Obs: ${form.observacoes}`;
+      const mensagem = JSON.stringify({
+        Tipo: "Simulação de Financiamento",
+        CPF: form.cpf,
+        "Data de nascimento": form.data_nascimento || "—",
+        "Tem dependentes": form.tem_dependentes ? "Sim" : "Não",
+        "Primeiro imóvel": form.primeiro_imovel ? "Sim" : "Não",
+        "Renda bruta": form.renda_bruta,
+        "Valor imóvel": form.valor_imovel,
+        "Prazo (meses)": `${form.prazo} (${Math.round(form.prazo/12)} anos)`,
+        FGTS: form.tem_fgts ? form.valor_fgts : "Não tem",
+        Entrada: form.tem_entrada ? form.valor_entrada : "Sem entrada",
+        "Parcela desejada": form.parcela_desejada || "—",
+        Observações: form.observacoes || "—",
+      });
       const { error } = await supabase.from("leads").insert({
         nome: form.nome,
         whatsapp: form.telefone,
@@ -97,10 +112,12 @@ export default function Financing({ settings = {} }) {
             <div><label className="lm-label">Nome completo *</label><input required className="lm-input" value={form.nome} onChange={(e) => set("nome", e.target.value)} data-testid="fin-nome" /></div>
             <div><label className="lm-label">Telefone / WhatsApp *</label><input required className="lm-input" placeholder="(14) 99999-9999" value={form.telefone} onChange={(e) => set("telefone", maskPhone(e.target.value))} data-testid="fin-telefone" /></div>
             <div><label className="lm-label">E-mail</label><input type="email" className="lm-input" value={form.email} onChange={(e) => set("email", e.target.value)} /></div>
+            <div><label className="lm-label">CPF *</label><input required className="lm-input" placeholder="000.000.000-00" value={form.cpf} onChange={(e) => set("cpf", maskCPF(e.target.value))} data-testid="fin-cpf" /></div>
             <div><label className="lm-label">Data de nascimento</label><input type="date" className="lm-input" value={form.data_nascimento} onChange={(e) => set("data_nascimento", e.target.value)} data-testid="fin-nascimento" /></div>
             <div><label className="lm-label">Renda bruta familiar (R$) *</label><input required className="lm-input" placeholder="R$ 0,00" value={form.renda_bruta} onChange={(e) => set("renda_bruta", maskCurrency(e.target.value))} data-testid="fin-renda" /></div>
-            <div className="flex items-end gap-4">
+            <div className="flex items-end gap-4 flex-wrap">
               <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" className="accent-[#071d34]" checked={form.tem_dependentes} onChange={(e) => set("tem_dependentes", e.target.checked)} data-testid="fin-dep" /> Tem dependentes?</label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" className="accent-[#071d34]" checked={form.primeiro_imovel} onChange={(e) => set("primeiro_imovel", e.target.checked)} data-testid="fin-primeiro" /> Primeiro imóvel?</label>
             </div>
           </div>
 

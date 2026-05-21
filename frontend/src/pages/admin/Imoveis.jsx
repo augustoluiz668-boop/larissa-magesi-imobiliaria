@@ -11,6 +11,8 @@ const empty = {
   aceita_financiamento: false, aceita_consorcio: false, aceita_permuta: false,
   piscina: false, edicula: false, elevador: false, varanda: false, quintal: false,
   com_placa: false, exclusivo: false,
+  terreo: false, sobrado: false, quitado: false,
+  churrasqueira: false, climatizado: false, planejados: false, sol_manha: false,
   descricao: "", fotos: [], status: "disponivel",
   proprietario: "", proprietario_contato: "", comissao: 0, observacao_interna: "",
   destaque: false, featured_photo: 0,
@@ -342,7 +344,7 @@ function PropertyModal({ data, setData, onSave }) {
             <div className="md:col-span-3">
               <div className="text-xs font-medium text-[#5C5C5C] uppercase tracking-wider mb-2">Características / Amenidades</div>
               <div className="flex flex-wrap gap-4 text-sm">
-                {[["piscina", "Piscina"], ["edicula", "Edícula"], ["elevador", "Elevador"], ["varanda", "Varanda"], ["quintal", "Quintal"]].map(([k, l]) => (
+                {[["piscina", "Piscina"], ["edicula", "Edícula"], ["elevador", "Elevador"], ["varanda", "Varanda"], ["quintal", "Quintal"], ["terreo", "Térreo"], ["sobrado", "Sobrado"], ["quitado", "Quitado"], ["churrasqueira", "Churrasqueira/Gourmet"], ["climatizado", "Climatizado"], ["planejados", "Planejados"], ["sol_manha", "Sol da manhã"]].map(([k, l]) => (
                   <label key={k} className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" checked={!!data[k]} onChange={(e) => s(k, e.target.checked)} className="accent-[#071d34]" data-testid={`pf-${k}`} />
                     {l}

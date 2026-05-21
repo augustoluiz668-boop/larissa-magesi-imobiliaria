@@ -20,6 +20,13 @@ export function maskPhone(value) {
   return d.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3").replace(/-$/, "");
 }
 
+export function maskCPF(value) {
+  return (value || "").replace(/\D/g, "").slice(0, 11)
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1-$2");
+}
+
 export function maskCurrency(value) {
   const num = (value || "").replace(/\D/g, "");
   if (!num) return "";
