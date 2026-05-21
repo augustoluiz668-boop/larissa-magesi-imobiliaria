@@ -32,6 +32,7 @@ const initial = {
   quartos_min: "", vagas_min: "", valor_min: "", valor_max: "",
   aceita_financiamento: false, aceita_consorcio: false, aceita_permuta: false,
   piscina: false, edicula: false, elevador: false, varanda: false, quintal: false,
+  terreo: false, sobrado: false, quitado: false, churrasqueira: false, climatizado: false, planejados: false, sol_manha: false,
 };
 
 const PAGE_SIZE = 9;
@@ -114,6 +115,13 @@ export default function ImoveisList() {
       if (f.elevador) q = q.eq("elevador", true);
       if (f.varanda) q = q.eq("varanda", true);
       if (f.quintal) q = q.eq("quintal", true);
+      if (f.terreo) q = q.eq("terreo", true);
+      if (f.sobrado) q = q.eq("sobrado", true);
+      if (f.quitado) q = q.eq("quitado", true);
+      if (f.churrasqueira) q = q.eq("churrasqueira", true);
+      if (f.climatizado) q = q.eq("climatizado", true);
+      if (f.planejados) q = q.eq("planejados", true);
+      if (f.sol_manha) q = q.eq("sol_manha", true);
       const { data } = await q.order("created_at", { ascending: false });
       setProps(data || []);
       // Geocode addresses for map pins (sequential with rate limit, cache in localStorage)
@@ -294,6 +302,13 @@ export default function ImoveisList() {
               ["elevador", "Elevador"],
               ["varanda", "Varanda"],
               ["quintal", "Quintal"],
+              ["terreo", "Térreo"],
+              ["sobrado", "Sobrado"],
+              ["quitado", "Quitado"],
+              ["churrasqueira", "Churrasqueira/Gourmet"],
+              ["climatizado", "Climatizado"],
+              ["planejados", "Planejados"],
+              ["sol_manha", "Sol da manhã"],
             ].map(([k, l]) => (
               <label key={k} className="flex items-center gap-1.5 text-xs text-[#2C2C2C] cursor-pointer">
                 <input type="checkbox" data-testid={`filter-${k}`} checked={filters[k]} onChange={(e) => set(k, e.target.checked)} className="accent-[#071d34]" /> {l}
